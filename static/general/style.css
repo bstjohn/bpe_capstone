@@ -1,0 +1,9 @@
+#footer-link-bar {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.footer-link {
+    display: inline;
+}
