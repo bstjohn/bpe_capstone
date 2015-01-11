@@ -28,6 +28,18 @@ TEMPLATE_DIRS = [os.path.join(BASE_DIR, 'templates')]
 
 ALLOWED_HOSTS = []
 
+# Database configuration
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'bpa',
+        'USER': 'bpa_admin',
+        'PASSWORD': 'NicolaTesa',
+        'HOST': '127.0.0.1',
+        'PORT': '5432',
+    }
+}
 
 # Application definition
 
