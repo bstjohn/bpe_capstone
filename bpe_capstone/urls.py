@@ -5,7 +5,8 @@ urlpatterns = patterns('',
     # Examples:
     # url(r'^$', 'bpe_capstone.views.home', name='home'),
     # url(r'^blog/', include('blog.urls')),
-
+    url(r'^login/$', 'django.contrib.auth.views.login'),
+    url(r'^logout/$', 'django.contrib.auth.views.logout'),
     url(r'^info/', include('info.urls', namespace="info")),
     url(r'^admin/', include(admin.site.urls)),
 )
