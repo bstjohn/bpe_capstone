@@ -28,6 +28,11 @@ TEMPLATE_DIRS = [os.path.join(BASE_DIR, 'templates'), os.path.join(BASE_DIR, 'te
 
 ALLOWED_HOSTS = []
 
+# Login settings
+
+LOGIN_REDIRECT_URL = '/dashboard'
+LOGIN_URL = 'django.contrib.auth.views.login'
+
 # Database configuration
 
 DATABASES = {
