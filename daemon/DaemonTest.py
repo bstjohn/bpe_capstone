@@ -18,7 +18,7 @@ port=4242
 s=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 # Set the test text.
-txt="This is a test.\nThis is another test.\n"
+txt="This is a test.\nThis is another test.\n\n"
 
 try:
     # Now connect to the server.

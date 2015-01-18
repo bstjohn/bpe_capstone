@@ -12,25 +12,23 @@ import sys
 import select
 import SocketServer
 
-class QueryHandler(SocketServer.BaseRequestHandler):
+class QueryHandler(SocketServer.StreamRequestHandler):
     "QueryHandler class for the query daemon."
 
     def handle(self):
-        "Request handler function."
-        size = 4096
+        "Request handler function, each command is terminated by an empty line."
 
         # Data read loop.
         response=''
         while True:
-            data = self.request.recv(size)
-            if len(data)<size:
-                response = response + data
+            line = self.rfile.readline()
+            if not line.strip():
                 break
             else:
-                response = response + data
+                response = response + line
 
         # Send the data back to the client.
-        self.request.sendall(response)
+        self.wfile.write(response)
 
 # Start the server.
 if __name__=='__main__':
