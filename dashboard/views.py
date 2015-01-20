@@ -1,6 +1,9 @@
 from django.shortcuts import render
-from django.http import HttpResponse
-from django.template import RequestContext, loader
+
 
 def dashboard(request):
-    return render(request, 'dashboard/dashboard.html')
+    username = None
+    if request.user.is_authenticated():
+        username = request.user.username
+    context = {'username': username}
+    return render(request, 'dashboard/dashboard.html', context)

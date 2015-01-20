@@ -1,3 +1,10 @@
+.button {
+    background-color:white;
+    margin: 5px;
+    padding: 5px;
+    width: 75px;
+}
+
 /* Ensures the body content does not
     overlap the footer */
 html, body, #container { 
@@ -39,4 +46,10 @@ body > #container {
 
 .footer-link {
     display: inline;
+}
+
+#login-form {
+    background-color: lightblue;
+    margin: 20px;
+    padding: 20px;
 }
