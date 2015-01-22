@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+  <h2>Register</h2>
+  <!--Put the form has the form back to it'self, use post method. -->
+
+  <form action="/registration/" method="post">{% csrf_token %} <!-- csrf protected-->
+ 
+  <table>{{form}}</table>
+
+ 
+  <input type="submit" value="Register" />
+
+  </form>
+
+{% endblock %}
