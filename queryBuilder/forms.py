@@ -10,6 +10,6 @@ STATION_CHOICES = (('station1', 'Station1'),
 # The query form attributes
 class QueryForm(forms.Form):
     query_name = forms.CharField(label='Name Your Query', max_length=100)
-    start_date_time = forms.DateTimeField(widget=SplitDateTimeWidget)
-    end_date_time = forms.DateTimeField(widget=SplitDateTimeWidget)
-    stations = forms.CharField(widget=forms.Select(choices=STATION_CHOICES))
+    start_date_time = forms.DateTimeField(label='Start Date/Time', widget=SplitDateTimeWidget)
+    end_date_time = forms.DateTimeField(label='End Date/Time', widget=SplitDateTimeWidget)
+    stations = forms.CharField(label='Stations', widget=forms.Select(choices=STATION_CHOICES))

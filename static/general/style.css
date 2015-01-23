@@ -53,3 +53,12 @@ body > #container {
     margin: 20px;
     padding: 20px;
 }
+
+.errorlist {
+    color: red;
+    list-style-type: none;
+    display: block;
+    font-size: 14px;
+    padding-left: 0;
+    margin-bottom: 0;
+}
