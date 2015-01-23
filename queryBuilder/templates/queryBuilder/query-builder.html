@@ -1,0 +1,11 @@
+{% extends "user/base.html" %}
+
+{% block title %}Query Builder{% endblock %}
+
+{% block header %}
+        {% block header-title %}Welcome, {{ username }}!{% endblock %}
+{% endblock %}
+
+{% block content %}
+    <a href="/logout">Logout</a>
+{% endblock %}
