@@ -3,9 +3,14 @@
 {% block title %}Query Builder{% endblock %}
 
 {% block header %}
-        {% block header-title %}Welcome, {{ username }}!{% endblock %}
+{% block header-title %}Welcome, {{ username }}!{% endblock %}
 {% endblock %}
 
 {% block content %}
-    <a href="/logout">Logout</a>
+<form action="/query-builder/" method="post">
+    {% csrf_token %}
+    {{ form }}
+    <input type="submit" value="Submit"/>
+</form>
+<a href="/logout">Logout</a>
 {% endblock %}
