@@ -2,29 +2,29 @@
 <html lang="en">
 {% load staticfiles %}
 <head>
-    <link rel="stylesheet" type="text/css" href="{% static '/static/general/style.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static '/static/general/style.css' %}"/>
     <title>{% block title %}BPA Project{% endblock %}</title>
 </head>
 
 <body>
-    <div id="header">
-        {% block header %}
-            {% block header-title %}BPA Project{% endblock %}
-        {% endblock %}
+<div id="header">
+    {% block header %}
+    {% block header-title %}BPA Project{% endblock %}
+    {% endblock %}
+</div>
+
+<div id="container">
+    <div id="content">
+        {% block content %}{% endblock %}
     </div>
-    
-    <div id="container">
-        <div id="content">
-            {% block content %}{% endblock %}
-        </div>
-    </div>
-    
-    <div id="footer">
-        <ul id="footer-link-bar">
-            <li class="footer-link"><a href="/info/about/">About</a> | </li>
-            <li class="footer-link"><a href="/info/faq/">FAQs</a> | </li>
-            <li class="footer-link"><a href="/info/contact/">Contact Us</a></li>
-        </ul>
-    </div>
+</div>
+
+<div id="footer">
+    <ul id="footer-link-bar">
+        <li class="footer-link"><a href="/info/about/">About</a> |</li>
+        <li class="footer-link"><a href="/info/faq/">FAQs</a> |</li>
+        <li class="footer-link"><a href="/info/contact/">Contact Us</a></li>
+    </ul>
+</div>
 </body>
 </html>

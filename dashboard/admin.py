@@ -27,4 +27,5 @@ class DashboardAdmin(admin.ModelAdmin):
             return False
         return True
 
+
 admin.site.register(Dashboard, DashboardAdmin)
