@@ -10,11 +10,11 @@ driver.get("http://127.0.0.1:8000/")
 
 # test the title 
 try:
-  assert "BPA Project" in driver.title
+    assert "BPA Project" in driver.title
 except AssertionError as e:
-  e.args +=('Failed to find BPA Project in webpage title',0)
-  driver.close()
-  raise
+    e.args += ('Failed to find BPA Project in webpage title', 0)
+    driver.close()
+    raise
 
 driver.close()
 

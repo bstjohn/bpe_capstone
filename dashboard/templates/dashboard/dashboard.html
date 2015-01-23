@@ -1,5 +1,7 @@
 {% extends "user/base.html" %}
 
+{% load staticfiles %}
+
 {% block title %}Dashboard{% endblock %}
 
 {% block header %}
@@ -7,5 +9,22 @@
 {% endblock %}
 
 {% block content %}
+<p>
+    Hello. This is the dashboard page. It is currently under construction.
+</p>
+
+
+<a href="/static/general/dashboard_pic.png">
+    <img alt="A wireframe dashboard pic" src="/static/general/dashboard_pic.png"/>
+</a>
+
+
+<p class="note">
+    This is what the page should look like.
+
+    Right now I just displayed the image.
+</p>
+
+
 <a href="/logout">Logout</a>
 {% endblock %}
