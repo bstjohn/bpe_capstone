@@ -6,6 +6,14 @@ STATION_CHOICES = (('station1', 'Station1'),
                    ('station1', 'Station2'),
                    ('station3', 'Station3'))
 
+CONDITION_TYPES = (('voltage', 'Voltage'),)
+
+CONDITION_OPERATORS = (('=', '='),
+                       ('<', '<'),
+                       ('<=', '<='),
+                       ('>', '>'),
+                       ('>=', '>='))
+
 
 # The query form attributes
 class QueryForm(forms.Form):
@@ -18,12 +26,12 @@ class QueryForm(forms.Form):
                                                                          'class': 'datepicker'}))
     end_time = forms.TimeField(label='End Time', widget=TimeInput(attrs={'placeholder': 'HH:mm:ss (24-hour)'}))
     stations = forms.CharField(label='Stations', widget=forms.Select(choices=STATION_CHOICES))
-    condition = forms.CharField(max_length=200)
-    extra_condition_1 = forms.CharField(
-        required=False, max_length=200, widget=forms.TextInput(attrs={'style': 'display:none;'}))
-    extra_condition_2 = forms.CharField(
-        required=False, max_length=200, widget=forms.TextInput(attrs={'style': 'display:none;'}))
-    extra_condition_3 = forms.CharField(
-        required=False, max_length=200, widget=forms.TextInput(attrs={'style': 'display:none;'}))
-    extra_condition_4 = forms.CharField(
-        required=False, max_length=200, widget=forms.TextInput(attrs={'style': 'display:none;'}))
+    condition_type = forms.CharField(widget=forms.Select(choices=CONDITION_TYPES))
+    condition_operator = forms.CharField(widget=forms.Select(choices=CONDITION_OPERATORS))
+    condition_value = forms.IntegerField()
+
+
+class ConditionForm(forms.Form):
+    condition_type = forms.CharField(required=False, widget=forms.Select(choices=CONDITION_TYPES))
+    condition_operator = forms.CharField(required=False, widget=forms.Select(choices=CONDITION_OPERATORS))
+    condition_value = forms.IntegerField(required=False)

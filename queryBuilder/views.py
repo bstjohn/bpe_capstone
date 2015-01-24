@@ -1,13 +1,16 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
-from queryBuilder.forms import QueryForm
+from django.forms import formset_factory
+from queryBuilder.forms import QueryForm, ConditionForm
 from queryBuilder.models import Query
 
 
 # Builds a query given user input
 @login_required
 def query_builder(request):
+    condition_form_set = formset_factory(ConditionForm, extra=5, max_num=5)
+
     username = None
     if request.user.is_authenticated():
         username = request.user.username
@@ -17,11 +20,9 @@ def query_builder(request):
         form = QueryForm(request.POST)
         if form.is_valid():
             query_name = form.cleaned_data['query_name']
-
             return HttpResponseRedirect('/thanks/')
     else:
         form = QueryForm()
-        form.as_table()
 
-    context = {'username': username, 'form': form}
+    context = {'username': username, 'form': form, 'formset': condition_form_set}
     return render(request, 'queryBuilder/query-builder.html', context)
