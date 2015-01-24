@@ -30,19 +30,6 @@
 <form action="/query-builder/" method="post">
     {% csrf_token %}
 
-    <!--{{ form.non_field_errors }}-->
-    <!--<div class="fieldWrapper">-->
-        <!--{{ form.query_name.errors }}-->
-        <!--<label for="{{ form.query_name.id_for_label }}">{{ form.query_name.label }}</label>-->
-        <!--{{ form.query_name }}-->
-    <!--</div>-->
-
-    <!--<div>-->
-        <!--{{ form.start_date_time.errors }}-->
-        <!--<label for="{{ form.start_date_time.id_for_label }}">{{ form.start_date_time.label }}</label>-->
-        <!--{{ form.start_date_time }}-->
-    <!--</div>-->
-
     {% for field in form %}
         <div class="fieldWrapper">
             {{ field.errors }}

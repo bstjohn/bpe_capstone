@@ -67,6 +67,11 @@ body > #container {
     margin-bottom: 5px;
 }
 
+button.ui-button {
+    height: 30px;
+    margin-left: 5px;
+}
+
 .ui-button .ui-icon.icon-calendar {
     background-image: url('/static/general/Calendar-icon.png');
     width: 500%;
