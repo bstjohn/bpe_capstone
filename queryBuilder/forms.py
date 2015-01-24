@@ -18,3 +18,12 @@ class QueryForm(forms.Form):
                                                                          'class': 'datepicker'}))
     end_time = forms.TimeField(label='End Time', widget=TimeInput(attrs={'placeholder': 'HH:mm:ss (24-hour)'}))
     stations = forms.CharField(label='Stations', widget=forms.Select(choices=STATION_CHOICES))
+    condition = forms.CharField(max_length=200)
+    extra_condition_1 = forms.CharField(
+        required=False, max_length=200, widget=forms.TextInput(attrs={'style': 'display:none;'}))
+    extra_condition_2 = forms.CharField(
+        required=False, max_length=200, widget=forms.TextInput(attrs={'style': 'display:none;'}))
+    extra_condition_3 = forms.CharField(
+        required=False, max_length=200, widget=forms.TextInput(attrs={'style': 'display:none;'}))
+    extra_condition_4 = forms.CharField(
+        required=False, max_length=200, widget=forms.TextInput(attrs={'style': 'display:none;'}))
