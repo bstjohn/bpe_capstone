@@ -1,15 +1,19 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 import json
 
 
 # Query model holding data from built queries
 class Query(models.Model):
+    # user = models.OneToOneField(User, default="")
     user_name = models.CharField(max_length=24)
-    create_date = models.DateTimeField('date created')
+    create_date_time = models.DateTimeField('date created')
+    query_name = models.CharField(max_length=100)
     start_date_time = models.DateTimeField('query start date time')
     end_date_time = models.DateTimeField('query end date time')
-    stations = models.CharField(max_length=1000)
+    stations = models.CharField(max_length=1024)
+    conditions = models.CharField(max_length=1024)
 
     # Set stations to a string from a json object
     def set_stations(self, stations):
@@ -18,3 +22,11 @@ class Query(models.Model):
     # Get stations as json object
     def get_stations(self):
         return json.loads(self.stations)
+
+    # Set conditions to a string from a json object
+    def set_conditions(self, conditions):
+        self.conditions = json.dumps(conditions)
+
+    # Get conditions as json object
+    def get_conditions(self):
+        return json.loads(self.conditions)

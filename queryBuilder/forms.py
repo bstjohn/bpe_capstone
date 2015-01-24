@@ -34,4 +34,4 @@ class QueryForm(forms.Form):
 class ConditionForm(forms.Form):
     condition_type = forms.CharField(required=False, widget=forms.Select(choices=CONDITION_TYPES))
     condition_operator = forms.CharField(required=False, widget=forms.Select(choices=CONDITION_OPERATORS))
-    condition_value = forms.IntegerField(required=False)
+    condition_value = forms.IntegerField(required=False, widget=forms.NumberInput(attrs={'style': 'width: 70px;'}))
