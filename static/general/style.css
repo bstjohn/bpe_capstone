@@ -1,5 +1,5 @@
 .button {
-    background-color:white;
+    background-color: white;
     margin: 5px;
     padding: 5px;
     width: 75px;
@@ -7,7 +7,7 @@
 
 /* Ensures the body content does not
     overlap the footer */
-html, body, #container { 
+html, body, #container {
     height: 99%; 
 }
 
@@ -61,4 +61,21 @@ body > #container {
     font-size: 14px;
     padding-left: 0;
     margin-bottom: 0;
+}
+
+.fieldWrapper {
+    margin-bottom: 5px;
+}
+
+.ui-button .ui-icon.icon-calendar {
+    background-image: url('/static/general/Calendar-icon.png');
+    width: 500%;
+    height: 500%;
+    margin-left: -1em;
+    margin-top: -1em;
+}
+
+div.ui-datepicker{
+    font-size: 12px;
+    background: lightblue;
 }
