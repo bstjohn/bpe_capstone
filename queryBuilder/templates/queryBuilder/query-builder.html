@@ -94,6 +94,12 @@
         {% endfor %}
     </fieldset>
 
+    <div class="fieldWrapper">
+        {{ form.file.errors }}
+        <label for="{{ form.file.id_for_label }}">Analysis File: </label>
+        {{ form.file }}
+    </div>
+
     <input class="button" type="reset" value="Reset"/>
     <input class="button" type="submit" value="Send"/>
 </form>

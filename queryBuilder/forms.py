@@ -29,6 +29,7 @@ class QueryForm(forms.Form):
     condition_type = forms.CharField(widget=forms.Select(choices=CONDITION_TYPES))
     condition_operator = forms.CharField(widget=forms.Select(choices=CONDITION_OPERATORS))
     condition_value = forms.IntegerField()
+    file = forms.FileField()
 
 
 class ConditionForm(forms.Form):
