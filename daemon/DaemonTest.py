@@ -7,6 +7,7 @@
 #  responding to requests.
 #
 import sys
+import json
 import socket
 import select
 
@@ -17,13 +18,17 @@ port=4242
 # Create the socket.
 s=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-# Set the test text.
-txt="This is a test.\nThis is another test.\n\n"
+# Create the JSON object.
+a={'id':1, 'file': 'test.txt'}
+query={'query': a}
+
+# Convert to a string.
+queryString = json.dumps(query)
 
 try:
     # Now connect to the server.
     s.connect((host,port))
-    s.sendall(txt)
+    s.sendall(queryString + '\n\n')
 
     # Get read all of the response.
     s.setblocking(0)
@@ -39,8 +44,9 @@ try:
 
 
     # Show the user what was send and recieved.
-    print "Sent: {}".format(txt)
-    print "Received: {}".format(response)
+    print "Sent: {}".format(repr(query))
+    print
+    print "Received: {}".format(repr(response))
 
 finally:
     s.close()

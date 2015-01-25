@@ -9,16 +9,15 @@
 #  This program should only be used with Python 2.7
 #
 import sys
+import json
 import select
 import SocketServer
 
 class QueryHandler(SocketServer.StreamRequestHandler):
     "QueryHandler class for the query daemon."
 
-    def handle(self):
-        "Request handler function, each command is terminated by an empty line."
-
-        # Data read loop.
+    def readQuery(self):
+        "Read the query from the socket."
         response=''
         while True:
             line = self.rfile.readline()
@@ -26,9 +25,26 @@ class QueryHandler(SocketServer.StreamRequestHandler):
                 break
             else:
                 response = response + line
+        return response
+
+    def handle(self):
+        "Request handler function, each command is terminated by an empty line."
+        # Get the query text.
+        request = self.readQuery()
+
+        # Get the JSON object from the text.
+        query = json.loads(request)
+
+        # Create response object.
+        if query.has_key('query'):
+            a = {'code': 0, 'msg': "SUCCESS"}
+        else:
+            a = {'code': 1, 'msg': "Not a valid query object."}
+        response = {'status': a}
 
         # Send the data back to the client.
-        self.wfile.write(response)
+        json.dump(response, self.wfile)
+        self.wfile.write('\n')
 
 # Start the server.
 if __name__=='__main__':
