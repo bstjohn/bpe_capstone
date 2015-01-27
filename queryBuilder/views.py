@@ -5,6 +5,7 @@ from django.forms import formset_factory
 from queryBuilder.forms import QueryForm, ConditionForm
 from queryBuilder.models import Query
 
+import datetime
 import time
 
 
@@ -30,9 +31,11 @@ def query_builder(request):
         if form.is_valid() and condition_form.is_valid():
             Query.query_name = form.cleaned_data['query_name']
             start_date = form.cleaned_data['start_date']
-            start_time = form.cleaned_data['start_date']
+            start_time = form.cleaned_data['start_time']
+            Query.start_date_time = datetime.datetime.combine(start_date, start_time)
             end_date = form.cleaned_data['end_date']
             end_time = form.cleaned_data['end_time']
+            Query.end_date_time = datetime.datetime.combine(end_date, end_time)
             stations = form.cleaned_data['stations']
             conditions = []
             condition_type = form.cleaned_data['condition_type']
@@ -48,7 +51,6 @@ def query_builder(request):
                 conditions.append(condition)
 
             # Pass to model
-
             # Turn into JSON
 
             handle_uploaded_file(request.FILES["file"])
