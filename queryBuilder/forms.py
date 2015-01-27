@@ -14,21 +14,29 @@ CONDITION_OPERATORS = (('=', '='),
                        ('>', '>'),
                        ('>=', '>='))
 
+DATE_FORMAT = '%m/%d/%Y'
+
+TIME_FORMAT = '%H:%M'
+
 
 # The query form attributes
 class QueryForm(forms.Form):
-    query_name = forms.CharField(label='Name of Your Query', max_length=100,
-                                 widget=forms.TextInput(attrs={'placeholder': 'Name'}))
-    start_date = forms.DateField(label='Start Date', widget=DateInput(attrs={'placeholder': 'mm/dd/yyyy',
-                                                                             'class': 'datepicker'}))
-    start_time = forms.TimeField(label='Start Time', widget=TimeInput(attrs={'placeholder': 'HH:mm:ss (24-hour)'}))
-    end_date = forms.DateField(label='End Date', widget=DateInput(attrs={'placeholder': 'mm/dd/yyyy',
-                                                                         'class': 'datepicker'}))
-    end_time = forms.TimeField(label='End Time', widget=TimeInput(attrs={'placeholder': 'HH:mm:ss (24-hour)'}))
-    stations = forms.CharField(label='Stations', widget=forms.Select(choices=STATION_CHOICES))
+    query_name = forms.CharField(max_length=100, widget=forms.TextInput(attrs={'placeholder': 'Name'}))
+
+    start_date = forms.DateField(widget=DateInput(attrs={'placeholder': 'mm/dd/yyyy', 'class': 'datepicker'},
+                                                  format=DATE_FORMAT))
+    start_time = forms.TimeField(widget=TimeInput(attrs={'placeholder': 'HH:mm (24-hour)'}, format=TIME_FORMAT))
+
+    end_date = forms.DateField(widget=DateInput(attrs={'placeholder': 'mm/dd/yyyy', 'class': 'datepicker'},
+                                                format=DATE_FORMAT))
+    end_time = forms.TimeField(widget=TimeInput(attrs={'placeholder': 'HH:mm (24-hour)'}, format=TIME_FORMAT))
+
+    stations = forms.CharField(widget=forms.Select(choices=STATION_CHOICES))
+
     condition_type = forms.CharField(widget=forms.Select(choices=CONDITION_TYPES))
     condition_operator = forms.CharField(widget=forms.Select(choices=CONDITION_OPERATORS))
     condition_value = forms.IntegerField()
+
     file = forms.FileField()
 
 

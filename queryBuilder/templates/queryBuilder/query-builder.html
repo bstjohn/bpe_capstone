@@ -42,7 +42,7 @@
 
 </script>
 
-<form action="/query-builder/" method="post">
+<form action="/query-builder/" method="post" enctype=multipart/form-data>
     {% csrf_token %}
 
     {{ form.non_field_errors }}
@@ -85,6 +85,7 @@
     </div>
 
     <fieldset style="border:none; display: none;" id="conditions-field-set">
+        {{ formset.management_form }}
         {{ formset.non_form_errors }}
         {% for form in formset %}
         <div class="fieldWrapper">
@@ -103,6 +104,8 @@
     <input class="button" type="reset" value="Reset"/>
     <input class="button" type="submit" value="Send"/>
 </form>
+
+{{ received_json_data }}
 
 <a href="/logout">Logout</a>
 {% endblock %}
