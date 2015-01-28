@@ -6,9 +6,13 @@ STATION_CHOICES = (('station1', 'Station1'),
                    ('station1', 'Station2'),
                    ('station3', 'Station3'))
 
-CONDITION_TYPES = (('voltage', 'Voltage'),)
+CONDITION_TYPES = (('voltage', 'Voltage'),
+                   ('current', 'Current'),
+                   ('frequency', 'Frequency'),
+                   ('nominal voltage', 'Nominal Voltage'))
 
-CONDITION_OPERATORS = (('=', '='),
+CONDITION_OPERATORS = (('==', '=='),
+                       ('!=', '!='),
                        ('<', '<'),
                        ('<=', '<='),
                        ('>', '>'),
@@ -37,7 +41,7 @@ class QueryForm(forms.Form):
     end_time = forms.TimeField(widget=TimeInput(attrs={'placeholder': 'HH:mm (24-hour)'},
                                                 format=TIME_FORMAT))
 
-    stations = forms.CharField(widget=forms.Select(choices=STATION_CHOICES))
+    stations = forms.CharField(widget=forms.SelectMultiple(choices=STATION_CHOICES))
 
     condition_type = forms.CharField(widget=forms.Select(choices=CONDITION_TYPES))
 
