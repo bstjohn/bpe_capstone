@@ -32,7 +32,7 @@ def register_user(request):
 def register_success(request):
     return render_to_response('registration/register_success.html')
 
-def register_success(request):
+def register_fail(request):
     return render_to_response('registration/register_fail.html')
 
 #def registration(request):
