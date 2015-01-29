@@ -13,4 +13,5 @@ urlpatterns = patterns('',
     url(r'^dashboard/', include('dashboard.urls', namespace="dashboard")),
     url(r'^registration/$', 'registration.views.register_user'),
     url(r'^registration_success/$', 'registration.views.register_success'),
+    url(r'^registration_fail/$', 'registration.views.register_fail'),
 )
