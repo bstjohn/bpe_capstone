@@ -12,5 +12,5 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
     url(r'^dashboard/', include('dashboard.urls', namespace="dashboard")),
     url(r'^registration/$', 'registration.views.register_user'),
-    url(r'^registration_success/$', 'bpe_capstone.views.register_success'),
+    url(r'^registration_success/$', 'registration.views.register_success'),
 )

@@ -18,6 +18,8 @@ def register_user(request):
 	   form.save() # save the form
            # here we can add email to verfiy!!!!
            return HttpResponseRedirect('/registration_success/')
+        else:
+           return HttpResponseRedirect('/registration_fail/')
 
     args = {} 
     args.update(csrf(request))
@@ -29,6 +31,9 @@ def register_user(request):
 
 def register_success(request):
     return render_to_response('registration/register_success.html')
+
+def register_success(request):
+    return render_to_response('registration/register_fail.html')
 
 #def registration(request):
 #    return render(request, 'registration/registration.html')
