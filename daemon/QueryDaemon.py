@@ -36,8 +36,9 @@ class QueryHandler(SocketServer.StreamRequestHandler):
         # Get the JSON object from the text.
         query = json.loads(request)
 
-        # Create response object.
+        # Create response object and queue the query.
         if query.has_key('query'):
+            queryEngine.putQuery(query)
             a = {'code': 0, 'msg': "SUCCESS"}
         else:
             a = {'code': 1, 'msg': "Not a valid query object."}

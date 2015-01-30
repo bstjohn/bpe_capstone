@@ -18,10 +18,22 @@ class QueryEngine(threading.Thread):
     "Class that handles all of the queries to the BPA engine"
 
     def __init__(self):
-        threading.Thread.__init__(self, None, self)
-        self.queue = Queue.Queue(-1)
+        threading.Thread.__init__(self, None, self.run)
+        self.daemon = True
+        self.queue = Queue.Queue(25)
+
+    def putQuery(self, query):
+        "Add the query to the queue."
+        self.queue.put(query, True, None)
 
     def run(self):
         "Start the server task."
         while True:
-            time.sleep(5)
+            # Get the next query from the queue.
+            query = self.queue.get(True, None)
+
+            # Process the query.
+            print "Got query #{0}.".format(query['query']['id'])
+
+            # Mark the current item as complete.
+            self.queue.task_done()
