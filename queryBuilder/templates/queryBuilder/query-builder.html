@@ -96,6 +96,10 @@
     </fieldset>
 
     <div class="fieldWrapper">
+        {{ form.measurement }} {{ form.nominal_volts }} {{ form.circuit_number }} {{ form.measurement_identifier }} {{ form.suffix }}
+    </div>
+
+    <div class="fieldWrapper">
         {{ form.file.errors }}
         <label for="{{ form.file.id_for_label }}">Analysis File: </label>
         {{ form.file }}

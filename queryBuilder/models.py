@@ -6,7 +6,7 @@ import json
 
 # Query model holding data from built queries
 class Query(models.Model):
-    # user = models.OneToOneField(User, default="")
+    # owner = models.OneToOneField(User)
     user_name = models.CharField(max_length=24)
     create_date_time = models.DateTimeField('date created')
     query_name = models.CharField(max_length=100)
@@ -14,6 +14,7 @@ class Query(models.Model):
     end_date_time = models.DateTimeField('query end date time')
     stations = models.CharField(max_length=1024)
     conditions = models.CharField(max_length=1024)
+    file_name = models.CharField(max_length=108, default="n/a")
 
     # Set stations to a string from a json object
     def set_stations(self, stations):

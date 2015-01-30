@@ -8,25 +8,20 @@ from queryBuilder.models import Query
 import datetime
 import time
 import json
+import os
 
-
-def handle_uploaded_file(file_path):
-    destination = open(file_path.name, "wb")
-    for chunk in file_path.chunks():
-        destination.write(chunk)
-    destination.close()
 
 # Builds a query given user input
 @login_required
 def query_builder(request):
-    condition_form_set = formset_factory(ConditionForm, extra=3, max_num=3)
+    condition_form_set = formset_factory(ConditionForm, extra=2, max_num=2)
     username = None
     creation_date = None
     query_model = Query()
     if request.user.is_authenticated():
         username = request.user.username
         query_model.user_name = username
-        creation_date = time.strftime("%Y-%m-%d %H:%M")
+        creation_date = time.strftime("%Y-%m-%d %H:%M:%S")
         query_model.create_date_time = creation_date
 
     if request.method == 'POST':
@@ -43,6 +38,11 @@ def query_builder(request):
             end_date_time = datetime.datetime.combine(end_date, end_time)
             query_model.end_date_time = end_date_time
             stations = form.cleaned_data['stations']
+            measurement = form.cleaned_data['measurement']
+            nominal_volts = form.cleaned_data['nominal_volts']
+            circuit_number = form.cleaned_data['circuit_number']
+            measurement_identifier = form.cleaned_data['measurement_identifier']
+            suffix = form.cleaned_data['suffix']
             conditions = []
             condition_type = form.cleaned_data['condition_type']
             condition_operator = form.cleaned_data['condition_operator']
@@ -56,12 +56,16 @@ def query_builder(request):
                                       condition_field.cleaned_data['condition_value'])
                 conditions.append(condition)
 
+            file = request.FILES["file"]
+            file_name = file.name
+            query_model.file_name = file_name
+
             query_model.save()
 
             print(convert_to_json(username, query_model.id, creation_date, start_date_time, end_date_time,
-                            stations, conditions, "blah", "r"))
+                                  stations, conditions, measurement, nominal_volts, circuit_number,
+                                  measurement_identifier, suffix, file_name, "r", stringify_file(file)))
 
-            handle_uploaded_file(request.FILES["file"])
             return HttpResponseRedirect('/query-result/')
     else:
         form = QueryForm()
@@ -70,29 +74,46 @@ def query_builder(request):
     return render(request, 'queryBuilder/query-builder.html', context)
 
 
+def stringify_file(file_path):
+    data = ""
+    with open(file_path.name, "rb") as file:
+        for chunk in file_path.chunks():
+            data += chunk.decode(encoding='UTF-8').replace('\r\n', '')
+
+    return data
+
+
 def convert_to_json(user_name, query_id, creation_date, start_date_time, end_date_time,
-                    stations, conditions, file_name, file_type):
+                    stations, conditions, measurement, nominal_volts, circuit_number,
+                    measurement_identifier, suffix, file_name, file_type, file_content):
 
     query = json.dumps({
         "query": {
-            "query_id": "",
+            "query_id": query_id,
             "created": creation_date.__str__(),
             "start": start_date_time.__str__(),
             "end": end_date_time.__str__(),
             "stations": stations,
-            "attributes": {
-                "voltage": {},
-                "current": {},
-                "freq": {},
-                "nomvolts": ""
-            },
-            "user": {
-                "name": user_name,
-            },
             "analysis": {
                 "file": file_name,
                 "type": file_type,
+                "content": file_content
             },
+            "conditions": {
+                "voltage": [],
+                "current": [],
+                "freq": []
+            },
+            "signal": {
+                "measurement": measurement.__str__(),
+                "nomvolts": nominal_volts,
+                "circuit": circuit_number,
+                "identifier": measurement_identifier.__str__(),
+                "suffix": suffix.__str__()
+            },
+            "user": {
+                "name": user_name.__str__()
+            }
         }
     })
 
