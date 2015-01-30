@@ -4,6 +4,7 @@ from django.http import HttpResponseRedirect
 from django.forms import formset_factory
 from queryBuilder.forms import QueryForm, ConditionForm
 from queryBuilder.models import Query
+from enum import Enum
 
 import datetime
 import time
@@ -97,9 +98,23 @@ def save_file(file_path):
 def delete_file(file_path):
     os.remove(file_path.name)
 
+
 def convert_to_json(user_name, query_id, creation_date, start_date_time, end_date_time,
                     stations, conditions, measurement, nominal_volts, circuit_number,
                     measurement_identifier, suffix, file_name, file_type, file_content):
+
+    voltage_conditions = []
+    current_conditions = []
+    frequency_conditions = []
+
+    for condition in conditions:
+        condition_type = condition.condition_type
+        if condition_type == "voltage":
+            voltage_conditions.append(condition.__str__())
+        elif condition_type == "current":
+            current_conditions.append(condition.__str__())
+        else:
+            frequency_conditions.append(condition.__str__())
 
     query = json.dumps({
         "query": {
@@ -114,9 +129,9 @@ def convert_to_json(user_name, query_id, creation_date, start_date_time, end_dat
                 "content": file_content
             },
             "conditions": {
-                "voltage": [],
-                "current": [],
-                "freq": []
+                "voltage": voltage_conditions,
+                "current": current_conditions,
+                "freq": frequency_conditions
             },
             "signal": {
                 "measurement": measurement.__str__(),
@@ -139,3 +154,6 @@ class Condition:
         self.condition_type = condition_type
         self.condition_operator = condition_operator
         self.condition_value = condition_value
+
+    def __str__(self):
+        return self.condition_type + " " + self.condition_operator + " " + str(self.condition_value)
