@@ -59,12 +59,16 @@ def query_builder(request):
             file = request.FILES["file"]
             file_name = file.name
             query_model.file_name = file_name
+            save_file(file)
+            file_content = stringify_file(file)
 
             query_model.save()
 
             print(convert_to_json(username, query_model.id, creation_date, start_date_time, end_date_time,
                                   stations, conditions, measurement, nominal_volts, circuit_number,
-                                  measurement_identifier, suffix, file_name, "r", stringify_file(file)))
+                                  measurement_identifier, suffix, file_name, "r", file_content))
+
+            delete_file(file)
 
             return HttpResponseRedirect('/query-result/')
     else:
@@ -82,6 +86,16 @@ def stringify_file(file_path):
 
     return data
 
+
+def save_file(file_path):
+    destination = open(file_path.name, "wb")
+    for chunk in file_path.chunks():
+        destination.write(chunk)
+    destination.close()
+
+
+def delete_file(file_path):
+    os.remove(file_path.name)
 
 def convert_to_json(user_name, query_id, creation_date, start_date_time, end_date_time,
                     stations, conditions, measurement, nominal_volts, circuit_number,
