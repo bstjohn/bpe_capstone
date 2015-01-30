@@ -58,6 +58,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'info',
     'dashboard',
+    'queryBuilder',
 )
 
 MIDDLEWARE_CLASSES = (
