@@ -58,3 +58,6 @@ target/
 
 #SQL
 .sqlite3
+# Ignore emacs temporary files.
+*~
+[#]*[#]
