@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from dashboard.models import Dashboard
-from queryBuilder.models import Query
+from query.models import Query
 
 
 class DashboardAdmin(admin.ModelAdmin):

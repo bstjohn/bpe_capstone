@@ -2,8 +2,8 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.forms import formset_factory
-from queryBuilder.forms import QueryForm, ConditionForm
-from queryBuilder.models import Query
+from query.forms import QueryForm, ConditionForm
+from query.models import Query
 
 import datetime
 import time
@@ -81,7 +81,7 @@ def query_builder(request):
         form = QueryForm()
 
     context = {'username': username, 'form': form, 'formset': condition_form_set}
-    return render(request, 'queryBuilder/query-builder.html', context)
+    return render(request, 'query/query-builder.html', context)
 
 
 def stringify_file(file_path):
