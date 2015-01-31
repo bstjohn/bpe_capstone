@@ -28,6 +28,7 @@ def query_builder(request):
         form = QueryForm(request.POST, request.FILES)
         condition_form = condition_form_set(request.POST)
         if form.is_valid() and condition_form.is_valid():
+            # query_model.owner = request.user
             query_model.query_name = form.cleaned_data['query_name']
             start_date = form.cleaned_data['start_date']
             start_time = form.cleaned_data['start_time']
@@ -38,23 +39,29 @@ def query_builder(request):
             end_date_time = datetime.datetime.combine(end_date, end_time)
             query_model.end_date_time = end_date_time
             stations = form.cleaned_data['stations']
+            query_model.set_stations(stations)
             measurement = form.cleaned_data['measurement']
+            query_model.signal_measurement = measurement
             nominal_volts = form.cleaned_data['nominal_volts']
+            query_model.signal_nominal_volts = nominal_volts
             circuit_number = form.cleaned_data['circuit_number']
+            query_model.signal_circuit_number = circuit_number
             measurement_identifier = form.cleaned_data['measurement_identifier']
+            query_model.signal_measurement_identifier = measurement_identifier
             suffix = form.cleaned_data['suffix']
-            conditions = []
+            query_model.signal_suffix = suffix
             condition_type = form.cleaned_data['condition_type']
             condition_operator = form.cleaned_data['condition_operator']
             condition_value = form.cleaned_data['condition_value']
             primary_condition = Condition(condition_type, condition_operator, condition_value)
-            conditions.append(primary_condition)
+            conditions = [primary_condition]
 
             for condition_field in condition_form:
                 condition = Condition(condition_field.cleaned_data['condition_type'],
                                       condition_field.cleaned_data['condition_operator'],
                                       condition_field.cleaned_data['condition_value'])
-                conditions.append(condition)
+                if condition.condition_value is not None:
+                    conditions.append(condition)
 
             file = request.FILES["file"]
             file_name = file.name
