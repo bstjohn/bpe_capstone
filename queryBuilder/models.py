@@ -7,7 +7,7 @@ import json
 # Query model holding data from built queries
 class Query(models.Model):
     # owner = models.OneToOneField(User)
-    # owner = models.ForeignKey(User, editable=False)
+    owner = models.ForeignKey(User, related_name="owners_query")
     user_name = models.CharField(max_length=24)
     create_date_time = models.DateTimeField('date created')
     query_name = models.CharField(max_length=100)
@@ -21,13 +21,6 @@ class Query(models.Model):
     signal_suffix = models.CharField(max_length=24)
     conditions = models.CharField(max_length=1024)
     file_name = models.CharField(max_length=108, default="n/a")
-
-    # def save(self, *args, **kwargs):
-    #     kwargs['commit'] = False
-    #     obj = super(Query, self).save(*args, **kwargs)
-    #     if self.request:
-    #         obj.owner = self.request.user
-    #     obj.save()
 
     # Set stations to a string from a json object
     def set_stations(self, stations):

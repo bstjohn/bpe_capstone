@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Query',
             fields=[
-                ('id', models.AutoField(auto_created=True, serialize=False, verbose_name='ID', primary_key=True)),
+                ('id', models.AutoField(verbose_name='ID', primary_key=True, serialize=False, auto_created=True)),
                 ('user_name', models.CharField(max_length=24)),
                 ('create_date_time', models.DateTimeField(verbose_name='date created')),
                 ('query_name', models.CharField(max_length=100)),
@@ -28,8 +28,8 @@ class Migration(migrations.Migration):
                 ('signal_measurement_identifier', models.CharField(max_length=24)),
                 ('signal_suffix', models.CharField(max_length=24)),
                 ('conditions', models.CharField(max_length=1024)),
-                ('file_name', models.CharField(default='n/a', max_length=108)),
-                ('owner', models.ForeignKey(editable=False, to=settings.AUTH_USER_MODEL)),
+                ('file_name', models.CharField(max_length=108, default='n/a')),
+                ('owner', models.ForeignKey(to=settings.AUTH_USER_MODEL, related_name='owners_query')),
             ],
             options={
             },

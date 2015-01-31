@@ -28,7 +28,7 @@ def query_builder(request):
         form = QueryForm(request.POST, request.FILES)
         condition_form = condition_form_set(request.POST)
         if form.is_valid() and condition_form.is_valid():
-            # query_model.owner = request.user
+            query_model.owner = request.user
             query_model.query_name = form.cleaned_data['query_name']
             start_date = form.cleaned_data['start_date']
             start_time = form.cleaned_data['start_time']
@@ -68,7 +68,6 @@ def query_builder(request):
             query_model.file_name = file_name
             save_file(file)
             file_content = stringify_file(file)
-
             query_model.save()
 
             print(convert_to_json(username, query_model.id, creation_date, start_date_time, end_date_time,
@@ -108,7 +107,6 @@ def delete_file(file_path):
 def convert_to_json(user_name, query_id, creation_date, start_date_time, end_date_time,
                     stations, conditions, measurement, nominal_volts, circuit_number,
                     measurement_identifier, suffix, file_name, file_type, file_content):
-
     voltage_conditions = []
     current_conditions = []
     frequency_conditions = []
