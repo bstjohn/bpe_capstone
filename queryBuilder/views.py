@@ -4,7 +4,6 @@ from django.http import HttpResponseRedirect
 from django.forms import formset_factory
 from queryBuilder.forms import QueryForm, ConditionForm
 from queryBuilder.models import Query
-from enum import Enum
 
 import datetime
 import time
@@ -15,7 +14,7 @@ import os
 # Builds a query given user input
 @login_required
 def query_builder(request):
-    condition_form_set = formset_factory(ConditionForm, extra=2, max_num=2)
+    condition_form_set = formset_factory(ConditionForm, extra=1)
     username = None
     creation_date = None
     query_model = Query()
@@ -81,7 +80,7 @@ def query_builder(request):
 
 def stringify_file(file_path):
     data = ""
-    with open(file_path.name, "rb") as file:
+    with open(file_path.name, "rb"):
         for chunk in file_path.chunks():
             data += chunk.decode(encoding='UTF-8').replace('\r\n', '')
 

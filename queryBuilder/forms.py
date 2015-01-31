@@ -3,8 +3,10 @@ from django.forms.widgets import SplitDateTimeWidget, SelectMultiple, TimeInput,
 
 
 STATION_CHOICES = (('station1', 'Station1'),
-                   ('station1', 'Station2'),
-                   ('station3', 'Station3'))
+                   ('station2', 'Station2'),
+                   ('station3', 'Station3'),
+                   ('station4', 'Station4'),
+                   ('station5', 'Station5'))
 
 CONDITION_TYPES = (('voltage', 'Voltage'),
                    ('current', 'Current'),
@@ -17,21 +19,34 @@ CONDITION_OPERATORS = (('==', '=='),
                        ('>', '>'),
                        ('>=', '>='))
 
-MEASUREMENTS = (('b', 'B'),
-                ('l', 'L'),
-                ('d', 'D'),
-                ('a', 'A'),
-                ('t', 'T'),
-                ('g', 'G'))
+MEASUREMENTS = (('b', 'B - Bus Side Phasor'),
+                ('l', 'L - Line Side Phasor'),
+                ('d', 'D - Digital/Status (1 or 0)'),
+                ('a', 'A - Analog'),
+                ('t', 'T - Phasor on Transformer'),
+                ('g', 'G - Phasor on Generator'))
 
-SUFFIX_IDENTIFIERS = (('A', 'Polar Phasor Angle'),
-                      ('M', 'Polar Phasor Magnitude'),
-                      ('R', 'Rectangular Phasor Real'),
-                      ('I', 'Rectangular Phasor Imaginary'),
-                      ('F', 'Frequencry'),
-                      ('R', 'Rate of Change of Frequency'))
+SUFFIX_IDENTIFIERS = (('A', 'A - Polar Phasor Angle'),
+                      ('M', 'M - Polar Phasor Magnitude'),
+                      ('R', 'R - Rectangular Phasor Real'),
+                      ('I', 'I - Rectangular Phasor Imaginary'),
+                      ('F', 'F - Frequency'),
+                      ('R', 'R - df/dt (Freq. Rate of Change)'))
 
-MEASUREMENT_IDENTIFIERS = (('VP', 'Volatage - Positive Sequence'),)
+MEASUREMENT_IDENTIFIERS = (('VP', 'VP - Voltage (Positive Seq.)'),
+                           ('IP', 'IP - Current (Positive Seq.)'),
+                           ('VZ', 'VZ - Voltage (Zero Seq.'),
+                           ('IZ', 'IZ - Current (Zero Seq.'),
+                           ('VN', 'VN - Voltage (Negative Seq.)'),
+                           ('IN', 'IN - Current (Negative Seq.)'),
+                           ('F', 'F - Frequency'),
+                           ('R', 'R - df/dt (Freq. Rate of Change)'),
+                           ('VA', 'VA - Voltage (Phase A)'),
+                           ('VB', 'VB - Voltage (Phase B)'),
+                           ('VC', 'VC - Voltage (Phase C)'),
+                           ('IA', 'IA - Current (Phase A)'),
+                           ('IB', 'IB - Current (Phase B)'),
+                           ('IC', 'IC - Current (Phase C)'))
 
 DATE_FORMAT = '%m/%d/%Y'
 
@@ -62,10 +77,11 @@ class QueryForm(forms.Form):
 
     measurement = forms.CharField(widget=forms.Select(choices=MEASUREMENTS))
     nominal_volts = forms.IntegerField(required=False,
-                                       widget=forms.NumberInput(attrs={'placeholder': 'NomVolts',
+                                       widget=forms.NumberInput(attrs={'placeholder': 'i.e. 500',
                                                                        'max': '999',
                                                                        'min': '0'}))
-    circuit_number = forms.IntegerField(widget=forms.NumberInput(attrs={'max': '9',
+    circuit_number = forms.IntegerField(widget=forms.NumberInput(attrs={'placeholder': 'i.e. 4',
+                                                                        'max': '9',
                                                                         'min': '0'}))
     measurement_identifier = forms.CharField(widget=forms.Select(choices=MEASUREMENT_IDENTIFIERS))
     suffix = forms.CharField(widget=forms.Select(choices=SUFFIX_IDENTIFIERS))

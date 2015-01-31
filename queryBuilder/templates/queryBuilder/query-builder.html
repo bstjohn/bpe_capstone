@@ -26,18 +26,21 @@
         });
     });
 
-    function showMoreClick() {
-        showMoreElement = document.getElementById('conditions-field-set');
-        showMoreButton = document.getElementById('show-more');
-
-        if (showMoreElement.style.display == 'none') {
-            showMoreElement.style.display = 'block';
-            showMoreButton.innerHTML = "Show Less";
-        }
-        else {
-            showMoreElement.style.display = 'none';
-            showMoreButton.innerHTML = "Show More";
-        }
+    function cloneAnother(selector, type) {
+        var newElement = $(selector).clone(true);
+        var total = $('#id_' + type + '-TOTAL_FORMS').val();
+        newElement.find(':input').each(function() {
+            var name = $(this).attr('name').replace('-' + (total-1) + '-','-' + total + '-');
+            var id = 'id_' + name;
+            $(this).attr({'name': name, 'id': id}).val('').removeAttr('checked');
+        });
+        newElement.find('label').each(function() {
+            var newFor = $(this).attr('for').replace('-' + (total-1) + '-','-' + total + '-');
+            $(this).attr('for', newFor);
+        });
+        total++;
+        $('#id_' + type + '-TOTAL_FORMS').val(total);
+        $(selector).after(newElement);
     }
 
 </script>
@@ -47,56 +50,99 @@
 
     {{ form.non_field_errors }}
     <div class="fieldWrapper">
+        <p>
         {{ form.query_name.errors }}
         <label for="{{ form.query_name.id_for_label }}">Name of Your Query: </label>
         {{ form.query_name }}
+        </p>
     </div>
 
     <div class="fieldWrapper">
+        <p>
         {{ form.start_date.errors }}
         <label for="{{ form.start_date.id_for_label }}">Start Date: </label>
         {{ form.start_date }}
         {{ form.start_time.errors }}
         <label for="{{ form.start_time.id_for_label }}">Start Time: </label>
         {{ form.start_time }}
+        </p>
     </div>
 
     <div class="fieldWrapper">
+        <p>
         {{ form.end_date.errors }}
         <label for="{{ form.end_date.id_for_label }}">End Date: </label>
         {{ form.end_date }}
         {{ form.end_time.errors }}
         <label for="{{ form.end_time.id_for_label }}">End Time: </label>
         {{ form.end_time }}
+        </p>
     </div>
 
     <div class="fieldWrapper">
+        <p>
         {{ form.stations.errors }}
         <label for="{{ form.stations.id_for_label }}">Stations: </label>
-        {{ form.stations }}
+        {{ form.stations }} <small>(CTRL + Click or SHIFT + Click to select multiple)</small>
+        </p>
     </div>
 
     <div class="fieldWrapper">
-        {{ form.condition_type.errors }} {{ form.condition_operator.errors }} {{ form.condition_value.errors }}
+        {{ form.condition_value.errors }}
         <label for="{{ form.condition_type.id_for_label }}">Condition: </label>
         {{ form.condition_type }} {{ form.condition_operator }} {{ form.condition_value }}
-        <br><button id="show-more" onclick="showMoreClick()" type="button">Show More</button>
 
     </div>
 
-    <fieldset style="border:none; display: none;" id="conditions-field-set">
+    <fieldset style="border:none;" id="conditions-field-set">
         {{ formset.management_form }}
         {{ formset.non_form_errors }}
-        {% for form in formset %}
-        <div class="fieldWrapper">
-            {{ form.condition_type.errors }} {{ form.condition_operator.errors }} {{ form.condition_value.errors }}
-            {{ form.condition_type }} {{ form.condition_operator }} {{ form.condition_value }}
-        </div>
+        {% for form in formset.forms %}
+            <div  class="fieldWrapper formSet">
+                {{ form.condition_value.errors }}
+                <label for="{{ form.id_for_label }}">Additional Condition: </label>
+                {{ form.condition_type }} {{ form.condition_operator }} {{ form.condition_value }} (Optional)
+            </div>
         {% endfor %}
+
+
+        <input type="button" value="Add Another" id="add_another">
+        <script>
+            $('#add_another').click(function() {
+                cloneAnother('div.formSet:last', 'form');
+            });
+        </script>
     </fieldset>
 
-    <div class="fieldWrapper">
-        {{ form.measurement }} {{ form.nominal_volts }} {{ form.circuit_number }} {{ form.measurement_identifier }} {{ form.suffix }}
+    <div class="fieldWrapper" title="Signal">
+        <fieldset>
+            Signal Definition
+            <p>
+            <label for="{{ form.measurement.id_for_label }}">Measurement: </label>
+            {{ form.measurement }}
+            </p>
+
+            <p>
+            <label for="{{ form.nominal_volts.id_for_label }}">Nominal Volts: </label>
+            {{ form.nominal_volts }}
+            </p>
+
+            <p>
+            <label for="{{ form.circuit_number.id_for_label }}">Circuit Number: </label>
+            {{ form.circuit_number }}
+            </p>
+
+            <p>
+            <label for="{{ form.measurement_identifier.id_for_label }}">Measurement Identifier: </label>
+            {{ form.measurement_identifier }}
+            </p>
+
+            <p>
+            <label for="{{ form.suffix.id_for_label }}">Suffix: </label>
+            {{ form.suffix }}
+            </p>
+
+        </fieldset>
     </div>
 
     <div class="fieldWrapper">
