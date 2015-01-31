@@ -25,4 +25,6 @@
 <p style="color:red">The username or password you entered is incorrect. Please try again.</p>
 {% endif %}
 
+<p>Forgot your password? <a href="/resetpassword/">Reset it!</a></p>
+
 {% endblock %}
