@@ -14,6 +14,9 @@ import time
 host = 'localhost'
 port = 1701
 
+# Set the default time limit
+timeLimit = 5*60
+
 class QueryEngine(threading.Thread):
     "Class that handles all of the queries to the BPA engine"
 
@@ -30,10 +33,19 @@ class QueryEngine(threading.Thread):
         "Start the server task."
         while True:
             # Get the next query from the queue.
-            query = self.queue.get(True, None)
+            try:
+                query = self.queue.get(True, timeLimit)
 
-            # Process the query.
-            print "Got query #{0}.".format(query['query']['id'])
+            # Query the BPA server if wait time exceeded.
+            except Queue.Empty:
+                print "Query the BPA server."
 
-            # Mark the current item as complete.
-            self.queue.task_done()
+            else:
+                # Process the query.
+                try:
+                    print "Got query #{0}.".format(query['query']['id'])
+                except KeyError:
+                    print "Invalid query in the queue."
+
+                # Mark the current item as complete.
+                self.queue.task_done()
