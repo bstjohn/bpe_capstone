@@ -62,6 +62,10 @@ def query_builder(request):
                                       condition_field.cleaned_data['condition_value'])
                 if condition.condition_value is not None:
                     conditions.append(condition)
+            condition_strings = []
+            for condition in conditions:
+                condition_strings.append(condition.__str__())
+            query_model.set_conditions(condition_strings)
 
             file = request.FILES["file"]
             file_name = file.name
