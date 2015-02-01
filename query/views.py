@@ -76,7 +76,7 @@ def query_builder(request):
 
             delete_file(file)
 
-            return HttpResponseRedirect('/query-result/')
+            return HttpResponseRedirect('/query/query-result/')
     else:
         form = QueryForm()
 
