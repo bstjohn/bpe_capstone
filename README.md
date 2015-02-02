@@ -1,15 +1,16 @@
-<style>
+```html
 body {
     background: #ffffff url("BPA-Logo-color.jpg") no-repeat right top;
     margin-right: 200px;
 }
-</style>
+```
 
 # Bonneville Power Administration Capstone Project
 ## Fa/Wi '14-'15 - Portland State University, Team C
 
 ### License Infromation
 BPA Query Builder website interface
+
 Copyright (C) 2015  name of author
 
 This program is free software; you can redistribute it and/or
