@@ -1,13 +1,10 @@
-<!DOCTYPE html>
-<html>
-<head>
 <style>
 body {
-    background: #ffffff url("img_tree.png") no-repeat right top;
+    background: #ffffff url("BPA-Logo-color.jpg") no-repeat right top;
     margin-right: 200px;
 }
 </style>
-</head>
+
 # Bonneville Power Administration Capstone Project
 ## Fa/Wi '14-'15 - Portland State University, Team C
 
