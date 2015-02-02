@@ -8,7 +8,8 @@ urlpatterns = patterns('',
                        url(r'^$', 'django.contrib.auth.views.login'),
                        url(r'^login/$', 'django.contrib.auth.views.login'),
                        url(r'^logout/$', 'django.contrib.auth.views.logout'),
-                       url(r'^info/', include('info.urls', namespace="info")),
                        url(r'^admin/', include(admin.site.urls)),
-                       url(r'^dashboard/', include('dashboard.urls', namespace="dashboard"))
+                       url(r'^info/', include('info.urls', namespace="info")),
+                       url(r'^dashboard/', include('dashboard.urls', namespace="dashboard")),
+                       url(r'^query/', include('query.urls', namespace="query")),
 )
