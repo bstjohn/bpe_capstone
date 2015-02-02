@@ -1,4 +1,6 @@
-<body background="BPA-Logo-color.jpg" bgproperties="fixed">
+background-image: url(BPA-Logo-color.jpg)
+background-position: right top
+background-repeat: no-repeat
 
 # Bonneville Power Administration Capstone Project
 ## Fa/Wi '14-'15 - Portland State University, Team C
