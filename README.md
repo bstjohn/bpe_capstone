@@ -1,6 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
 body {
-    background: #ffffff url("BPA-Logo-color.jpg") no-repeat right top;
+    background: #ffffff url("img_tree.png") no-repeat right top;
+    margin-right: 200px;
 }
+</style>
+</head>
 # Bonneville Power Administration Capstone Project
 ## Fa/Wi '14-'15 - Portland State University, Team C
 
@@ -55,9 +62,15 @@ Features of this project include
 
 ### Contributors
 Project Manager: Garrison Jensen
+
 User Needs Analyst: Shu Ping Chu
+
 Point of Contact: Matei Mitaru
+
 QA & Testing: Eric Olson
+
 Development Operations: Dan Wilson
+
 Development & Design: Brady St. John, Dan Wilson, Eric Olson, Garrison Jensen, Matei Mitaru, Shu Ping Chu, Zaynab Alattar
+
 Documentation: Zaynab Alattar
