@@ -2,7 +2,7 @@
 ## Fa/Wi '14-'15 - Portland State University, Team C
 
 ### License Infromation
-This project is protected by the GPL 2.0 license.
+This project is protected by the GPL 2.0 license. For full license information, see LICENSE file.
 
 ### Overview
 Our goal in this Capstone project is to create a front-end web interface for the Bonneville Power Administration (BPA). This interface allows users to easily create and send queries to the BPA's database. Some features include a status meter, savable queries, and a dashboard so that users are able to submit multiple queries at once and monitor the jobs' status.
