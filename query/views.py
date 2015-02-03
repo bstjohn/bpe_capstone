@@ -91,6 +91,7 @@ def query_builder(request):
 def get_file_type(file_path):
     return file_path.split(".")[-1]
 
+
 def stringify_file(file_path):
     data = ""
     with open(file_path.name, "rb"):

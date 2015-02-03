@@ -135,26 +135,31 @@
         <fieldset>
             Signal Definition
             <p>
+            {{ form.measurement.errors }}
             <label for="{{ form.measurement.id_for_label }}">Measurement: </label>
             {{ form.measurement }}
             </p>
 
             <p>
+            {{ form.nominal_volts.errors }}
             <label for="{{ form.nominal_volts.id_for_label }}">Nominal Volts: </label>
             {{ form.nominal_volts }}
             </p>
 
             <p>
+            {{ form.circuit_number.errors }}
             <label for="{{ form.circuit_number.id_for_label }}">Circuit Number: </label>
             {{ form.circuit_number }}
             </p>
 
             <p>
+            {{ form.measurement_identifier.errors }}
             <label for="{{ form.measurement_identifier.id_for_label }}">Measurement Identifier: </label>
             {{ form.measurement_identifier }}
             </p>
 
             <p>
+            {{ form.suffix.errors }}
             <label for="{{ form.suffix.id_for_label }}">Suffix: </label>
             {{ form.suffix }}
             </p>

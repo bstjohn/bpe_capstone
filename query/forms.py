@@ -76,8 +76,7 @@ class QueryForm(forms.Form):
     condition_value = forms.IntegerField()
 
     measurement = forms.CharField(widget=forms.Select(choices=MEASUREMENTS))
-    nominal_volts = forms.IntegerField(required=False,
-                                       widget=forms.NumberInput(attrs={'placeholder': 'i.e. 500',
+    nominal_volts = forms.IntegerField(widget=forms.NumberInput(attrs={'placeholder': 'i.e. 500',
                                                                        'max': '999',
                                                                        'min': '0'}))
     circuit_number = forms.IntegerField(widget=forms.NumberInput(attrs={'placeholder': 'i.e. 4',
