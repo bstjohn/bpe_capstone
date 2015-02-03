@@ -12,6 +12,8 @@ from django.template import Context, RequestContext, loader
 from django.template.loader import get_template    # get_template fun
 from django.views.generic.base import TemplateView # how display template
 from forms import MyRegistrationForm               # import from /forms.py
+from django.contrib.auth.models import User 
+from forms import PersonForm
 
 def register_user(request):
 
@@ -20,6 +22,9 @@ def register_user(request):
 
         if form.is_valid():
 	   save_it = form.save(commit=False)
+           save_it.save()
+           form = PersonForm(request.POST)
+           save_it = form.save(commit=False)
            save_it.save()
            # here we can add email to verfiy!!!!
            subject = 'Thank you for register as BPA user from BPA project'

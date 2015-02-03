@@ -5,16 +5,19 @@ from django.utils import timezone
 
 # Create your models here.
 class Person(models.Model):
-    registration_code = models.CharField(max_length=24)
+    register_code = models.CharField(max_length=24)
+    username = models.CharField(max_length=24)
+    email = models.EmailField(max_length=100)
     first_name = models.CharField(max_length=24)
     last_name = models.CharField(max_length=24)
-    user_name = models.CharField(max_length=24)
-    user_password = models.CharField(max_length=24)
-    email_addr = models.CharField(max_length=100)
-    create_date = models.DateTimeField('date created')
+    create_date = models.DateTimeField('create_date', auto_now=True)
     
+    # make formate looks nicer
+    # ex: [<Person: person 1 >, <Person: person 2 >, <Person: person 3 >]
+    def __unicode__(self):
+	return self.first_name
+
     def __str__(self):
-	return '%s %s %s %s %s %s %s' % (self.registration_code,
-					 self.first_name, self.last_name,  
-                                         self.user_name, self.user_password,
-                                         self.email_addr, self.create_date)
+	return '%s %s %s %s %s %s' % (self.register_code, self.username, 
+                                      self.email, self.first_name, 
+                                      self.last_name, self.create_date)
