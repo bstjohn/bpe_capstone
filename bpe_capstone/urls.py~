@@ -2,6 +2,7 @@ from django.conf.urls import patterns, include, url
 from django.contrib import admin
 
 urlpatterns = patterns('',
+<<<<<<< HEAD
     # Examples:
     # url(r'^$', 'bpe_capstone.views.home', name='home'),
     # url(r'^blog/', include('blog.urls')),
@@ -15,8 +16,20 @@ urlpatterns = patterns('',
     url(r'^registration_success/$', 'registration.views.register_success'),
     url(r'^registration_fail/$', 'registration.views.register_fail'),
 
-    url(r'^resetpassword/$',  'django.contrib.auth.views.password_reset',  {'post_reset_redirect' : 'passwordsent/'}, name='password_reset'),
-    url(r'^resetpassword/passwordsent/$',  'django.contrib.auth.views.password_reset_done', name='password_reset_done'),
-    url(r'^reset/(?P<uidb64>[0-9A-Za-z]+)-(?P<token>.+)/$',  'django.contrib.auth.views.password_reset_confirm', {'post_reset_redirect' : 'reset/done/'}, name='password_reset_confirm'),
+    url(r'^resetpassword/$', 'django.contrib.auth.views.password_reset', {'post_reset_redirect' : 'passwordsent/'}, name='password_reset'),
+    url(r'^resetpassword/passwordsent/$', 'django.contrib.auth.views.password_reset_done', name='password_reset_done'),
+    url(r'^reset/(?P<uidb64>[0-9A-Za-z]+)-(?P<token>.+)/$', 'django.contrib.auth.views.password_reset_confirm', {'post_reset_redirect' : 'reset/done/'}, name='password_reset_confirm'),
     url(r'^reset/done/$', 'django.contrib.auth.views.password_reset_complete', name='password_reset_complete')
+=======
+                       # Examples:
+                       # url(r'^$', 'bpe_capstone.views.home', name='home'),
+                       # url(r'^blog/', include('blog.urls')),
+                       url(r'^$', 'django.contrib.auth.views.login'),
+                       url(r'^login/$', 'django.contrib.auth.views.login'),
+                       url(r'^logout/$', 'django.contrib.auth.views.logout'),
+                       url(r'^admin/', include(admin.site.urls)),
+                       url(r'^info/', include('info.urls', namespace="info")),
+                       url(r'^dashboard/', include('dashboard.urls', namespace="dashboard")),
+                       url(r'^query/', include('query.urls', namespace="query")),
+>>>>>>> 98d10aca85b4b7edd177717663fdc1a463f5a511
 )
