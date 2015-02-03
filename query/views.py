@@ -76,7 +76,7 @@ def query_builder(request):
 
             print(convert_to_json(username, query_model.id, creation_date, start_date_time, end_date_time,
                                   stations, conditions, measurement, nominal_volts, circuit_number,
-                                  measurement_identifier, suffix, file_name, "r", file_content))
+                                  measurement_identifier, suffix, file_name, get_file_type(file_name), file_content))
 
             delete_file(file)
 
@@ -87,6 +87,9 @@ def query_builder(request):
     context = {'username': username, 'form': form, 'formset': condition_form_set}
     return render(request, 'query/query-builder.html', context)
 
+
+def get_file_type(file_path):
+    return file_path.split(".")[-1]
 
 def stringify_file(file_path):
     data = ""
