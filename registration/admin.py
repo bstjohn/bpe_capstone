@@ -9,7 +9,7 @@ class PersonRegistration(admin.ModelAdmin):
     fieldsets = [
         ('Enter Registration Code', {'fields': ['register_code']}),
         ('User Information', {'fields': ['username', 'email', 'first_name', 'last_name', ]}),
-                ]
+    ]
     list_display = ('register_code', 'username', 'email', 'first_name', 'last_name')
 
     def get_readonly_fields(self, request, obj=None):
@@ -17,4 +17,6 @@ class PersonRegistration(admin.ModelAdmin):
             return ['username']
         else:
             return []
+
+
 admin.site.register(Person, PersonRegistration)

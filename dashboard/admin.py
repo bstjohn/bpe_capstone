@@ -41,5 +41,6 @@ class QueryAdmin(admin.ModelAdmin):
             return False
         return True
 
+
 admin.site.register(Dashboard, DashboardAdmin)
 admin.site.register(Query, QueryAdmin)

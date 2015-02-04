@@ -1,6 +1,6 @@
 #!/usr/bin/python2.7
 #
-#  File:    QueryDaemon.py
+# File:    QueryDaemon.py
 #  Author:  Daniel E. Wilson
 #
 #  This is the Server daemon that holds performs the actual queries
@@ -14,12 +14,13 @@ import select
 import SocketServer
 import QueryClient
 
+
 class QueryHandler(SocketServer.StreamRequestHandler):
     "QueryHandler class for the query daemon."
 
     def readQuery(self):
         "Read the query from the socket."
-        response=''
+        response = ''
         while True:
             line = self.rfile.readline()
             if not line.strip():
@@ -49,8 +50,7 @@ class QueryHandler(SocketServer.StreamRequestHandler):
         self.wfile.write('\n\n')
 
 # Start the server.
-if __name__=='__main__':
-
+if __name__ == '__main__':
     # Set the hostname and port numbers.
     host = 'localhost'
     port = 4242
@@ -60,7 +60,7 @@ if __name__=='__main__':
     queryEngine.start()
 
     # Create and run the server.
-    server = SocketServer.TCPServer((host,port), QueryHandler)
+    server = SocketServer.TCPServer((host, port), QueryHandler)
     server.serve_forever()
 
     # End the program.
