@@ -12,6 +12,11 @@ import json
 import os
 
 
+@login_required
+def query_index(request):
+    return render(request, 'query/query.html')
+
+
 # Builds a query given user input
 @login_required
 def query_builder(request):
