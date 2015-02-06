@@ -46,16 +46,6 @@ def query_builder(request):
             query_model.end_date_time = end_date_time
             stations = form.cleaned_data['stations']
             query_model.set_stations(stations)
-            measurement = form.cleaned_data['measurement']
-            query_model.signal_measurement = measurement
-            nominal_volts = form.cleaned_data['nominal_volts']
-            query_model.signal_nominal_volts = nominal_volts
-            circuit_number = form.cleaned_data['circuit_number']
-            query_model.signal_circuit_number = circuit_number
-            measurement_identifier = form.cleaned_data['measurement_identifier']
-            query_model.signal_measurement_identifier = measurement_identifier
-            suffix = form.cleaned_data['suffix']
-            query_model.signal_suffix = suffix
             condition_type = form.cleaned_data['condition_type']
             condition_operator = form.cleaned_data['condition_operator']
             condition_value = form.cleaned_data['condition_value']
@@ -76,15 +66,10 @@ def query_builder(request):
             file = request.FILES["file"]
             file_name = file.name
             query_model.file_name = file_name
-            save_file(file)
-            file_content = stringify_file(file)
             query_model.save()
 
-            print(convert_to_json(username, query_model.id, creation_date, start_date_time, end_date_time,
-                                  stations, conditions, measurement, nominal_volts, circuit_number,
-                                  measurement_identifier, suffix, file_name, get_file_type(file_name), file_content))
-
-            delete_file(file)
+            print(convert_to_json(query_model.id, creation_date, start_date_time, end_date_time,
+                                  stations, conditions, file_name))
 
             return HttpResponseRedirect('/query/query-result/')
     else:
@@ -118,9 +103,8 @@ def delete_file(file_path):
     os.remove(file_path.name)
 
 
-def convert_to_json(user_name, query_id, creation_date, start_date_time, end_date_time,
-                    stations, conditions, measurement, nominal_volts, circuit_number,
-                    measurement_identifier, suffix, file_name, file_type, file_content):
+def convert_to_json(query_id, creation_date, start_date_time, end_date_time,
+                    stations, conditions, file_name):
     voltage_conditions = []
     current_conditions = []
     frequency_conditions = []
@@ -141,26 +125,8 @@ def convert_to_json(user_name, query_id, creation_date, start_date_time, end_dat
             "start": start_date_time.__str__(),
             "end": end_date_time.__str__(),
             "stations": stations,
-            "analysis": {
-                "file": file_name,
-                "type": file_type,
-                "content": file_content
-            },
-            "conditions": {
-                "voltage": voltage_conditions,
-                "current": current_conditions,
-                "freq": frequency_conditions
-            },
-            "signal": {
-                "measurement": measurement.__str__(),
-                "nomvolts": nominal_volts,
-                "circuit": circuit_number,
-                "identifier": measurement_identifier.__str__(),
-                "suffix": suffix.__str__()
-            },
-            "user": {
-                "name": user_name.__str__()
-            }
+            "analysis_file": file_name,
+            "signal_id": ""
         }
     })
 

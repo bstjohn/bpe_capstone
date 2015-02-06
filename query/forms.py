@@ -75,16 +75,6 @@ class QueryForm(forms.Form):
     condition_operator = forms.CharField(widget=forms.Select(choices=CONDITION_OPERATORS))
     condition_value = forms.IntegerField()
 
-    measurement = forms.CharField(widget=forms.Select(choices=MEASUREMENTS))
-    nominal_volts = forms.IntegerField(widget=forms.NumberInput(attrs={'placeholder': 'i.e. 500',
-                                                                       'max': '999',
-                                                                       'min': '0'}))
-    circuit_number = forms.IntegerField(widget=forms.NumberInput(attrs={'placeholder': 'i.e. 4',
-                                                                        'max': '9',
-                                                                        'min': '0'}))
-    measurement_identifier = forms.CharField(widget=forms.Select(choices=MEASUREMENT_IDENTIFIERS))
-    suffix = forms.CharField(widget=forms.Select(choices=SUFFIX_IDENTIFIERS))
-
     file = forms.FileField()
 
 
