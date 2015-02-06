@@ -1,10 +1,10 @@
 from django import forms
-from django.forms.widgets import SplitDateTimeWidget, SelectMultiple, TimeInput, DateInput
+from django.forms.widgets import TimeInput, DateInput
 
 
-STATION_CHOICES = (('station1', 'Station1'),
-                   ('station2', 'Station2'),
-                   ('station3', 'Station3'),
+STATION_CHOICES = (('0x84e1', '[ALBN-500-B1-SA] [0x84e1]       Albion           500V 1 SA-B'),
+                   ('0x8547', '[ALCN-500-B1-SA] [0x8547]       Alicante         500V 1 SA-B'),
+                   ('0x852b', '[ASSS-500-B1-SA] [0x852b]       Assisi           500V 1 SA-B'),
                    ('station4', 'Station4'),
                    ('station5', 'Station5'))
 
@@ -18,35 +18,6 @@ CONDITION_OPERATORS = (('==', '=='),
                        ('<=', '<='),
                        ('>', '>'),
                        ('>=', '>='))
-
-MEASUREMENTS = (('b', 'B - Bus Side Phasor'),
-                ('l', 'L - Line Side Phasor'),
-                ('d', 'D - Digital/Status (1 or 0)'),
-                ('a', 'A - Analog'),
-                ('t', 'T - Phasor on Transformer'),
-                ('g', 'G - Phasor on Generator'))
-
-SUFFIX_IDENTIFIERS = (('A', 'A - Polar Phasor Angle'),
-                      ('M', 'M - Polar Phasor Magnitude'),
-                      ('R', 'R - Rectangular Phasor Real'),
-                      ('I', 'I - Rectangular Phasor Imaginary'),
-                      ('F', 'F - Frequency'),
-                      ('R', 'R - df/dt (Freq. Rate of Change)'))
-
-MEASUREMENT_IDENTIFIERS = (('VP', 'VP - Voltage (Positive Seq.)'),
-                           ('IP', 'IP - Current (Positive Seq.)'),
-                           ('VZ', 'VZ - Voltage (Zero Seq.'),
-                           ('IZ', 'IZ - Current (Zero Seq.'),
-                           ('VN', 'VN - Voltage (Negative Seq.)'),
-                           ('IN', 'IN - Current (Negative Seq.)'),
-                           ('F', 'F - Frequency'),
-                           ('R', 'R - df/dt (Freq. Rate of Change)'),
-                           ('VA', 'VA - Voltage (Phase A)'),
-                           ('VB', 'VB - Voltage (Phase B)'),
-                           ('VC', 'VC - Voltage (Phase C)'),
-                           ('IA', 'IA - Current (Phase A)'),
-                           ('IB', 'IB - Current (Phase B)'),
-                           ('IC', 'IC - Current (Phase C)'))
 
 DATE_FORMAT = '%m/%d/%Y'
 

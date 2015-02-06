@@ -9,7 +9,6 @@ from query.models import Query
 import datetime
 import time
 import json
-import os
 
 
 @login_required
@@ -77,30 +76,6 @@ def query_builder(request):
 
     context = {'username': username, 'form': form, 'formset': condition_form_set}
     return render(request, 'query/query-builder.html', context)
-
-
-def get_file_type(file_path):
-    return file_path.split(".")[-1]
-
-
-def stringify_file(file_path):
-    data = ""
-    with open(file_path.name, "rb"):
-        for chunk in file_path.chunks():
-            data += chunk.decode(encoding='UTF-8').replace('\r\n', '')
-
-    return data
-
-
-def save_file(file_path):
-    destination = open(file_path.name, "wb")
-    for chunk in file_path.chunks():
-        destination.write(chunk)
-    destination.close()
-
-
-def delete_file(file_path):
-    os.remove(file_path.name)
 
 
 def convert_to_json(query_id, creation_date, start_date_time, end_date_time,
