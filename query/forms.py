@@ -24,6 +24,10 @@ DATE_FORMAT = '%m/%d/%Y'
 TIME_FORMAT = '%H:%M'
 
 
+SIGNALS = (('signal1', '<0x84e0-P-01> Phasor  Bus #1     N         Voltage-Pos. Seq    B500NORTH____1VP'),
+           ('signal2', '<0x84e0-P-02> Phasor  Bus #1     N         Voltage-Pos. Seq    B500NORTH____1VA'))
+
+
 # The query form attributes
 class QueryForm(forms.Form):
     query_name = forms.CharField(max_length=100, widget=forms.TextInput(attrs={'placeholder': 'Name'}))
@@ -44,7 +48,7 @@ class QueryForm(forms.Form):
 
     condition_type = forms.CharField(widget=forms.Select(choices=CONDITION_TYPES))
     condition_operator = forms.CharField(widget=forms.Select(choices=CONDITION_OPERATORS))
-    condition_value = forms.IntegerField()
+    condition_value = forms.IntegerField(required=False)
 
     file = forms.FileField()
 
@@ -53,3 +57,33 @@ class ConditionForm(forms.Form):
     condition_type = forms.CharField(required=False, widget=forms.Select(choices=CONDITION_TYPES))
     condition_operator = forms.CharField(required=False, widget=forms.Select(choices=CONDITION_OPERATORS))
     condition_value = forms.IntegerField(required=False, widget=forms.NumberInput(attrs={'style': 'width: 70px;'}))
+
+
+class SignalForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        super(SignalForm, self).__init__(*args, **kwargs)
+        self.fields['signals'] = forms.CharField(
+            widget=forms.SelectMultiple(
+                attrs={'size': '3'},
+                choices=SIGNALS))
+
+    # signals = forms.CharField(widget=forms.SelectMultiple(attrs={'size': '3'}, choices=SIGNALS))
+
+    def update_signals(self, stations, conditions):
+        # SELECT * FROM signals_table s WHERE stations.station1.pmu_id = s.pmu_id
+        #                                  OR stations.station2.pmu_id = s.pmu_id
+        #                                  ...
+        #                                  AND condition.condition1
+        #                                  ...
+        voltage_conditions = []
+        current_conditions = []
+        frequency_conditions = []
+
+        for condition in conditions:
+            condition_type = condition.condition_type
+            if condition_type == "voltage":
+                voltage_conditions.append(condition.__str__())
+            elif condition_type == "current":
+                current_conditions.append(condition.__str__())
+            else:
+                frequency_conditions.append(condition.__str__())

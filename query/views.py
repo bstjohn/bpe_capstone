@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.forms import formset_factory
 
-from query.forms import QueryForm, ConditionForm
+from query.forms import QueryForm, ConditionForm, SignalForm
 from query.models import Query
 
 import datetime
@@ -15,10 +15,13 @@ import json
 def query_index(request):
     return render(request, 'query/query.html')
 
+form_submitted = False
+
 
 # Builds a query given user input
 @login_required
 def query_builder(request):
+    global form_submitted
     condition_form_set = formset_factory(ConditionForm, extra=1)
     username = None
     creation_date = None
@@ -31,8 +34,20 @@ def query_builder(request):
 
     if request.method == 'POST':
         form = QueryForm(request.POST, request.FILES)
+        signal_form = SignalForm(request.POST)
         condition_form = condition_form_set(request.POST)
-        if form.is_valid() and condition_form.is_valid():
+
+        # global form_submitted
+        if signal_form.is_valid() and form_submitted is True and 'send' in request.POST:
+            print(form_submitted.__bool__())
+            # print(convert_to_json(query_model.id, creation_date, start_date_time, end_date_time,
+            #                       stations, conditions, file_name))
+            query_model.save()
+
+            return HttpResponseRedirect('/query/query-result/')
+        elif 'send' in request.POST:
+            return HttpResponseRedirect('/query/query-builder/')
+        if form.is_valid() and condition_form.is_valid() and 'refresh' in request.POST:
             query_model.owner = request.user
             query_model.query_name = form.cleaned_data['query_name']
             start_date = form.cleaned_data['start_date']
@@ -65,16 +80,19 @@ def query_builder(request):
             file = request.FILES["file"]
             file_name = file.name
             query_model.file_name = file_name
-            query_model.save()
 
-            print(convert_to_json(query_model.id, creation_date, start_date_time, end_date_time,
-                                  stations, conditions, file_name))
+            # query_model.save()
+            # global form_submitted
+            form_submitted = True
 
-            return HttpResponseRedirect('/query/query-result/')
+            SignalForm.update_signals(signal_form, stations, conditions)
+
+            return HttpResponseRedirect('/query/query-builder/')
     else:
         form = QueryForm()
+        signal_form = SignalForm()
 
-    context = {'username': username, 'form': form, 'formset': condition_form_set}
+    context = {'username': username, 'form': form, 'signal_form': signal_form, 'formset': condition_form_set}
     return render(request, 'query/query-builder.html', context)
 
 
