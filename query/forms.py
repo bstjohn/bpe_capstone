@@ -114,3 +114,6 @@ class SignalForm(forms.Form):
 
         for signal in signals_array:
             signal_choices += (signal.Signal_ID, signal.__str__())
+
+        if not signals_array:
+            signal_choices += Signal.objects.all()
