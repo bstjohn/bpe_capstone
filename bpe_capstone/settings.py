@@ -20,7 +20,6 @@ import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
 
@@ -34,6 +33,7 @@ TEMPLATE_DEBUG = True
 
 TEMPLATE_DIRS = [os.path.join(BASE_DIR, 'templates'),
                  os.path.join(BASE_DIR, 'templates/user')]
+     
 
 ALLOWED_HOSTS = []
 
@@ -68,6 +68,7 @@ INSTALLED_APPS = (
     'dashboard',
     'query',
     'registration',
+    'results',
 )
 
 MIDDLEWARE_CLASSES = (

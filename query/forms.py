@@ -1,10 +1,10 @@
 from django import forms
-from django.forms.widgets import SplitDateTimeWidget, SelectMultiple, TimeInput, DateInput
+from django.forms.widgets import TimeInput, DateInput
 
 
-STATION_CHOICES = (('station1', 'Station1'),
-                   ('station2', 'Station2'),
-                   ('station3', 'Station3'),
+STATION_CHOICES = (('0x84e1', '[ALBN-500-B1-SA] [0x84e1]       Albion           500V 1 SA-B'),
+                   ('0x8547', '[ALCN-500-B1-SA] [0x8547]       Alicante         500V 1 SA-B'),
+                   ('0x852b', '[ASSS-500-B1-SA] [0x852b]       Assisi           500V 1 SA-B'),
                    ('station4', 'Station4'),
                    ('station5', 'Station5'))
 
@@ -19,38 +19,13 @@ CONDITION_OPERATORS = (('==', '=='),
                        ('>', '>'),
                        ('>=', '>='))
 
-MEASUREMENTS = (('b', 'B - Bus Side Phasor'),
-                ('l', 'L - Line Side Phasor'),
-                ('d', 'D - Digital/Status (1 or 0)'),
-                ('a', 'A - Analog'),
-                ('t', 'T - Phasor on Transformer'),
-                ('g', 'G - Phasor on Generator'))
-
-SUFFIX_IDENTIFIERS = (('A', 'A - Polar Phasor Angle'),
-                      ('M', 'M - Polar Phasor Magnitude'),
-                      ('R', 'R - Rectangular Phasor Real'),
-                      ('I', 'I - Rectangular Phasor Imaginary'),
-                      ('F', 'F - Frequency'),
-                      ('R', 'R - df/dt (Freq. Rate of Change)'))
-
-MEASUREMENT_IDENTIFIERS = (('VP', 'VP - Voltage (Positive Seq.)'),
-                           ('IP', 'IP - Current (Positive Seq.)'),
-                           ('VZ', 'VZ - Voltage (Zero Seq.'),
-                           ('IZ', 'IZ - Current (Zero Seq.'),
-                           ('VN', 'VN - Voltage (Negative Seq.)'),
-                           ('IN', 'IN - Current (Negative Seq.)'),
-                           ('F', 'F - Frequency'),
-                           ('R', 'R - df/dt (Freq. Rate of Change)'),
-                           ('VA', 'VA - Voltage (Phase A)'),
-                           ('VB', 'VB - Voltage (Phase B)'),
-                           ('VC', 'VC - Voltage (Phase C)'),
-                           ('IA', 'IA - Current (Phase A)'),
-                           ('IB', 'IB - Current (Phase B)'),
-                           ('IC', 'IC - Current (Phase C)'))
-
 DATE_FORMAT = '%m/%d/%Y'
 
 TIME_FORMAT = '%H:%M'
+
+
+SIGNALS = (('signal1', '<0x84e0-P-01> Phasor  Bus #1     N         Voltage-Pos. Seq    B500NORTH____1VP'),
+           ('signal2', '<0x84e0-P-02> Phasor  Bus #1     N         Voltage-Pos. Seq    B500NORTH____1VA'))
 
 
 # The query form attributes
@@ -73,17 +48,7 @@ class QueryForm(forms.Form):
 
     condition_type = forms.CharField(widget=forms.Select(choices=CONDITION_TYPES))
     condition_operator = forms.CharField(widget=forms.Select(choices=CONDITION_OPERATORS))
-    condition_value = forms.IntegerField()
-
-    measurement = forms.CharField(widget=forms.Select(choices=MEASUREMENTS))
-    nominal_volts = forms.IntegerField(widget=forms.NumberInput(attrs={'placeholder': 'i.e. 500',
-                                                                       'max': '999',
-                                                                       'min': '0'}))
-    circuit_number = forms.IntegerField(widget=forms.NumberInput(attrs={'placeholder': 'i.e. 4',
-                                                                        'max': '9',
-                                                                        'min': '0'}))
-    measurement_identifier = forms.CharField(widget=forms.Select(choices=MEASUREMENT_IDENTIFIERS))
-    suffix = forms.CharField(widget=forms.Select(choices=SUFFIX_IDENTIFIERS))
+    condition_value = forms.IntegerField(required=False)
 
     file = forms.FileField()
 
@@ -92,3 +57,33 @@ class ConditionForm(forms.Form):
     condition_type = forms.CharField(required=False, widget=forms.Select(choices=CONDITION_TYPES))
     condition_operator = forms.CharField(required=False, widget=forms.Select(choices=CONDITION_OPERATORS))
     condition_value = forms.IntegerField(required=False, widget=forms.NumberInput(attrs={'style': 'width: 70px;'}))
+
+
+class SignalForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        super(SignalForm, self).__init__(*args, **kwargs)
+        self.fields['signals'] = forms.CharField(
+            widget=forms.SelectMultiple(
+                attrs={'size': '3'},
+                choices=SIGNALS))
+
+    # signals = forms.CharField(widget=forms.SelectMultiple(attrs={'size': '3'}, choices=SIGNALS))
+
+    def update_signals(self, stations, conditions):
+        # SELECT * FROM signals_table s WHERE stations.station1.pmu_id = s.pmu_id
+        #                                  OR stations.station2.pmu_id = s.pmu_id
+        #                                  ...
+        #                                  AND condition.condition1
+        #                                  ...
+        voltage_conditions = []
+        current_conditions = []
+        frequency_conditions = []
+
+        for condition in conditions:
+            condition_type = condition.condition_type
+            if condition_type == "voltage":
+                voltage_conditions.append(condition.__str__())
+            elif condition_type == "current":
+                current_conditions.append(condition.__str__())
+            else:
+                frequency_conditions.append(condition.__str__())
