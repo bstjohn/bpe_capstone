@@ -13,4 +13,4 @@ class IndexView(generic.ListView):
 
     def get_queryset(self):
         """Return station list."""
-        return Station.objects
+        return Station.objects.all()
