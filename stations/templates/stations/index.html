@@ -1,3 +1,8 @@
+{% extends "user/base.html" %}
+
+{% block title %}Stations{% endblock %}
+
+{% block content %}
 {% if latest_station_list %}
     <ul>
     {% for station in latest_station_list %}
@@ -7,3 +12,4 @@
 {% else %}
     <p>No stations are available.</p>
 {% endif %}
+{% endblock %}
