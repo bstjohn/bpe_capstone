@@ -44,10 +44,10 @@ class QueryForm(forms.Form):
     end_time = forms.TimeField(widget=TimeInput(attrs={'placeholder': 'HH:MM:SS (24-hour)'},
                                                 format=TIME_FORMAT))
 
-    stations = forms.CharField(widget=forms.SelectMultiple(attrs={'size': '3'}, choices=STATION_CHOICES))
+    stations = forms.CharField(required=False, widget=forms.SelectMultiple(attrs={'size': '3'}, choices=STATION_CHOICES))
 
-    condition_type = forms.CharField(widget=forms.Select(choices=CONDITION_TYPES))
-    condition_operator = forms.CharField(widget=forms.Select(choices=CONDITION_OPERATORS))
+    condition_type = forms.CharField(required=False, widget=forms.Select(choices=CONDITION_TYPES))
+    condition_operator = forms.CharField(required=False, widget=forms.Select(choices=CONDITION_OPERATORS))
     condition_value = forms.IntegerField(required=False)
 
     file = forms.FileField()

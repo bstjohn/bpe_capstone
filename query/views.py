@@ -22,14 +22,11 @@ class Condition:
 
 
 class QueryObject:
-    def __init__(self, model_id, creation_date, start_date_time,
-                 end_date_time, stations, conditions, file_name,
-                 signals):
+    def __init__(self, model_id, start_date_time, end_date_time,
+                 conditions, file_name, signals):
         self.model_id = model_id
-        self.creation_date = creation_date
         self.start_date_time = start_date_time
         self.end_date_time = end_date_time
-        self.stations = stations
         self.conditions = conditions
         self.file_name = file_name
         self.signals = signals
@@ -41,7 +38,7 @@ def query_index(request):
 
 form_submitted = False
 query_model = Query()
-query_object = QueryObject(None, None, None, None, None, None, None, None)
+query_object = QueryObject(None, None, None, None, None, None)
 
 # Builds a query given user input
 @login_required
@@ -110,9 +107,8 @@ def query_builder(request):
             file_name = file.name
             query_model.file_name = file_name
 
-            query_object = QueryObject(None, creation_date, start_date_time,
-                                       end_date_time, stations, conditions,
-                                       file_name, None)
+            query_object = QueryObject(None, start_date_time, end_date_time,
+                                       conditions, file_name, None)
 
             form_submitted = True
 
@@ -129,10 +125,8 @@ def query_builder(request):
 
 def convert_to_json(query_param):
     query_id = query_param.model_id
-    creation_date = query_param.creation_date
     start_date_time = query_param.start_date_time
     end_date_time = query_param.end_date_time
-    stations = query_param.stations
     conditions = query_param.conditions
     file_name = query_param.file_name
     signals = query_param.signals
@@ -153,10 +147,8 @@ def convert_to_json(query_param):
     query = json.dumps({
         "query": {
             "query_id": query_id,
-            "created": creation_date.__str__(),
             "start": start_date_time.__str__(),
             "end": end_date_time.__str__(),
-            "stations": stations,
             "analysis_file": file_name,
             "signal_id": signals
         }
