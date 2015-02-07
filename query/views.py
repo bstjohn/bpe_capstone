@@ -23,7 +23,8 @@ class Condition:
 
 class QueryObject:
     def __init__(self, model_id, creation_date, start_date_time,
-                 end_date_time, stations, conditions, file_name):
+                 end_date_time, stations, conditions, file_name,
+                 signals):
         self.model_id = model_id
         self.creation_date = creation_date
         self.start_date_time = start_date_time
@@ -31,6 +32,7 @@ class QueryObject:
         self.stations = stations
         self.conditions = conditions
         self.file_name = file_name
+        self.signals = signals
 
 
 @login_required
@@ -39,7 +41,7 @@ def query_index(request):
 
 form_submitted = False
 query_model = Query()
-query_object = QueryObject(None, None, None, None, None, None, None)
+query_object = QueryObject(None, None, None, None, None, None, None, None)
 
 # Builds a query given user input
 @login_required
@@ -66,6 +68,7 @@ def query_builder(request):
         if signal_form.is_valid() and form_submitted and 'send' in request.POST:
             query_model.save()
             query_object.model_id = query_model.id
+            query_object.signals = signal_form.cleaned_data['signals']
             print(convert_to_json(query_object))
             form_submitted = False
 
@@ -107,9 +110,9 @@ def query_builder(request):
             file_name = file.name
             query_model.file_name = file_name
 
-            query_object = QueryObject(None, creation_date,
-                                       start_date_time, end_date_time,
-                                       stations, conditions, file_name)
+            query_object = QueryObject(None, creation_date, start_date_time,
+                                       end_date_time, stations, conditions,
+                                       file_name, None)
 
             form_submitted = True
 
@@ -132,6 +135,7 @@ def convert_to_json(query_param):
     stations = query_param.stations
     conditions = query_param.conditions
     file_name = query_param.file_name
+    signals = query_param.signals
 
     voltage_conditions = []
     current_conditions = []
@@ -154,7 +158,7 @@ def convert_to_json(query_param):
             "end": end_date_time.__str__(),
             "stations": stations,
             "analysis_file": file_name,
-            "signal_id": ""
+            "signal_id": signals
         }
     })
 
