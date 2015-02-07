@@ -31,3 +31,10 @@ class Signal(models.Model):
     Signal_Circuit    = models.IntegerField(default=-1)
     Signal_Unit       = models.CharField(max_length=200)
     Signal_Phase      = models.CharField(max_length=200)
+
+    def __str__(self):
+        return '%s %s %s %s %s %s %s %s %s %s %s %s %s' % (self.Signal_ID, self.Signal_PMU_ID, self.Signal_Index,
+                                                           self.Signal_Name_Raw, self.Signal_Name_Short,
+                                                           self.Signal_Name_Group, self.Signal_Name_Long,
+                                                           self.Signal_Type, self.Signal_Asset, self.Signal_Voltage,
+                                                           self.Signal_Circuit, self.Signal_Unit, self.Signal_Phase)

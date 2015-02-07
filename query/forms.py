@@ -1,5 +1,6 @@
 from django import forms
 from django.forms.widgets import TimeInput, DateInput
+from stations.models import Station, Signal
 
 
 STATION_CHOICES = (('0x84e1', '[ALBN-500-B1-SA] [0x84e1]       Albion           500V 1 SA-B'),
@@ -12,7 +13,7 @@ CONDITION_TYPES = (('voltage', 'Voltage'),
                    ('current', 'Current'),
                    ('frequency', 'Frequency'))
 
-CONDITION_OPERATORS = (('==', '=='),
+CONDITION_OPERATORS = (('=', '='),
                        ('!=', '!='),
                        ('<', '<'),
                        ('<=', '<='),
@@ -30,6 +31,7 @@ SIGNALS = (('0x84e0-P-01', '<0x84e0-P-01> Phasor  Bus #1     N         Voltage-P
 
 # The query form attributes
 class QueryForm(forms.Form):
+    station_choices = ()
 
     def __init__(self, *args, **kwargs):
         super(QueryForm).__init__(*args, **kwargs)
@@ -49,7 +51,9 @@ class QueryForm(forms.Form):
     end_time = forms.TimeField(widget=TimeInput(attrs={'placeholder': 'HH:MM:SS (24-hour)'},
                                                 format=TIME_FORMAT))
 
-    stations = forms.CharField(required=False, widget=forms.SelectMultiple(attrs={'size': '3'}, choices=STATION_CHOICES))
+    stations = forms.CharField(required=False,
+                               widget=forms.SelectMultiple(
+                                   attrs={'size': '3'}, choices=station_choices))
 
     condition_type = forms.CharField(required=False, widget=forms.Select(choices=CONDITION_TYPES))
     condition_operator = forms.CharField(required=False, widget=forms.Select(choices=CONDITION_OPERATORS))
@@ -58,7 +62,11 @@ class QueryForm(forms.Form):
     file = forms.FileField()
 
     def update_stations(self):
-        print()
+        global station_choices
+        stations = Station.objects.all()
+        for station in stations:
+            station_choices += (station.PMU_Name_Short.__str__(), station.__str__())
+
 
 class ConditionForm(forms.Form):
     condition_type = forms.CharField(required=False, widget=forms.Select(choices=CONDITION_TYPES))
@@ -67,30 +75,42 @@ class ConditionForm(forms.Form):
 
 
 class SignalForm(forms.Form):
+    signal_choices = ()
+
     def __init__(self, *args, **kwargs):
         super(SignalForm, self).__init__(*args, **kwargs)
         self.fields['signals'] = forms.CharField(
             widget=forms.SelectMultiple(
                 attrs={'size': '3'},
-                choices=SIGNALS))
+                choices=signal_choices))
 
     # signals = forms.CharField(widget=forms.SelectMultiple(attrs={'size': '3'}, choices=SIGNALS))
 
     def update_signals(self, stations, conditions):
-        # SELECT * FROM signals_table s WHERE stations.station1.pmu_id = s.pmu_id
-        #                                  OR stations.station2.pmu_id = s.pmu_id
-        #                                  ...
-        #                                  AND condition.condition1
-        #                                  ...
-        voltage_conditions = []
-        current_conditions = []
-        frequency_conditions = []
+        global signal_choices
+
+        signals_array = []
+        for station in stations:
+            signals_array.append(Signal.objects.filter(Signal_PMU_ID=station.PMU_ID))
 
         for condition in conditions:
             condition_type = condition.condition_type
+            condition_operator = condition.condition_operator
+            condition_value = condition.condition_value
             if condition_type == "voltage":
-                voltage_conditions.append(condition.__str__())
-            elif condition_type == "current":
-                current_conditions.append(condition.__str__())
-            else:
-                frequency_conditions.append(condition.__str__())
+                if condition_operator == "=":
+                    signals_array.append(Signal.objects.filter(Signal_Voltage=condition_value))
+                elif condition_operator == "!=":
+                    signals_array.append(Signal.objects.filter(Signal_Voltage__lte=condition_value,
+                                                               Signal_Voltage__gte=condition_value))
+                elif condition_operator == "<":
+                    signals_array.append(Signal.objects.filter(Signal_Voltage__lt=condition_value))
+                elif condition_operator == "<=":
+                    signals_array.append(Signal.objects.filter(Signal_Voltage__lte=condition_value))
+                elif condition_operator == ">":
+                    signals_array.append(Signal.objects.filter(Signal_Voltage__gt=condition_value))
+                elif condition_operator == ">=":
+                    signals_array.append(Signal.objects.filter(Signal_Voltage__gte=condition_value))
+
+        for signal in signals_array:
+            signal_choices += (signal.Signal_ID, signal.__str__())
