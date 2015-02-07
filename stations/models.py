@@ -3,7 +3,7 @@ from django.db import models
 # Create your models here.
 
 class Station(models.Model):
-    PMU_ID         = models.IntegerField(default=-1)  # "[0x84e1]"
+    PMU_ID         = models.IntegerField(primary_key=True)  # "[0x84e1]"
     PMU_Company    = models.CharField(max_length=200) # "GBPA"
     PMU_Name_Raw   = models.CharField(max_length=200) # "ALBN 500 B1 SA "
     PMU_Name_Short = models.CharField(max_length=200) # "ALBN"
