@@ -1,7 +1,7 @@
 {% if latest_station_list %}
     <ul>
     {% for station in latest_station_list %}
-        <li><a href="/polls/{{ station.PMU_ID }}/">{{ station.PMU_Name_Raw }}</a></li>
+        <li><a href="/polls/{{ station.PMU_ID }}/">{{ station }}</a></li>
     {% endfor %}
     </ul>
 {% else %}
