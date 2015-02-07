@@ -90,7 +90,9 @@ def query_builder(request):
             condition_operator = form.cleaned_data['condition_operator']
             condition_value = form.cleaned_data['condition_value']
             primary_condition = Condition(condition_type, condition_operator, condition_value)
-            conditions = [primary_condition]
+            conditions = []
+            if condition_value is not None:
+                conditions = [primary_condition]
 
             for condition_field in condition_form:
                 condition = Condition(condition_field.cleaned_data['condition_type'],
@@ -119,7 +121,8 @@ def query_builder(request):
         form = QueryForm()
         signal_form = SignalForm()
 
-    context = {'username': username, 'form': form, 'signal_form': signal_form, 'formset': condition_form_set}
+    context = {'username': username, 'form': form, 'signal_form': signal_form, 'formset': condition_form_set,
+               'signals_refreshed': int(form_submitted)}
     return render(request, 'query/query-builder.html', context)
 
 

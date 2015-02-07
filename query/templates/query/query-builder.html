@@ -12,6 +12,17 @@
 <script src="//code.jquery.com/jquery-1.10.2.js"></script>
 <script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
 <script>
+    $(document).ready(function(){
+        var signalsRefreshed = {{ signals_refreshed }};
+        var signalFormWrapper = $('#signal-form-wrapper');
+        if (signalsRefreshed != 0) {
+            signalFormWrapper.show();
+        }
+        else {
+            signalFormWrapper.hide();
+        }
+    });
+
     $(function() {
     $( ".datepicker" ).datepicker({
       changeMonth: true,
@@ -42,7 +53,6 @@
         $('#id_' + type + '-TOTAL_FORMS').val(total);
         $(selector).after(newElement);
     }
-
 </script>
 
 <form action="/query/query-builder/" method="post" enctype=multipart/form-data>
@@ -138,17 +148,18 @@
 
     <br>
     <input class="button" type="reset" value="Reset"/>
-    <input class="button" type="submit" style="width: 120px;" value="Get Signals" name="refresh"/>
+    <input class="button" type="submit" style="width: 120px;" value="Get Signals" id="refresh-signals" name="refresh"/>
 
     {{ signal_form.non_form_errors }}
-    <div class="fieldWrapper">
+    <div class="fieldWrapper" id="signal-form-wrapper">
+        <p style="color: red; font-size: 15px; display: none;">This field is required.</p>
         {{ signal_form.signals.errors }}
         <p><label for="{{ signal_form.signals.id_for_label }}"><b>List of Signals</b></label></p>
         {{ signal_form.signals }}
         <br><small>(CTRL + Click or SHIFT + Click to select multiple)</small>
-    </div>
 
-    <input class="button" type="submit" style="width:100px;" value="Send Query" name="send"/>
+        <input class="button" type="submit" style="width:100px;" value="Send Query" name="send" id="send-query"/>
+    </div>
 </form>
 
 <!--<form action="/query/query-result/" method="post" enctype=multipart/form-data>-->
