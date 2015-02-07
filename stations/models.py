@@ -18,7 +18,7 @@ class Station(models.Model):
 
 
 class Signal(models.Model):
-    Signal_ID         = models.IntegerField(default=-1)
+    Signal_ID         = models.CharField(max_length=200, primary_key=True)
     Signal_PMU_ID     = models.ForeignKey('Station')
     Signal_Index      = models.IntegerField(default=-1)
     Signal_Name_Raw   = models.CharField(max_length=200)
