@@ -13,6 +13,9 @@ class Station(models.Model):
     PMU_Type       = models.CharField(max_length=5)   # "SA",
     PMU_Voltage    = models.IntegerField(default=-1)  # 500
 
+    def __str__(self):
+        return '%s %s %s %s %s %s %s %s %s' % (self.PMU_ID, self.PMU_Company, self.PMU_Name_Raw, self.PMU_Name_Short, self.PMU_Name_Long, self.PMU_Set, self.PMU_Channel, self.PMU_Type, self.PMU_Voltage)
+
 
 class Signal(models.Model):
     Signal_ID         = models.IntegerField(default=-1)
