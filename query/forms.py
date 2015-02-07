@@ -30,6 +30,11 @@ SIGNALS = (('0x84e0-P-01', '<0x84e0-P-01> Phasor  Bus #1     N         Voltage-P
 
 # The query form attributes
 class QueryForm(forms.Form):
+
+    def __init__(self, *args, **kwargs):
+        super(QueryForm).__init__(*args, **kwargs)
+        self.update_stations()
+
     query_name = forms.CharField(max_length=100, widget=forms.TextInput(attrs={'placeholder': 'Name'}))
 
     start_date = forms.DateField(widget=DateInput(attrs={'placeholder': 'mm/dd/yyyy',
@@ -52,6 +57,8 @@ class QueryForm(forms.Form):
 
     file = forms.FileField()
 
+    def update_stations(self):
+        print()
 
 class ConditionForm(forms.Form):
     condition_type = forms.CharField(required=False, widget=forms.Select(choices=CONDITION_TYPES))
