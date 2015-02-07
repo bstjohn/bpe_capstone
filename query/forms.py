@@ -29,13 +29,22 @@ SIGNALS = (('0x84e0-P-01', '<0x84e0-P-01> Phasor  Bus #1     N         Voltage-P
            ('0x84e0-P-02', '<0x84e0-P-02> Phasor  Bus #1     N         Voltage-Pos. Seq    B500NORTH____1VA'))
 
 
+def update_stations():
+    # global station_choices
+    station_choices = ()
+    stations = Station.objects.all()
+    for station in stations:
+        station_choices += (station.PMU_Name_Short.__str__(), station.__str__())
+    return station_choices
+
+
 # The query form attributes
 class QueryForm(forms.Form):
-    station_choices = ()
+    # station_choices = ()
 
-    def __init__(self, *args, **kwargs):
-        super(QueryForm).__init__(*args, **kwargs)
-        self.update_stations()
+    # def __init__(self, *args, **kwargs):
+    #     super(QueryForm).__init__(*args, **kwargs)
+    #     self.update_stations()
 
     query_name = forms.CharField(max_length=100, widget=forms.TextInput(attrs={'placeholder': 'Name'}))
 
@@ -53,19 +62,13 @@ class QueryForm(forms.Form):
 
     stations = forms.CharField(required=False,
                                widget=forms.SelectMultiple(
-                                   attrs={'size': '3'}, choices=station_choices))
+                                   attrs={'size': '3'}, choices=update_stations()))
 
     condition_type = forms.CharField(required=False, widget=forms.Select(choices=CONDITION_TYPES))
     condition_operator = forms.CharField(required=False, widget=forms.Select(choices=CONDITION_OPERATORS))
     condition_value = forms.IntegerField(required=False)
 
     file = forms.FileField()
-
-    def update_stations(self):
-        global station_choices
-        stations = Station.objects.all()
-        for station in stations:
-            station_choices += (station.PMU_Name_Short.__str__(), station.__str__())
 
 
 class ConditionForm(forms.Form):
@@ -74,10 +77,12 @@ class ConditionForm(forms.Form):
     condition_value = forms.IntegerField(required=False, widget=forms.NumberInput(attrs={'style': 'width: 70px;'}))
 
 
-class SignalForm(forms.Form):
-    signal_choices = ()
+signal_choices = ()
 
+
+class SignalForm(forms.Form):
     def __init__(self, *args, **kwargs):
+        global signal_choices
         super(SignalForm, self).__init__(*args, **kwargs)
         self.fields['signals'] = forms.CharField(
             widget=forms.SelectMultiple(

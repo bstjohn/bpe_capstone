@@ -13,7 +13,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Signal',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('id', models.AutoField(verbose_name='ID', auto_created=True, primary_key=True, serialize=False)),
                 ('Signal_ID', models.IntegerField(default=-1)),
                 ('Signal_Index', models.IntegerField(default=-1)),
                 ('Signal_Name_Raw', models.CharField(max_length=200)),
@@ -34,8 +34,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Station',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('PMU_ID', models.IntegerField(default=-1)),
+                ('PMU_ID', models.IntegerField(primary_key=True, serialize=False)),
                 ('PMU_Company', models.CharField(max_length=200)),
                 ('PMU_Name_Raw', models.CharField(max_length=200)),
                 ('PMU_Name_Short', models.CharField(max_length=200)),
