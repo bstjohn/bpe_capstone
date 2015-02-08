@@ -11,5 +11,5 @@ urlpatterns = patterns('',
                        url(r'^admin/', include(admin.site.urls)),
                        url(r'^info/', include('info.urls', namespace="info")),
                        url(r'^dashboard/', include('dashboard.urls', namespace="dashboard")),
-                       url(r'^query-builder/', include('queryBuilder.urls', namespace="queryBuilder")),
+                       url(r'^query/', include('query.urls', namespace="query")),
 )
