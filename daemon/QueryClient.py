@@ -24,6 +24,7 @@ class QueryEngine(threading.Thread):
         threading.Thread.__init__(self, None, self.run)
         self.daemon = True
         self.queue = Queue.Queue(25)
+        self.client = BPAClient(host, port)
 
     def putQuery(self, query):
         "Add the query to the queue."
@@ -38,14 +39,27 @@ class QueryEngine(threading.Thread):
 
             # Query the BPA server if wait time exceeded.
             except Queue.Empty:
-                print "Query the BPA server."
+                currentStatus = self.client.getQueryStatus()
 
             else:
-                # Process the query.
-                try:
-                    print "Got query #{0}.".format(query['query']['id'])
-                except KeyError:
-                    print "Invalid query in the queue."
+                # Submit the query to the BPA server.
+                status, msg, result = self.client.startQuery(query)
+                if status<>0:
+                    print "Query Error #{0}: {1}".format(status, msg)
 
                 # Mark the current item as complete.
                 self.queue.task_done()
+
+class BPAClient:
+    "Class that will handle communication with the BPA database."
+
+    def __init__(self, host, port):
+        pass
+
+    def getQueryStatus(self):
+        "Get the status of all runncing queries from the BPA server."
+        return None
+
+    def startQuery(self, query):
+        "Start a new query on the BPA server."
+        return (0, "Success", {})

@@ -14,6 +14,25 @@ import select
 import SocketServer
 import QueryClient
 
+def allKeysPresent(dictionary, keyList):
+    "Check that all keys are present in the dictionary."
+    result = True
+    for key in keyList:
+        result = result and dictionary.has_key(key)
+    return result
+
+def isValidQuery(query):
+    "Check to see if the query is valid."
+    # Check the query attributes.
+    try:
+        return allKeysPresent(query['query'],
+                              ['query_id', 'Signal_id', 'start', 'end',
+                               'analysisFile'])
+    except KeyError:
+        return False
+
+
+
 class QueryHandler(SocketServer.StreamRequestHandler):
     "QueryHandler class for the query daemon."
 
@@ -37,7 +56,7 @@ class QueryHandler(SocketServer.StreamRequestHandler):
         query = json.loads(request)
 
         # Create response object and queue the query.
-        if query.has_key('query'):
+        if isValidQuery(query):
             queryEngine.putQuery(query)
             a = {'code': 0, 'msg': "SUCCESS"}
         else:

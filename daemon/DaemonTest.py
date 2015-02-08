@@ -19,8 +19,11 @@ port=4242
 s=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 # Create the JSON object.
-a={'id':1, 'file': 'test.txt'}
-query={'query': a}
+query= {'query': {'query_id': 3728,
+                  'Signal_id': ['0x86d1-P-01'],
+                  'start': '2014-10-31 14:00:00',
+                  'end': '2014-10-31 14:30:00',
+                  'analysisFile': '/this/dir/to/foo.r'}}
 
 # Convert to a string.
 queryString = json.dumps(query)
