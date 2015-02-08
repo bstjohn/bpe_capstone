@@ -5,6 +5,7 @@ from django.forms import formset_factory
 
 from query.forms import QueryForm, ConditionForm, SignalForm
 from query.models import Query
+from stations.models import Station
 
 import datetime
 import time
@@ -114,7 +115,12 @@ def query_builder(request):
 
             form_submitted = True
 
-            SignalForm.update_signals(signal_form, stations, conditions)
+            station_objects = []
+            for station in stations:
+                station_queryset = Station.objects.filter(PMU_Name_Short=station)
+                for station_object in station_queryset:
+                    station_objects.append(station_object)
+            SignalForm.update_signals(signal_form, station_objects, conditions)
 
             return HttpResponseRedirect('/query/query-builder/')
     else:

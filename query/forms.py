@@ -62,7 +62,7 @@ class QueryForm(forms.Form):
 
     stations = forms.CharField(required=False,
                                widget=forms.SelectMultiple(
-                                   attrs={'size': '3'}, choices=update_stations()))
+                                   attrs={'size': '3'}, choices=[update_stations()]))
 
     condition_type = forms.CharField(required=False, widget=forms.Select(choices=CONDITION_TYPES))
     condition_operator = forms.CharField(required=False, widget=forms.Select(choices=CONDITION_OPERATORS))
