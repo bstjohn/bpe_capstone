@@ -14,7 +14,7 @@ class Station(models.Model):
     PMU_Voltage    = models.IntegerField(default=-1)  # 500
 
     def __str__(self):
-        return '%s %s %s %s %s %s %s %s %s' % (self.PMU_ID, self.PMU_Company, self.PMU_Name_Raw, self.PMU_Name_Short, self.PMU_Name_Long, self.PMU_Set, self.PMU_Channel, self.PMU_Type, self.PMU_Voltage)
+        return '%s %s %s %s %s %s %s %s %s' % (hex(self.PMU_ID), self.PMU_Company, self.PMU_Name_Raw, self.PMU_Name_Short, self.PMU_Name_Long, self.PMU_Set, self.PMU_Channel, self.PMU_Type, self.PMU_Voltage)
 
 
 class Signal(models.Model):
@@ -33,8 +33,7 @@ class Signal(models.Model):
     Signal_Phase      = models.CharField(max_length=200)
 
     def __str__(self):
-        return '%s %s %s %s %s %s %s %s %s %s %s %s %s' % (self.Signal_ID, self.Signal_PMU_ID, self.Signal_Index,
-                                                           self.Signal_Name_Raw, self.Signal_Name_Short,
-                                                           self.Signal_Name_Group, self.Signal_Name_Long,
+        return '%s %s %s %s %s %s %s %s %s %s %s' % (hex(self.Signal_ID), self.Signal_PMU_ID, self.Signal_Index,
+                                                           self.Signal_Name_Raw, self.Signal_Name_Group,
                                                            self.Signal_Type, self.Signal_Asset, self.Signal_Voltage,
                                                            self.Signal_Circuit, self.Signal_Unit, self.Signal_Phase)

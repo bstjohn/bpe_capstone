@@ -35,6 +35,7 @@ def update_stations():
     stations = Station.objects.all()
     for station in stations:
         station_choices += (station.PMU_Name_Short.__str__(), station.__str__())
+    print(station_choices)
     return station_choices
 
 
@@ -84,15 +85,19 @@ class SignalForm(forms.Form):
     def __init__(self, *args, **kwargs):
         global signal_choices
         super(SignalForm, self).__init__(*args, **kwargs)
+        if not signal_choices:
+            signal_choices += ('None', 'None')
         self.fields['signals'] = forms.CharField(
             widget=forms.SelectMultiple(
                 attrs={'size': '3'},
-                choices=signal_choices))
+                choices=[signal_choices]))
 
-    # signals = forms.CharField(widget=forms.SelectMultiple(attrs={'size': '3'}, choices=SIGNALS))
+    # global signal_choices
+    # signals = forms.CharField(widget=forms.SelectMultiple(attrs={'size': '3'}, choices=[signal_choices]))
 
     def update_signals(self, stations, conditions):
         global signal_choices
+        signal_choices = ()
 
         signals_array = []
         for station in stations:
@@ -121,7 +126,10 @@ class SignalForm(forms.Form):
             for signal in signal_object:
                 signal_choices += (signal.Signal_ID, signal.__str__())
 
+        # No stations were selected
         if not signals_array:
             signal_objects = Signal.objects.all()
+            print(signal_objects)
             for signal in signal_objects:
-                signal_choices += (signal.Signal_ID, signal.__str__())
+                signal_choices += (signal.Signal_ID.__str__(), signal.__str__())
+            print(signal_choices)
