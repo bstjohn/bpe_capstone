@@ -117,8 +117,9 @@ class SignalForm(forms.Form):
                 elif condition_operator == ">=":
                     signals_array.append(Signal.objects.filter(Signal_Voltage__gte=condition_value))
 
-        for signal in signals_array:
-            signal_choices += (signal.Signal_ID, signal.__str__())
+        for signal_object in signals_array:
+            for signal in signal_object:
+                signal_choices += (signal.Signal_ID, signal.__str__())
 
         if not signals_array:
             signal_objects = Signal.objects.all()
