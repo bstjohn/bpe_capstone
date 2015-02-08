@@ -12,18 +12,17 @@ def sendEmailNotification(userName, userEmail):
 	msg = MIMEText(fp.read())
 	fp.close()
 
-	# me == the sender's email address (will need to get an email address from BPA)
-	# you == the recipient's email address
+	# From == the sender's email address 
+	# To == the recipient's email address
 	msg['Subject'] = 'Notification of Query Result'
 	msg['From'] = 'Zaynab'												# CHANGE ME
 	msg['To'] = str(userName)
 
-	# Will need to ask about this
 	# Send the message via our own SMTP server, but don't include the
 	# envelope header.
-	server = smtplib.SMTP('smtp.gmail.com', 587) 						# CHANGE ME
+	server = smtplib.SMTP('smtp.gmail.com', 587)
 	# server.set_debuglevel(1)
 	server.ehlo()
 	server.starttls()
-	server.login('zalattar@pdx.edu', '')								# CHANGE ME
-	server.sendmail('zalattar@pdx.edu', str(userEmail), str(msg))		# CHANGE ME
+	server.login('bpa.psucapstone@gmail.com', 'NicolaTesa')
+	server.sendmail('zalattar@pdx.edu', str(userEmail), str(msg))
