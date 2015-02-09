@@ -49,8 +49,6 @@ def query_builder(request):
     global query_object
     condition_form_set = formset_factory(ConditionForm, extra=1)
     username = None
-    creation_date = None
-    # query_model = Query()
     if request.user.is_authenticated():
         username = request.user.username
         query_model.user_name = username
