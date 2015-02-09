@@ -12,6 +12,7 @@ class PersonRegistration(admin.ModelAdmin):
     ]
     list_display = ('register_code', 'username', 'email', 'first_name', 'last_name')
 
+    # Set username read only, once created, it cannot be changed.
     def get_readonly_fields(self, request, obj=None):
         if obj:
             return ['username']

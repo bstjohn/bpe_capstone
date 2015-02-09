@@ -23,18 +23,20 @@ class MyRegistrationForm(UserCreationForm):
                   'email',
                   'first_name',
                   'last_name')
-
+        
+        # save user form
         def save(self, commit=True):
             user = super(UserCreationForm, self).save(commit=False)
             user.register_code = self.cleaned_data['register_code']
             user.username = self.cleaned_data['username']
             user.password1 = self.cleaned_data['password1']
             user.password2 = self.cleaned_data['password2']
-            user.email = self.cleaned_data['email']  # save email data into the cleaned data
+            user.email = self.cleaned_data['email']  
             user.first_name = self.cleaned_data['first_name']
             user.last_name = self.cleaned_data['last_name']
-
-            if commit:  # if commit == true
+          
+            # if commit == true
+            if commit:  
                 user.save()
 
             return user
