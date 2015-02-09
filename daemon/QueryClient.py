@@ -25,6 +25,7 @@ class QueryEngine(threading.Thread):
         self.daemon = True
         self.queue = Queue.Queue(25)
         self.client = BPAClient(host, port)
+        self.lastHour = None
 
     def putQuery(self, query):
         "Add the query to the queue."
@@ -33,6 +34,10 @@ class QueryEngine(threading.Thread):
     def run(self):
         "Start the server task."
         while True:
+            # Get list of signals after midnight.
+            if self.afterMidnight():
+                signals = self.client.getSignals()
+
             # Get the next query from the queue.
             try:
                 query = self.queue.get(True, timeLimit)
@@ -50,6 +55,20 @@ class QueryEngine(threading.Thread):
                 # Mark the current item as complete.
                 self.queue.task_done()
 
+    def afterMidnight(self):
+        "Check to see if midnight has passed."
+        if self.lastHour == None:
+            now = time.localtime()
+            self.lastHour = now.tm_hour
+            status = False
+        else:
+            now = time.localtime()
+            hour = now.tm_hour
+            status = hour < self.lastHour
+            self.lastHour = hour
+        return status
+
+
 class BPAClient:
     "Class that will handle communication with the BPA database."
 
@@ -63,3 +82,7 @@ class BPAClient:
     def startQuery(self, query):
         "Start a new query on the BPA server."
         return (0, "Success", {})
+
+    def getSignals(self):
+        "Get the signals from the BPA Server."
+        return None
