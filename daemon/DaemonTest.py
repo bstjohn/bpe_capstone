@@ -25,33 +25,33 @@ query= {'query': {'query_id': 3728,
                   'end': '2014-10-31 14:30:00',
                   'analysisFile': '/this/dir/to/foo.r'}}
 
-# Convert to a string.
-queryString = json.dumps(query)
 
 try:
     # Now connect to the server.
     s.connect((host,port))
-    s.sendall(queryString + '\n\n')
+    f = s.makefile('rw', 4096)
+
+    # Send the JSON object to the server.
+    json.dump(query, f)
+    f.write('\n\n')
+    f.flush()
 
     # Get read all of the response.
-    s.setblocking(0)
     response=''
     while True:
-        reading, writing, error = select.select([s],[],[],60)
-        if reading:
-            data = s.recv(1024)
-            if not data:
-                break
-            else:
-                response = response + data
-
+        line = f.readline()
+        if not line.strip():
+            break
+        else:
+            response = response + line
 
     # Show the user what was send and recieved.
     print "Sent: {}".format(repr(query))
     print
-    print "Received: {}".format(repr(response))
+    print "Received: '{}'".format(response.strip())
 
 finally:
+    f.close()
     s.close()
 
 # End the program.
