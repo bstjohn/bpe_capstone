@@ -69,6 +69,7 @@ INSTALLED_APPS = (
     'query',
     'registration',
     'results',
+    'stations',
 )
 
 MIDDLEWARE_CLASSES = (

@@ -2,9 +2,11 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.forms import formset_factory
+from django.utils.datastructures import MultiValueDictKeyError
 
 from query.forms import QueryForm, ConditionForm, SignalForm
 from query.models import Query
+from stations.models import Station
 
 import status_response
 import datetime
@@ -23,15 +25,14 @@ class Condition:
 
 
 class QueryObject:
-    def __init__(self, model_id, creation_date, start_date_time,
-                 end_date_time, stations, conditions, file_name):
+    def __init__(self, model_id, start_date_time, end_date_time,
+                 conditions, file_name, signals):
         self.model_id = model_id
-        self.creation_date = creation_date
         self.start_date_time = start_date_time
         self.end_date_time = end_date_time
-        self.stations = stations
         self.conditions = conditions
         self.file_name = file_name
+        self.signals = signals
 
 
 @login_required
@@ -45,7 +46,7 @@ def query_result(request):
 
 form_submitted = False
 query_model = Query()
-query_object = QueryObject(None, None, None, None, None, None, None)
+query_object = QueryObject(None, None, None, None, None, None)
 
 # Builds a query given user input
 @login_required
@@ -55,8 +56,6 @@ def query_builder(request):
     global query_object
     condition_form_set = formset_factory(ConditionForm, extra=1)
     username = None
-    creation_date = None
-    # query_model = Query()
     if request.user.is_authenticated():
         username = request.user.username
         query_model.user_name = username
@@ -72,6 +71,7 @@ def query_builder(request):
         if signal_form.is_valid() and form_submitted and 'send' in request.POST:
             query_model.save()
             query_object.model_id = query_model.id
+            query_object.signals = signal_form.cleaned_data['signals']
             print(convert_to_json(query_object))
             form_submitted = False
 	    # return results page
@@ -101,7 +101,9 @@ def query_builder(request):
             condition_operator = form.cleaned_data['condition_operator']
             condition_value = form.cleaned_data['condition_value']
             primary_condition = Condition(condition_type, condition_operator, condition_value)
-            conditions = [primary_condition]
+            conditions = []
+            if condition_value is not None:
+                conditions = [primary_condition]
 
             for condition_field in condition_form:
                 condition = Condition(condition_field.cleaned_data['condition_type'],
@@ -114,35 +116,42 @@ def query_builder(request):
                 condition_strings.append(condition.__str__())
             query_model.set_conditions(condition_strings)
 
-            file = request.FILES["file"]
-            file_name = file.name
+            try:
+                file = request.FILES["file"]
+                file_name = file.name
+            except MultiValueDictKeyError:
+                file_name = ""
             query_model.file_name = file_name
 
-            query_object = QueryObject(None, creation_date,
-                                       start_date_time, end_date_time,
-                                       stations, conditions, file_name)
+            query_object = QueryObject(None, start_date_time, end_date_time,
+                                       conditions, file_name, None)
 
             form_submitted = True
 
-            SignalForm.update_signals(signal_form, stations, conditions)
+            station_objects = []
+            for station in stations:
+                station_queryset = Station.objects.filter(PMU_Name_Short=station)
+                for station_object in station_queryset:
+                    station_objects.append(station_object)
+            SignalForm.update_signals(signal_form, station_objects, conditions)
 
             return HttpResponseRedirect('/query/query-builder/')
     else:
         form = QueryForm()
         signal_form = SignalForm()
 
-    context = {'username': username, 'form': form, 'signal_form': signal_form, 'formset': condition_form_set}
+    context = {'username': username, 'form': form, 'signal_form': signal_form, 'formset': condition_form_set,
+               'signals_refreshed': int(form_submitted)}
     return render(request, 'query/query-builder.html', context)
 
 
 def convert_to_json(query_param):
     query_id = query_param.model_id
-    creation_date = query_param.creation_date
     start_date_time = query_param.start_date_time
     end_date_time = query_param.end_date_time
-    stations = query_param.stations
     conditions = query_param.conditions
     file_name = query_param.file_name
+    signals = query_param.signals
 
     voltage_conditions = []
     current_conditions = []
@@ -160,12 +169,10 @@ def convert_to_json(query_param):
     query = json.dumps({
         "query": {
             "query_id": query_id,
-            "created": creation_date.__str__(),
             "start": start_date_time.__str__(),
             "end": end_date_time.__str__(),
-            "stations": stations,
             "analysis_file": file_name,
-            "signal_id": ""
+            "signal_id": signals
         }
     })
 
