@@ -69,7 +69,7 @@ class QueryForm(forms.Form):
     condition_operator = forms.CharField(required=False, widget=forms.Select(choices=CONDITION_OPERATORS))
     condition_value = forms.IntegerField(required=False)
 
-    file = forms.FileField()
+    file = forms.FileField(required=False)
 
 
 class ConditionForm(forms.Form):

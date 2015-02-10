@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.forms import formset_factory
+from django.utils.datastructures import MultiValueDictKeyError
 
 from query.forms import QueryForm, ConditionForm, SignalForm
 from query.models import Query
@@ -104,10 +105,13 @@ def query_builder(request):
                 condition_strings.append(condition.__str__())
             query_model.set_conditions(condition_strings)
 
-            file = request.FILES["file"]
-            file_name = file.name
+            try:
+                file = request.FILES["file"]
+                file_name = file.name
+            except MultiValueDictKeyError:
+                file_name = ""
             query_model.file_name = file_name
-
+            
             query_object = QueryObject(None, start_date_time, end_date_time,
                                        conditions, file_name, None)
 
