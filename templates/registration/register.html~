@@ -10,7 +10,9 @@
   <table>{{form}}</table>
  
   <input type="submit" value="Register" />
-
+  <button type="reset" value="Res">Reset</button>
   </form>
+
+  <p>Click <a href="/login/">login</a>, back to login page</p>
 
 {% endblock %}
