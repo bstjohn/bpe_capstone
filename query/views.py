@@ -37,6 +37,10 @@ class QueryObject:
 def query_index(request):
     return render(request, 'query/query.html')
 
+@login_required
+def query_result(request):
+    return render(request, 'query/query-result.html')
+
 form_submitted = False
 query_model = Query()
 query_object = QueryObject(None, None, None, None, None, None, None)
