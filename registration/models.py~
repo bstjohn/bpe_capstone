@@ -7,8 +7,6 @@ from django.utils import timezone
 class Person(models.Model):
     register_code = models.CharField(max_length=24)
     username = models.CharField(max_length=24)
-    #password1 = models.CharField(max_length=24)
-    #password2 = models.CharField(max_length=24)
     email = models.EmailField(max_length=100)
     first_name = models.CharField(max_length=24)
     last_name = models.CharField(max_length=24)
@@ -21,6 +19,5 @@ class Person(models.Model):
 
     def __str__(self):
 	return '%s %s %s %s %s %s' % (self.register_code, self.username, 
-                                     #self.password1, self.password2, 
                                       self.email, self.first_name, 
                                       self.last_name, self.create_date)

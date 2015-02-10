@@ -66,11 +66,8 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'info',
     'dashboard',
-<<<<<<< HEAD
-    'registration',
-=======
     'query',
->>>>>>> 98d10aca85b4b7edd177717663fdc1a463f5a511
+    'registration',
 )
 
 MIDDLEWARE_CLASSES = (

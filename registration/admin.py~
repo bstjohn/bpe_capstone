@@ -5,6 +5,7 @@ from registration.models import Person
 # Register your models here.
 class PersonRegistration(admin.ModelAdmin):
     readonly_fields = ('username',)
+
     fieldsets = [
         ('Enter Registration Code', {'fields': ['register_code']}),
         ('User Information', {'fields': ['username', 'email', 'first_name', 'last_name', ]}),

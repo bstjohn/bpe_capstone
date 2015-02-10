@@ -53,9 +53,3 @@ def register_success(request):
 def register_fail(request):
     return render_to_response('registration/register_fail.html')
 
-<<<<<<< HEAD
-
-=======
-#def registration(request):
-#    return render(request, 'registration/registration.html')
->>>>>>> feature/USE_CASE_005
