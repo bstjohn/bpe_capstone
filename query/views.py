@@ -6,6 +6,7 @@ from django.forms import formset_factory
 from query.forms import QueryForm, ConditionForm, SignalForm
 from query.models import Query
 
+import status_response
 import datetime
 import time
 import json
@@ -39,6 +40,7 @@ def query_index(request):
 
 @login_required
 def query_result(request):
+    
     return render(request, 'query/query-result.html')
 
 form_submitted = False
@@ -76,7 +78,7 @@ def query_builder(request):
 	    
             # query the results, and return them
             qm = query_model
-            context = {'username': username, 'filename': qm.file_name, 'created': qm.create_date_time, 'start': qm.start_date_time, 'end': qm.end_date_time}
+            context = {}
             return render(request, 'query/query-result.html', context)
            # return HttpResponseRedirect('/query/query-result/')
         elif 'send' in request.POST:

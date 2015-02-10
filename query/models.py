@@ -4,7 +4,6 @@ from django.contrib.auth.models import User
 
 import json
 
-
 # Query model holding data from built queries
 class Query(models.Model):
     # owner = models.OneToOneField(User)
@@ -17,6 +16,7 @@ class Query(models.Model):
     stations = models.CharField(max_length=1024)
     conditions = models.CharField(max_length=1024)
     file_name = models.CharField(max_length=108, default="n/a")
+        
 
     # Set stations to a string from a json object
     def set_stations(self, stations):
