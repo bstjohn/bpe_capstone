@@ -111,7 +111,7 @@ def query_builder(request):
             except MultiValueDictKeyError:
                 file_name = ""
             query_model.file_name = file_name
-            
+
             query_object = QueryObject(None, start_date_time, end_date_time,
                                        conditions, file_name, None)
 

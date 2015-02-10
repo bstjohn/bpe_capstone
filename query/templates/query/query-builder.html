@@ -158,7 +158,13 @@
         {{ signal_form.signals }}
         <br><small>(CTRL + Click or SHIFT + Click to select multiple)</small>
 
-        <input class="button" type="submit" style="width:100px;" value="Send Query" name="send" id="send-query"/>
+        <p id="send-query-error">Please</p>
+        <br><input class="button" type="submit" style="width:100px;" value="Send Query" name="send" id="send-query"/>
+        <script>
+            $('#send-query').click(function() {
+
+            });
+        </script>
     </div>
 </form>
 
