@@ -72,8 +72,13 @@ def query_builder(request):
             query_object.model_id = query_model.id
             print(convert_to_json(query_object))
             form_submitted = False
-
-            return HttpResponseRedirect('/query/query-result/')
+	    # return results page
+	    
+            # query the results, and return them
+            qm = query_model
+            context = {'username': username, 'filename': qm.file_name, 'created': qm.create_date_time, 'start': qm.start_date_time, 'end': qm.end_date_time}
+            return render(request, 'query/query-result.html', context)
+           # return HttpResponseRedirect('/query/query-result/')
         elif 'send' in request.POST:
             return HttpResponseRedirect('/query/query-builder/')
 
