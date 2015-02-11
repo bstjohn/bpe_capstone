@@ -54,6 +54,25 @@ form_submitted = False
 query_model = Query()
 query_object = QueryObject(None, None, None, None, None, None, None, None, None, None, None, None)
 
+
+# calculate and return a results page render
+# - pass in a request and query model,
+# - and return the rendered page 
+@login_required
+def return_result_page(request, query_model):
+    context = {
+      'query_id':query_model.id, 
+      'qr_file':query_model.qr_file, 
+      'ar_file':query_model.ar_file,
+      'sr_cpu':query_model.sr_cpu, 
+      'sr_completed':query_model.sr_completed,
+      'sr_available':query_model.sr_available, 
+      'sr_used':query_model.sr_used}
+
+    return render(request, 'query/query-result.html', context)
+
+
+
 # Builds a query given user input
 @login_required
 def query_builder(request):
@@ -80,12 +99,9 @@ def query_builder(request):
             query_object.signals = signal_form.cleaned_data['signals']
             print(convert_to_json(query_object))
             form_submitted = False
-	   
-	    # return results page           
-            context = {'query_id':query_model.id, 'qr_file':query_model.qr_file, 'ar_file':query_model.ar_file,
-	   	       'sr_cpu':query_model.sr_cpu, 'sr_completed':query_model.sr_completed,
-		       'sr_available':query_model.sr_available, 'sr_used':query_model.sr_used}
-            return render(request, 'query/query-result.html', context)
+
+	    # return the results page	   
+	    return return_result_page(request, query_model)
 
         elif 'send' in request.POST:
             return HttpResponseRedirect('/query/query-builder/')
