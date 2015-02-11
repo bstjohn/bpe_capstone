@@ -94,7 +94,8 @@ def query_builder(request):
             end_time = form.cleaned_data['end_time']
             end_date_time = datetime.datetime.combine(end_date, end_time)
             query_model.end_date_time = end_date_time
-            stations = form.cleaned_data['stations']
+            # stations = form.cleaned_data['stations']
+            stations = request.POST.getlist('stations')
             query_model.set_stations(stations)
             condition_type = form.cleaned_data['condition_type']
             condition_operator = form.cleaned_data['condition_operator']
@@ -115,6 +116,10 @@ def query_builder(request):
                 condition_strings.append(condition.__str__())
             query_model.set_conditions(condition_strings)
 
+            # signal_units = form.cleaned_data['signal_units']
+            signal_units = request.POST.getlist('signal_units')
+            print(signal_units)
+
             try:
                 file = request.FILES["file"]
                 file_name = file.name
@@ -132,7 +137,8 @@ def query_builder(request):
                 station_queryset = Station.objects.filter(PMU_Name_Short=station)
                 for station_object in station_queryset:
                     station_objects.append(station_object)
-            SignalForm.update_signals(signal_form, station_objects, conditions)
+            print(station_objects)
+            SignalForm.update_signals(signal_form, station_objects, conditions, signal_units)
 
             return HttpResponseRedirect('/query/query-builder/')
     else:

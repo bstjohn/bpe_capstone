@@ -20,6 +20,14 @@ CONDITION_OPERATORS = (('=', '='),
                        ('>', '>'),
                        ('>=', '>='))
 
+SIGNAL_UNITS=(('Frequency', 'Frequency'),
+              ('Voltage', 'Voltage-Pos. Seq'),
+              ('Current', 'Current-Pos. Seq'),
+              ('ROCOF', 'ROCOF'),
+              ('Power-Real', 'Power-Real'),
+              ('Power-Reactive', 'Power-Reactive'),
+              ('Digital','Digital'))
+
 DATE_FORMAT = '%m/%d/%Y'
 
 TIME_FORMAT = '%H:%M'
@@ -66,6 +74,8 @@ class QueryForm(forms.Form):
     condition_operator = forms.CharField(required=False, widget=forms.Select(choices=CONDITION_OPERATORS))
     condition_value = forms.IntegerField(required=False)
 
+    signal_units = forms.CharField(required=False, widget=forms.CheckboxSelectMultiple(choices=SIGNAL_UNITS))
+
     file = forms.FileField(required=False)
 
 
@@ -89,32 +99,55 @@ class SignalForm(forms.Form):
                 attrs={'size': '3'},
                 choices=[signal_choices]))
 
-    def update_signals(self, stations, conditions):
+    def update_signals(self, stations, conditions, signal_units):
         global signal_choices
         signal_choices = ()
 
         signals_array = []
-        for station in stations:
-            signals_array.append(Signal.objects.filter(Signal_PMU_ID=station.PMU_ID))
 
-        for condition in conditions:
-            condition_type = condition.condition_type
-            condition_operator = condition.condition_operator
-            condition_value = condition.condition_value
-            if condition_type == "voltage":
-                if condition_operator == "=":
-                    signals_array.append(Signal.objects.filter(Signal_Voltage=condition_value))
-                elif condition_operator == "!=":
-                    signals_array.append(Signal.objects.filter(Signal_Voltage__lte=condition_value,
-                                                               Signal_Voltage__gte=condition_value))
-                elif condition_operator == "<":
-                    signals_array.append(Signal.objects.filter(Signal_Voltage__lt=condition_value))
-                elif condition_operator == "<=":
-                    signals_array.append(Signal.objects.filter(Signal_Voltage__lte=condition_value))
-                elif condition_operator == ">":
-                    signals_array.append(Signal.objects.filter(Signal_Voltage__gt=condition_value))
-                elif condition_operator == ">=":
-                    signals_array.append(Signal.objects.filter(Signal_Voltage__gte=condition_value))
+        station_pmu_ids = []
+        for station in stations:
+            # signals_array.append(Signal.objects.filter(Signal_PMU_ID=station.PMU_ID))
+            station_pmu_ids.append(station.PMU_ID)
+
+        print(signal_units)
+
+        if stations and not signal_units and not conditions:
+            signals_array.append(Signal.objects.filter(Signal_PMU_ID__in=station_pmu_ids))
+        elif stations and signal_units and not conditions:
+            signals_array.append(Signal.objects.filter(Signal_PMU_ID__in=station_pmu_ids,
+                                                       Signal_Unit__in=signal_units))
+        elif stations and signal_units and conditions:
+            for condition in conditions:
+                condition_type = condition.condition_type
+                condition_operator = condition.condition_operator
+                condition_value = condition.condition_value
+                if condition_type == "voltage":
+                    if condition_operator == "=":
+                        signals_array.append(Signal.objects.filter(Signal_Voltage=condition_value,
+                                                                   Signal_PMU_ID__in=station_pmu_ids,
+                                                                   Signal_Unit__in=signal_units))
+                    elif condition_operator == "!=":
+                        signals_array.append(Signal.objects.filter(Signal_Voltage__lte=condition_value,
+                                                                   Signal_Voltage__gte=condition_value,
+                                                                   Signal_PMU_ID__in=station_pmu_ids,
+                                                                   Signal_Unit__in=signal_units))
+                    elif condition_operator == "<":
+                        signals_array.append(Signal.objects.filter(Signal_Voltage__lt=condition_value,
+                                                                   Signal_PMU_ID__in=station_pmu_ids,
+                                                                   Signal_Unit__in=signal_units))
+                    elif condition_operator == "<=":
+                        signals_array.append(Signal.objects.filter(Signal_Voltage__lte=condition_value,
+                                                                   Signal_PMU_ID__in=station_pmu_ids,
+                                                                   Signal_Unit__in=signal_units))
+                    elif condition_operator == ">":
+                        signals_array.append(Signal.objects.filter(Signal_Voltage__gt=condition_value,
+                                                                   Signal_PMU_ID__in=station_pmu_ids,
+                                                                   Signal_Unit__in=signal_units))
+                    elif condition_operator == ">=":
+                        signals_array.append(Signal.objects.filter(Signal_Voltage__gte=condition_value,
+                                                                   Signal_PMU_ID__in=station_pmu_ids,
+                                                                   Signal_Unit__in=signal_units))
 
         for signal_object in signals_array:
             for signal in signal_object:

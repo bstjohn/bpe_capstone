@@ -1,4 +1,4 @@
-{% extends "user/base.html" %}
+{% extends "user/base-no-bootstrap.html" %}
 
 {% block title %}Query Builder{% endblock %}
 
@@ -150,6 +150,13 @@
             });
         </script>
     </fieldset>
+
+    <div class="fieldWrapper">
+        <p><b>Select Signal Units</b> (Optional)</p>
+        {{ form.signal_units.errors }}
+        <label for="{{ form.signal_units.id_for_label }}">Signal Units:</label>
+        {{ form.signal_units }}
+    </div>
 
     <br>
     <input class="button" type="reset" value="Reset"/>
