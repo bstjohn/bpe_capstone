@@ -35,7 +35,10 @@ def update_stations():
     stations = Station.objects.all()
     for station in stations:
         station_choices += (station.PMU_Name_Short.__str__(), station.__str__())
-    print(station_choices)
+
+    if not station_choices:
+        station_choices += ('None', 'None')
+
     return station_choices
 
 
@@ -129,7 +132,5 @@ class SignalForm(forms.Form):
         # No stations were selected
         if not signals_array:
             signal_objects = Signal.objects.all()
-            print(signal_objects)
             for signal in signal_objects:
                 signal_choices += (signal.Signal_ID.__str__(), signal.__str__())
-            print(signal_choices)
