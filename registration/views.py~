@@ -26,7 +26,11 @@ def register_user(request):
             form = PersonForm(request.POST)
             save_it = form.save(commit=False)
             save_it.save()
+<<<<<<< HEAD
             # Email to user for verfiy!!!!
+=======
+            # here we can add email to verfiy!!!!
+>>>>>>> 2d248f6005e2915313680a325146e25732b2ac5f
             subject = 'Thank you for register as BPA user from BPA project'
             message = 'Hi ' + save_it.username + ', welcome to use BPA web applictation, we hope you enjoy it!'
             from_email = settings.EMAIL_HOST_USER

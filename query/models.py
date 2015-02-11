@@ -1,8 +1,8 @@
 from django.db import models
+
 from django.contrib.auth.models import User
 
 import json
-
 
 # Query model holding data from built queries
 class Query(models.Model):
@@ -14,13 +14,20 @@ class Query(models.Model):
     start_date_time = models.DateTimeField('query start date time')
     end_date_time = models.DateTimeField('query end date time')
     stations = models.CharField(max_length=1024)
-    signal_measurement = models.CharField(max_length=24)
-    signal_nominal_volts = models.IntegerField(max_length=3)
-    signal_circuit_number = models.IntegerField(max_length=1)
-    signal_measurement_identifier = models.CharField(max_length=24)
-    signal_suffix = models.CharField(max_length=24)
     conditions = models.CharField(max_length=1024)
     file_name = models.CharField(max_length=108, default="n/a")
+    
+    # QueryResponses
+    qr_file = models.CharField(max_length=108, null=True)
+
+    # AnalysisResponses
+    ar_file = models.CharField(max_length=108, null=True)
+ 
+    # StatusResponses
+    sr_cpu = models.CommaSeparatedIntegerField(max_length=1024, null=True)
+    sr_completed = models.IntegerField(max_length=1024, null=True)
+    sr_used = models.IntegerField(max_length=1024, null=True)
+    sr_available = models.IntegerField(max_length=1024, null=True)
 
     # Set stations to a string from a json object
     def set_stations(self, stations):

@@ -18,8 +18,14 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('owner', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
             ],
+<<<<<<< HEAD
             options=None,
             bases=None,
             managers=None,
+=======
+            options={
+            },
+            bases=(models.Model,),
+>>>>>>> 2d248f6005e2915313680a325146e25732b2ac5f
         ),
     ]

@@ -1,10 +1,11 @@
 from django import forms
-from django.forms.widgets import SplitDateTimeWidget, SelectMultiple, TimeInput, DateInput
+from django.forms.widgets import TimeInput, DateInput
+from stations.models import Station, Signal
 
 
-STATION_CHOICES = (('station1', 'Station1'),
-                   ('station2', 'Station2'),
-                   ('station3', 'Station3'),
+STATION_CHOICES = (('0x84e1', '[ALBN-500-B1-SA] [0x84e1]       Albion           500V 1 SA-B'),
+                   ('0x8547', '[ALCN-500-B1-SA] [0x8547]       Alicante         500V 1 SA-B'),
+                   ('0x852b', '[ASSS-500-B1-SA] [0x852b]       Assisi           500V 1 SA-B'),
                    ('station4', 'Station4'),
                    ('station5', 'Station5'))
 
@@ -12,49 +13,43 @@ CONDITION_TYPES = (('voltage', 'Voltage'),
                    ('current', 'Current'),
                    ('frequency', 'Frequency'))
 
-CONDITION_OPERATORS = (('==', '=='),
+CONDITION_OPERATORS = (('=', '='),
                        ('!=', '!='),
                        ('<', '<'),
                        ('<=', '<='),
                        ('>', '>'),
                        ('>=', '>='))
 
-MEASUREMENTS = (('b', 'B - Bus Side Phasor'),
-                ('l', 'L - Line Side Phasor'),
-                ('d', 'D - Digital/Status (1 or 0)'),
-                ('a', 'A - Analog'),
-                ('t', 'T - Phasor on Transformer'),
-                ('g', 'G - Phasor on Generator'))
-
-SUFFIX_IDENTIFIERS = (('A', 'A - Polar Phasor Angle'),
-                      ('M', 'M - Polar Phasor Magnitude'),
-                      ('R', 'R - Rectangular Phasor Real'),
-                      ('I', 'I - Rectangular Phasor Imaginary'),
-                      ('F', 'F - Frequency'),
-                      ('R', 'R - df/dt (Freq. Rate of Change)'))
-
-MEASUREMENT_IDENTIFIERS = (('VP', 'VP - Voltage (Positive Seq.)'),
-                           ('IP', 'IP - Current (Positive Seq.)'),
-                           ('VZ', 'VZ - Voltage (Zero Seq.'),
-                           ('IZ', 'IZ - Current (Zero Seq.'),
-                           ('VN', 'VN - Voltage (Negative Seq.)'),
-                           ('IN', 'IN - Current (Negative Seq.)'),
-                           ('F', 'F - Frequency'),
-                           ('R', 'R - df/dt (Freq. Rate of Change)'),
-                           ('VA', 'VA - Voltage (Phase A)'),
-                           ('VB', 'VB - Voltage (Phase B)'),
-                           ('VC', 'VC - Voltage (Phase C)'),
-                           ('IA', 'IA - Current (Phase A)'),
-                           ('IB', 'IB - Current (Phase B)'),
-                           ('IC', 'IC - Current (Phase C)'))
-
 DATE_FORMAT = '%m/%d/%Y'
 
 TIME_FORMAT = '%H:%M'
 
 
+SIGNALS = (('0x84e0-P-01', '<0x84e0-P-01> Phasor  Bus #1     N         Voltage-Pos. Seq    B500NORTH____1VP'),
+           ('0x84e0-P-02', '<0x84e0-P-02> Phasor  Bus #1     N         Voltage-Pos. Seq    B500NORTH____1VA'))
+
+
+def update_stations():
+    # global station_choices
+    station_choices = ()
+    stations = Station.objects.all()
+    for station in stations:
+        station_choices += (station.PMU_Name_Short.__str__(), station.__str__())
+
+    if not station_choices:
+        station_choices += ('None', 'None')
+
+    return station_choices
+
+
 # The query form attributes
 class QueryForm(forms.Form):
+    # station_choices = ()
+
+    # def __init__(self, *args, **kwargs):
+    #     super(QueryForm).__init__(*args, **kwargs)
+    #     self.update_stations()
+
     query_name = forms.CharField(max_length=100, widget=forms.TextInput(attrs={'placeholder': 'Name'}))
 
     start_date = forms.DateField(widget=DateInput(attrs={'placeholder': 'mm/dd/yyyy',
@@ -69,27 +64,73 @@ class QueryForm(forms.Form):
     end_time = forms.TimeField(widget=TimeInput(attrs={'placeholder': 'HH:MM:SS (24-hour)'},
                                                 format=TIME_FORMAT))
 
-    stations = forms.CharField(widget=forms.SelectMultiple(attrs={'size': '3'}, choices=STATION_CHOICES))
+    stations = forms.CharField(required=False,
+                               widget=forms.SelectMultiple(
+                                   attrs={'size': '3'}, choices=[update_stations()]))
 
-    condition_type = forms.CharField(widget=forms.Select(choices=CONDITION_TYPES))
-    condition_operator = forms.CharField(widget=forms.Select(choices=CONDITION_OPERATORS))
-    condition_value = forms.IntegerField()
+    condition_type = forms.CharField(required=False, widget=forms.Select(choices=CONDITION_TYPES))
+    condition_operator = forms.CharField(required=False, widget=forms.Select(choices=CONDITION_OPERATORS))
+    condition_value = forms.IntegerField(required=False)
 
-    measurement = forms.CharField(widget=forms.Select(choices=MEASUREMENTS))
-    nominal_volts = forms.IntegerField(required=False,
-                                       widget=forms.NumberInput(attrs={'placeholder': 'i.e. 500',
-                                                                       'max': '999',
-                                                                       'min': '0'}))
-    circuit_number = forms.IntegerField(widget=forms.NumberInput(attrs={'placeholder': 'i.e. 4',
-                                                                        'max': '9',
-                                                                        'min': '0'}))
-    measurement_identifier = forms.CharField(widget=forms.Select(choices=MEASUREMENT_IDENTIFIERS))
-    suffix = forms.CharField(widget=forms.Select(choices=SUFFIX_IDENTIFIERS))
-
-    file = forms.FileField()
+    file = forms.FileField(required=False)
 
 
 class ConditionForm(forms.Form):
     condition_type = forms.CharField(required=False, widget=forms.Select(choices=CONDITION_TYPES))
     condition_operator = forms.CharField(required=False, widget=forms.Select(choices=CONDITION_OPERATORS))
     condition_value = forms.IntegerField(required=False, widget=forms.NumberInput(attrs={'style': 'width: 70px;'}))
+
+
+signal_choices = ()
+
+
+class SignalForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        global signal_choices
+        super(SignalForm, self).__init__(*args, **kwargs)
+        if not signal_choices:
+            signal_choices += ('None', 'None')
+        self.fields['signals'] = forms.CharField(
+            widget=forms.SelectMultiple(
+                attrs={'size': '3'},
+                choices=[signal_choices]))
+
+    # global signal_choices
+    # signals = forms.CharField(widget=forms.SelectMultiple(attrs={'size': '3'}, choices=[signal_choices]))
+
+    def update_signals(self, stations, conditions):
+        global signal_choices
+        signal_choices = ()
+
+        signals_array = []
+        for station in stations:
+            signals_array.append(Signal.objects.filter(Signal_PMU_ID=station.PMU_ID))
+
+        for condition in conditions:
+            condition_type = condition.condition_type
+            condition_operator = condition.condition_operator
+            condition_value = condition.condition_value
+            if condition_type == "voltage":
+                if condition_operator == "=":
+                    signals_array.append(Signal.objects.filter(Signal_Voltage=condition_value))
+                elif condition_operator == "!=":
+                    signals_array.append(Signal.objects.filter(Signal_Voltage__lte=condition_value,
+                                                               Signal_Voltage__gte=condition_value))
+                elif condition_operator == "<":
+                    signals_array.append(Signal.objects.filter(Signal_Voltage__lt=condition_value))
+                elif condition_operator == "<=":
+                    signals_array.append(Signal.objects.filter(Signal_Voltage__lte=condition_value))
+                elif condition_operator == ">":
+                    signals_array.append(Signal.objects.filter(Signal_Voltage__gt=condition_value))
+                elif condition_operator == ">=":
+                    signals_array.append(Signal.objects.filter(Signal_Voltage__gte=condition_value))
+
+        for signal_object in signals_array:
+            for signal in signal_object:
+                signal_choices += (signal.Signal_ID, signal.__str__())
+
+        # No stations were selected
+        if not signals_array:
+            signal_objects = Signal.objects.all()
+            for signal in signal_objects:
+                signal_choices += (signal.Signal_ID.__str__(), signal.__str__())

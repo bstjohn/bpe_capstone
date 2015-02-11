@@ -1,6 +1,6 @@
 #!/usr/bin/python2.7
 #
-#  File:    DaemonTest.py
+# File:    DaemonTest.py
 #  Author:  Daniel E. Wilson
 #
 #  This is a test program to see if the query daemon is correctly
@@ -12,29 +12,32 @@ import socket
 import select
 
 # Set the server and host name to work with.
-host='localhost'
-port=4242
+host = 'localhost'
+port = 4242
 
 # Create the socket.
-s=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 # Create the JSON object.
-a={'id':1, 'file': 'test.txt'}
-query={'query': a}
+query= {'query': {'query_id': 3728,
+                  'Signal_id': ['0x86d1-P-01'],
+                  'start': '2014-10-31 14:00:00',
+                  'end': '2014-10-31 14:30:00',
+                  'analysisFile': '/this/dir/to/foo.r'}}
 
 # Convert to a string.
 queryString = json.dumps(query)
 
 try:
     # Now connect to the server.
-    s.connect((host,port))
+    s.connect((host, port))
     s.sendall(queryString + '\n\n')
 
     # Get read all of the response.
     s.setblocking(0)
-    response=''
+    response = ''
     while True:
-        reading, writing, error = select.select([s],[],[],60)
+        reading, writing, error = select.select([s], [], [], 60)
         if reading:
             data = s.recv(1024)
             if not data:

@@ -11,7 +11,19 @@
 <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
 <script src="//code.jquery.com/jquery-1.10.2.js"></script>
 <script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
-<script>
+<script type="text/javascript">
+    $(document).ready(function(){
+        var sendQueryError = $('#send-query-error');
+        var signalsRefreshed = {{ signals_refreshed }};
+        var signalFormWrapper = $('#signal-form-wrapper');
+        if (signalsRefreshed != 0) {
+            signalFormWrapper.show();
+        }
+        else {
+            signalFormWrapper.hide();
+        }
+    });
+
     $(function() {
     $( ".datepicker" ).datepicker({
       changeMonth: true,
@@ -42,7 +54,6 @@
         $('#id_' + type + '-TOTAL_FORMS').val(total);
         $(selector).after(newElement);
     }
-
 </script>
 
 <form action="/query/query-builder/" method="post" enctype=multipart/form-data>
@@ -97,18 +108,23 @@
     </div>
 
     <div class="fieldWrapper">
-        <p>
-        {{ form.stations.errors }}
-        <label for="{{ form.stations.id_for_label }}">Stations: </label>
-        {{ form.stations }} <small>(CTRL + Click or SHIFT + Click to select multiple)</small>
-        </p>
+        {{ form.file.errors }}
+        <label for="{{ form.file.id_for_label }}">Analysis File: </label>
+        {{ form.file }}
     </div>
 
     <div class="fieldWrapper">
+        {{ form.stations.errors }}
+        <p><label for="{{ form.stations.id_for_label }}"><b>Select Stations</b> (Optional)</label></p>
+        {{ form.stations }}
+        <br><small>(CTRL + Click or SHIFT + Click to select multiple)</small>
+    </div>
+
+    <div class="fieldWrapper">
+        <p><b>Specify Conditions</b> (Optional)</p>
         {{ form.condition_value.errors }}
         <label for="{{ form.condition_type.id_for_label }}">Condition: </label>
         {{ form.condition_type }} {{ form.condition_operator }} {{ form.condition_value }}
-
     </div>
 
     <fieldset style="border:none;" id="conditions-field-set">
@@ -118,59 +134,56 @@
             <div  class="fieldWrapper formSet">
                 {{ form.condition_value.errors }}
                 <label for="{{ form.id_for_label }}">Additional Condition: </label>
-                {{ form.condition_type }} {{ form.condition_operator }} {{ form.condition_value }} (Optional)
+                {{ form.condition_type }} {{ form.condition_operator }} {{ form.condition_value }}
             </div>
         {% endfor %}
 
 
         <input type="button" value="Add Another" id="add_another">
-        <script>
+        <script type="text/javascript">
             $('#add_another').click(function() {
                 cloneAnother('div.formSet:last', 'form');
             });
         </script>
     </fieldset>
 
-    <div class="fieldWrapper" title="Signal">
-        <fieldset>
-            Signal Definition
-            <p>
-            <label for="{{ form.measurement.id_for_label }}">Measurement: </label>
-            {{ form.measurement }}
-            </p>
-
-            <p>
-            <label for="{{ form.nominal_volts.id_for_label }}">Nominal Volts: </label>
-            {{ form.nominal_volts }}
-            </p>
-
-            <p>
-            <label for="{{ form.circuit_number.id_for_label }}">Circuit Number: </label>
-            {{ form.circuit_number }}
-            </p>
-
-            <p>
-            <label for="{{ form.measurement_identifier.id_for_label }}">Measurement Identifier: </label>
-            {{ form.measurement_identifier }}
-            </p>
-
-            <p>
-            <label for="{{ form.suffix.id_for_label }}">Suffix: </label>
-            {{ form.suffix }}
-            </p>
-
-        </fieldset>
-    </div>
-
-    <div class="fieldWrapper">
-        {{ form.file.errors }}
-        <label for="{{ form.file.id_for_label }}">Analysis File: </label>
-        {{ form.file }}
-    </div>
-
+    <br>
     <input class="button" type="reset" value="Reset"/>
-    <input class="button" type="submit" value="Send"/>
+    <input class="button" type="submit" style="width: 120px;" value="Get Signals" id="refresh-signals" name="refresh"/>
+
+    {{ signal_form.non_form_errors }}
+    <div class="fieldWrapper" id="signal-form-wrapper">
+        {{ signal_form.signals.errors }}
+        <br><label for="{{ signal_form.signals.id_for_label }}"><b>List of Signals</b></label>
+        {{ signal_form.signals }}
+        <br><small>(CTRL + Click or SHIFT + Click to select multiple)</small>
+
+        <br><input class="button" type="submit" style="width:100px;" value="Send Query" name="send" id="send-query"/>
+        <!--<script type="text/javascript">-->
+            <!--$('#send-query').click(function() {-->
+                <!--signalsSelected = $('#id_signals').value;-->
+                <!--if (signalsSelected === undefined) {-->
+                    <!--alert("Please select a signal.");-->
+                <!--}-->
+                <!--alert(signalsSelected);-->
+            <!--});-->
+        <!--</script>-->
+    </div>
 </form>
+
+<!--<form action="/query/query-result/" method="post" enctype=multipart/form-data>-->
+    <!--{% csrf_token %}-->
+
+    <!--{{ signal_form.non_form_errors }}-->
+    <!--<div class="fieldWrapper">-->
+        <!--{{ signal_form.signals.errors }}-->
+        <!--<p><label for="{{ signal_form.signals.id_for_label }}"><b>List of Signals</b></label></p>-->
+        <!--{{ signal_form.signals }}-->
+        <!--<br><small>(CTRL + Click or SHIFT + Click to select multiple)</small>-->
+    <!--</div>-->
+
+    <!--<input class="button" type="submit" style="width:100px;" value="Send Query" name="send"/>-->
+<!--</form>-->
 
 {{ received_json_data }}
 

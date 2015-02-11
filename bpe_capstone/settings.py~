@@ -15,10 +15,6 @@ EMAIL_HOST_PASSWORD = 'NicolaTesa'
 EMAIL_PORT = 587
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
-# Unique email address
-User._meta.get_field_by_name('email')[0]._unique = True
-Person._meta.get_field_by_name('email')[0]._unique = True
-
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 
@@ -73,6 +69,10 @@ INSTALLED_APPS = (
     'query',
     'registration',
     'results',
+<<<<<<< HEAD
+=======
+    'stations',
+>>>>>>> 2d248f6005e2915313680a325146e25732b2ac5f
 )
 
 MIDDLEWARE_CLASSES = (
