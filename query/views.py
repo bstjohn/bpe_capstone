@@ -72,15 +72,16 @@ def query_builder(request):
             query_object.signals = signal_form.cleaned_data['signals']
             print(convert_to_json(query_object))
             form_submitted = False
-	    # return results page
-	    
+
             # query the results, and return them
             qm = query_model
             context = {'username': username, 'filename': qm.file_name, 'created': qm.create_date_time, 'start': qm.start_date_time, 'end': qm.end_date_time}
             return render(request, 'query/query-result.html', context)
-           # return HttpResponseRedirect('/query/query-result/')
         elif 'send' in request.POST:
-            return HttpResponseRedirect('/query/query-builder/')
+            form = QueryForm()
+            context = {'username': username, 'form': form, 'signal_form': signal_form,
+                       'formset': condition_form_set, 'signals_refreshed': int(form_submitted)}
+            return render(request, 'query/query-builder.html', context)
 
         if form.is_valid() and condition_form.is_valid() and 'refresh' in request.POST:
             query_model.owner = request.user

@@ -37,19 +37,13 @@ def update_stations():
         station_choices += (station.PMU_Name_Short.__str__(), station.__str__())
 
     if not station_choices:
-        station_choices += ('None', 'None')
+        station_choices += ('', '')
 
     return station_choices
 
 
 # The query form attributes
 class QueryForm(forms.Form):
-    # station_choices = ()
-
-    # def __init__(self, *args, **kwargs):
-    #     super(QueryForm).__init__(*args, **kwargs)
-    #     self.update_stations()
-
     query_name = forms.CharField(max_length=100, widget=forms.TextInput(attrs={'placeholder': 'Name'}))
 
     start_date = forms.DateField(widget=DateInput(attrs={'placeholder': 'mm/dd/yyyy',
@@ -89,14 +83,11 @@ class SignalForm(forms.Form):
         global signal_choices
         super(SignalForm, self).__init__(*args, **kwargs)
         if not signal_choices:
-            signal_choices += ('None', 'None')
+            signal_choices += ('', '')
         self.fields['signals'] = forms.CharField(
             widget=forms.SelectMultiple(
                 attrs={'size': '3'},
                 choices=[signal_choices]))
-
-    # global signal_choices
-    # signals = forms.CharField(widget=forms.SelectMultiple(attrs={'size': '3'}, choices=[signal_choices]))
 
     def update_signals(self, stations, conditions):
         global signal_choices
