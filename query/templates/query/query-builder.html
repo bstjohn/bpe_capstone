@@ -11,8 +11,9 @@
 <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
 <script src="//code.jquery.com/jquery-1.10.2.js"></script>
 <script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
-<script>
+<script type="text/javascript">
     $(document).ready(function(){
+        var sendQueryError = $('#send-query-error');
         var signalsRefreshed = {{ signals_refreshed }};
         var signalFormWrapper = $('#signal-form-wrapper');
         if (signalsRefreshed != 0) {
@@ -139,7 +140,7 @@
 
 
         <input type="button" value="Add Another" id="add_another">
-        <script>
+        <script type="text/javascript">
             $('#add_another').click(function() {
                 cloneAnother('div.formSet:last', 'form');
             });
@@ -152,19 +153,21 @@
 
     {{ signal_form.non_form_errors }}
     <div class="fieldWrapper" id="signal-form-wrapper">
-        <p style="color: red; font-size: 15px; display: none;">This field is required.</p>
         {{ signal_form.signals.errors }}
-        <p><label for="{{ signal_form.signals.id_for_label }}"><b>List of Signals</b></label></p>
+        <br><label for="{{ signal_form.signals.id_for_label }}"><b>List of Signals</b></label>
         {{ signal_form.signals }}
         <br><small>(CTRL + Click or SHIFT + Click to select multiple)</small>
 
-        <p id="send-query-error">Please</p>
         <br><input class="button" type="submit" style="width:100px;" value="Send Query" name="send" id="send-query"/>
-        <script>
-            $('#send-query').click(function() {
-
-            });
-        </script>
+        <!--<script type="text/javascript">-->
+            <!--$('#send-query').click(function() {-->
+                <!--signalsSelected = $('#id_signals').value;-->
+                <!--if (signalsSelected === undefined) {-->
+                    <!--alert("Please select a signal.");-->
+                <!--}-->
+                <!--alert(signalsSelected);-->
+            <!--});-->
+        <!--</script>-->
     </div>
 </form>
 
