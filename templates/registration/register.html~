@@ -10,7 +10,11 @@
   <table>{{form}}</table>
  
   <input type="submit" value="Register" />
-  <button type="reset" value="Res">Reset</button>
+<<<<<<< HEAD
+  <button type="reset" value="Reset">Reset form</button>
+=======
+  <button type="reset" value="Reset from">Reset</button>
+>>>>>>> master
   </form>
 
   <p>Click <a href="/login/">login</a>, back to login page</p>
