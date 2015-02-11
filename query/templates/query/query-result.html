@@ -3,18 +3,27 @@
 {% block title %}Query Results{% endblock %}
 
 {% block header %}
-{% block header-title %}Results:{% endblock %}
+{% block header-title %}<u><b>Results for QueryID #{{query_id}}</b></u>:{% endblock %}
 {% endblock %}
 
 {% block content %}
     <div>
         <ul>
-            <H1>QueryID: {{query_id}}</H1>
-	    <H2>File: {{file}}</H2>
-	    <H3>CPU: {{cpu}}</H3>
-	    <H4>Completed: {{completed}}</H4> 
-	    <H5>Available: {{available}}</H5>
+	    
+	    <H3><u>Query Response:</u></H3>
+		<UL><LI>File: <u>{{qr_file}}</u></LI></UL>
+
+	    <H3><u>Analysis Response:</u></H3>
+		<UL><LI>File: <u>{{ar_file}}</u></LI></Ul>
+
+	    <H3><u>Status Response:</u></H3>
+		<UL>
+			<LI>CPU: <u>{{sr_cpu}}</u></LI>
+			<LI>Completed: <u>{{sr_completed}}</u></LI>
+			<LI>Available Diskspace: <u>{{sr_available}}</u></LI>
+			<LI>Used Diskspace: <u>{{sr_used}}</u></LI>
+	 	</UL>
+	
         </ul>
-   
     </div>
 {% endblock %}

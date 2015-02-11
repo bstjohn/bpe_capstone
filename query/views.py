@@ -26,14 +26,20 @@ class Condition:
 
 class QueryObject:
     def __init__(self, model_id, start_date_time, end_date_time,
-                 conditions, file_name, signals):
+                 conditions, file_name, signals,qr_file,
+		 ar_file, sr_cpu, sr_completed, sr_available, sr_used):
         self.model_id = model_id
         self.start_date_time = start_date_time
         self.end_date_time = end_date_time
         self.conditions = conditions
         self.file_name = file_name
         self.signals = signals
-
+	self.qr_file = qr_file
+	self.ar_file = ar_file
+	self.sr_cpu = sr_cpu
+	self.sr_completed = sr_completed
+	self.sr_available = sr_available
+	self.sr_used = sr_used
 
 @login_required
 def query_index(request):
@@ -41,12 +47,12 @@ def query_index(request):
 
 @login_required
 def query_result(request):
-    
     return render(request, 'query/query-result.html')
+
 
 form_submitted = False
 query_model = Query()
-query_object = QueryObject(None, None, None, None, None, None)
+query_object = QueryObject(None, None, None, None, None, None, None, None, None, None, None, None)
 
 # Builds a query given user input
 @login_required
@@ -74,13 +80,13 @@ def query_builder(request):
             query_object.signals = signal_form.cleaned_data['signals']
             print(convert_to_json(query_object))
             form_submitted = False
-	    # return results page
-	    
-            # query the results, and return them
-            qm = query_model
-            context = {}
+	   
+	    # return results page           
+            context = {'query_id':query_model.id, 'qr_file':query_model.qr_file, 'ar_file':query_model.ar_file,
+	   	       'sr_cpu':query_model.sr_cpu, 'sr_completed':query_model.sr_completed,
+		       'sr_available':query_model.sr_available, 'sr_used':query_model.sr_used}
             return render(request, 'query/query-result.html', context)
-           # return HttpResponseRedirect('/query/query-result/')
+
         elif 'send' in request.POST:
             return HttpResponseRedirect('/query/query-builder/')
 
@@ -124,7 +130,7 @@ def query_builder(request):
             query_model.file_name = file_name
 
             query_object = QueryObject(None, start_date_time, end_date_time,
-                                       conditions, file_name, None)
+                                       conditions, file_name, None, None, None, None, None, None, None)
 
             form_submitted = True
 
