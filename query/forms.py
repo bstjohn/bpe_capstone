@@ -114,10 +114,12 @@ class SignalForm(forms.Form):
 
         if stations and not signal_units and not conditions:
             signals_array.append(Signal.objects.filter(Signal_PMU_ID__in=station_pmu_ids))
+        elif signal_units and not stations and not conditions:
+            signals_array.append(Signal.objects.filter(Signal_Unit__in=signal_units))
         elif stations and signal_units and not conditions:
             signals_array.append(Signal.objects.filter(Signal_PMU_ID__in=station_pmu_ids,
                                                        Signal_Unit__in=signal_units))
-        elif stations and signal_units and conditions:
+        elif conditions:
             for condition in conditions:
                 condition_type = condition.condition_type
                 condition_operator = condition.condition_operator

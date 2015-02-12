@@ -118,7 +118,9 @@ def query_builder(request):
 
             # signal_units = form.cleaned_data['signal_units']
             signal_units = request.POST.getlist('signal_units')
-            print(signal_units)
+            if not signal_units:
+                signal_units = ['Voltage', 'Current', 'Frequency', 'ROCOF', 'Power-Real',
+                                'Power-Reactive', 'Digital']
 
             try:
                 file = request.FILES["file"]
@@ -135,9 +137,11 @@ def query_builder(request):
             station_objects = []
             for station in stations:
                 station_queryset = Station.objects.filter(PMU_Name_Short=station)
-                for station_object in station_queryset:
-                    station_objects.append(station_object)
-            print(station_objects)
+                station_objects = get_query_objects(station_queryset, station_objects)
+            if not station_objects:
+                station_queryset = Station.objects.all()
+                station_objects = get_query_objects(station_queryset, station_objects)
+
             SignalForm.update_signals(signal_form, station_objects, conditions, signal_units)
 
             return HttpResponseRedirect('/query/query-builder/')
@@ -149,6 +153,11 @@ def query_builder(request):
                'signals_refreshed': int(form_submitted)}
     return render(request, 'query/query-builder.html', context)
 
+
+def get_query_objects(query_set, query_object_list):
+    for station_object in query_set:
+            query_object_list.append(station_object)
+    return query_object_list
 
 def convert_to_json(query_param):
     query_id = query_param.model_id
