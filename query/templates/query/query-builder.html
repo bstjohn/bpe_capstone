@@ -58,6 +58,7 @@
         $('#id_' + type + '-TOTAL_FORMS').val(total);
         $(selector).after(newElement);
     }
+
 </script>
 
 <form action="/query/query-builder/" method="post" enctype=multipart/form-data>
@@ -66,9 +67,9 @@
     {{ form.non_field_errors }}
     <div class="fieldWrapper">
         <p>
-        {{ form.query_name.errors }}
-        <label for="{{ form.query_name.id_for_label }}">Name of Your Query: </label>
-        {{ form.query_name }}
+            {{ form.query_name.errors }}
+            <label for="{{ form.query_name.id_for_label }}">Name of Your Query: </label>
+            {{ form.query_name }}
         </p>
     </div>
 
@@ -121,7 +122,8 @@
         {{ form.stations.errors }}
         <p><label for="{{ form.stations.id_for_label }}"><b>Select Stations</b> (Optional)</label></p>
         {{ form.stations }}
-        <br><small>(CTRL + Click or SHIFT + Click to select multiple)</small>
+        <br>
+        <small>(CTRL + Click or SHIFT + Click to select multiple)</small>
     </div>
 
     <div class="fieldWrapper">
@@ -135,11 +137,11 @@
         {{ formset.management_form }}
         {{ formset.non_form_errors }}
         {% for form in formset.forms %}
-            <div  class="fieldWrapper formSet">
-                {{ form.condition_value.errors }}
-                <label for="{{ form.id_for_label }}">Additional Condition: </label>
-                {{ form.condition_type }} {{ form.condition_operator }} {{ form.condition_value }}
-            </div>
+        <div class="fieldWrapper formSet">
+            {{ form.condition_value.errors }}
+            <label for="{{ form.id_for_label }}">Additional Condition: </label>
+            {{ form.condition_type }} {{ form.condition_operator }} {{ form.condition_value }}
+        </div>
         {% endfor %}
 
 
@@ -148,6 +150,7 @@
             $('#add_another').click(function() {
                 cloneAnother('div.formSet:last', 'form');
             });
+
         </script>
     </fieldset>
 
@@ -167,7 +170,8 @@
         <br><label for="{{ signal_form.signals.id_for_label }}"><b>List of Signals</b></label>
         {{ signal_form.signals.errors }}
         {{ signal_form.signals }}
-        <br><small>(CTRL + Click or SHIFT + Click to select multiple)</small>
+        <br>
+        <small>(CTRL + Click or SHIFT + Click to select multiple)</small>
 
         <br><input class="button" type="submit" style="width:100px;" value="Send Query" name="send" id="send-query"/>
     </div>

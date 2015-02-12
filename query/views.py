@@ -38,9 +38,11 @@ class QueryObject:
 def query_index(request):
     return render(request, 'query/query.html')
 
+
 @login_required
 def query_result(request):
     return render(request, 'query/query-result.html')
+
 
 form_submitted = False
 query_model = Query()
@@ -75,7 +77,8 @@ def query_builder(request):
 
             # query the results, and return them
             qm = query_model
-            context = {'username': username, 'filename': qm.file_name, 'created': qm.create_date_time, 'start': qm.start_date_time, 'end': qm.end_date_time}
+            context = {'username': username, 'filename': qm.file_name, 'created': qm.create_date_time,
+                       'start': qm.start_date_time, 'end': qm.end_date_time}
             return render(request, 'query/query-result.html', context)
         elif 'send' in request.POST:
             form = QueryForm()
@@ -156,8 +159,9 @@ def query_builder(request):
 
 def get_query_objects(query_set, query_object_list):
     for station_object in query_set:
-            query_object_list.append(station_object)
+        query_object_list.append(station_object)
     return query_object_list
+
 
 def convert_to_json(query_param):
     query_id = query_param.model_id

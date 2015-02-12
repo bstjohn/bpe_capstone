@@ -20,18 +20,17 @@ CONDITION_OPERATORS = (('=', '='),
                        ('>', '>'),
                        ('>=', '>='))
 
-SIGNAL_UNITS=(('Frequency', 'Frequency'),
-              ('Voltage', 'Voltage-Pos. Seq'),
-              ('Current', 'Current-Pos. Seq'),
-              ('ROCOF', 'ROCOF'),
-              ('Power-Real', 'Power-Real'),
-              ('Power-Reactive', 'Power-Reactive'),
-              ('Digital','Digital'))
+SIGNAL_UNITS = (('Frequency', 'Frequency'),
+                ('Voltage', 'Voltage-Pos. Seq'),
+                ('Current', 'Current-Pos. Seq'),
+                ('ROCOF', 'ROCOF'),
+                ('Power-Real', 'Power-Real'),
+                ('Power-Reactive', 'Power-Reactive'),
+                ('Digital', 'Digital'))
 
 DATE_FORMAT = '%m/%d/%Y'
 
 TIME_FORMAT = '%H:%M'
-
 
 SIGNALS = (('0x84e0-P-01', '<0x84e0-P-01> Phasor  Bus #1     N         Voltage-Pos. Seq    B500NORTH____1VP'),
            ('0x84e0-P-02', '<0x84e0-P-02> Phasor  Bus #1     N         Voltage-Pos. Seq    B500NORTH____1VA'))
