@@ -8,7 +8,6 @@ from query.forms import QueryForm, ConditionForm, SignalForm
 from query.models import Query
 from stations.models import Station
 
-import status_response
 import datetime
 import time
 import json
@@ -26,24 +25,26 @@ class Condition:
 
 class QueryObject:
     def __init__(self, model_id, start_date_time, end_date_time,
-                 conditions, file_name, signals,qr_file,
-		 ar_file, sr_cpu, sr_completed, sr_available, sr_used):
+                 conditions, file_name, signals, qr_file,
+                 ar_file, sr_cpu, sr_completed, sr_available, sr_used):
         self.model_id = model_id
         self.start_date_time = start_date_time
         self.end_date_time = end_date_time
         self.conditions = conditions
         self.file_name = file_name
         self.signals = signals
-	self.qr_file = qr_file
-	self.ar_file = ar_file
-	self.sr_cpu = sr_cpu
-	self.sr_completed = sr_completed
-	self.sr_available = sr_available
-	self.sr_used = sr_used
+        self.qr_file = qr_file
+        self.ar_file = ar_file
+        self.sr_cpu = sr_cpu
+        self.sr_completed = sr_completed
+        self.sr_available = sr_available
+        self.sr_used = sr_used
+
 
 @login_required
 def query_index(request):
     return render(request, 'query/query.html')
+
 
 @login_required
 def query_result(request):
@@ -61,16 +62,15 @@ query_object = QueryObject(None, None, None, None, None, None, None, None, None,
 @login_required
 def return_result_page(request, query_model):
     context = {
-      'query_id':query_model.id, 
-      'qr_file':query_model.qr_file, 
-      'ar_file':query_model.ar_file,
-      'sr_cpu':query_model.sr_cpu, 
-      'sr_completed':query_model.sr_completed,
-      'sr_available':query_model.sr_available, 
-      'sr_used':query_model.sr_used}
+        'query_id': query_model.id,
+        'qr_file': query_model.qr_file,
+        'ar_file': query_model.ar_file,
+        'sr_cpu': query_model.sr_cpu,
+        'sr_completed': query_model.sr_completed,
+        'sr_available': query_model.sr_available,
+        'sr_used': query_model.sr_used}
 
     return render(request, 'query/query-result.html', context)
-
 
 
 # Builds a query given user input
@@ -100,11 +100,13 @@ def query_builder(request):
             print(convert_to_json(query_object))
             form_submitted = False
 
-	    # return the results page	   
-	    return return_result_page(request, query_model)
-
+            # return the results page	   
+            return return_result_page(request, query_model)
         elif 'send' in request.POST:
-            return HttpResponseRedirect('/query/query-builder/')
+            form = QueryForm()
+            context = {'username': username, 'form': form, 'signal_form': signal_form,
+                       'formset': condition_form_set, 'signals_refreshed': int(form_submitted)}
+            return render(request, 'query/query-builder.html', context)
 
         if form.is_valid() and condition_form.is_valid() and 'refresh' in request.POST:
             query_model.owner = request.user
@@ -117,7 +119,8 @@ def query_builder(request):
             end_time = form.cleaned_data['end_time']
             end_date_time = datetime.datetime.combine(end_date, end_time)
             query_model.end_date_time = end_date_time
-            stations = form.cleaned_data['stations']
+            # stations = form.cleaned_data['stations']
+            stations = request.POST.getlist('stations')
             query_model.set_stations(stations)
             condition_type = form.cleaned_data['condition_type']
             condition_operator = form.cleaned_data['condition_operator']
@@ -138,6 +141,12 @@ def query_builder(request):
                 condition_strings.append(condition.__str__())
             query_model.set_conditions(condition_strings)
 
+            # signal_units = form.cleaned_data['signal_units']
+            signal_units = request.POST.getlist('signal_units')
+            if not signal_units:
+                signal_units = ['Voltage', 'Current', 'Frequency', 'ROCOF', 'Power-Real',
+                                'Power-Reactive', 'Digital']
+
             try:
                 file = request.FILES["file"]
                 file_name = file.name
@@ -153,9 +162,12 @@ def query_builder(request):
             station_objects = []
             for station in stations:
                 station_queryset = Station.objects.filter(PMU_Name_Short=station)
-                for station_object in station_queryset:
-                    station_objects.append(station_object)
-            SignalForm.update_signals(signal_form, station_objects, conditions)
+                station_objects = get_query_objects(station_queryset, station_objects)
+            if not station_objects:
+                station_queryset = Station.objects.all()
+                station_objects = get_query_objects(station_queryset, station_objects)
+
+            SignalForm.update_signals(signal_form, station_objects, conditions, signal_units)
 
             return HttpResponseRedirect('/query/query-builder/')
     else:
@@ -165,6 +177,12 @@ def query_builder(request):
     context = {'username': username, 'form': form, 'signal_form': signal_form, 'formset': condition_form_set,
                'signals_refreshed': int(form_submitted)}
     return render(request, 'query/query-builder.html', context)
+
+
+def get_query_objects(query_set, query_object_list):
+    for station_object in query_set:
+        query_object_list.append(station_object)
+    return query_object_list
 
 
 def convert_to_json(query_param):

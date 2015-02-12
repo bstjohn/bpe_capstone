@@ -16,13 +16,13 @@ class Query(models.Model):
     stations = models.CharField(max_length=1024)
     conditions = models.CharField(max_length=1024)
     file_name = models.CharField(max_length=108, default="n/a")
-    
+
     # QueryResponses
     qr_file = models.CharField(max_length=108, null=True)
 
     # AnalysisResponses
     ar_file = models.CharField(max_length=108, null=True)
- 
+
     # StatusResponses
     sr_cpu = models.CommaSeparatedIntegerField(max_length=1024, null=True)
     sr_completed = models.IntegerField(max_length=1024, null=True)

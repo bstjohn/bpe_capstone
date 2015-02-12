@@ -7,23 +7,39 @@
 {% endblock %}
 
 {% block content %}
-    <div>
-        <ul>
-	    
-	    <H3><u>Query Response:</u></H3>
-		<UL><LI>File: <u>{{qr_file}}</u></LI></UL>
+<div>
+    <ul>
 
-	    <H3><u>Analysis Response:</u></H3>
-		<UL><LI>File: <u>{{ar_file}}</u></LI></Ul>
+        <H3><u>Query Response:</u></H3>
+        <UL>
+            <LI>File: <u>{{qr_file}}</u></LI>
+        </UL>
 
-	    <H3><u>Status Response:</u></H3>
-		<UL>
-			<LI>CPU: <u>{{sr_cpu}}</u></LI>
-			<LI>Completed: <u>{{sr_completed}}</u></LI>
-			<LI>Available Diskspace: <u>{{sr_available}}</u></LI>
-			<LI>Used Diskspace: <u>{{sr_used}}</u></LI>
-	 	</UL>
-	
-        </ul>
-    </div>
+        <H3><u>Analysis Response:</u></H3>
+        <UL>
+            <LI>File: <u>{{ar_file}}</u></LI>
+        </Ul>
+
+        <H3><u>Status Response:</u></H3>
+        <UL>
+            <LI>CPU: <u>{{sr_cpu}}</u></LI>
+            <LI>Completed: <u>{{sr_completed}}</u></LI>
+            <LI>Available Diskspace: <u>{{sr_available}}</u></LI>
+            <LI>Used Diskspace: <u>{{sr_used}}</u></LI>
+        </UL>
+
+    </ul>
+</div>
+<div>
+    <ul>
+        <H1>Username: {{username}}</H1>
+
+        <H2>Filename: {{filename}}</H2>
+
+        <H3>Created: {{created}}</H3>
+        <H4>Start: {{start}}</H4>
+        <H5>End: {{end}}</H5>
+    </ul>
+
+</div>
 {% endblock %}
