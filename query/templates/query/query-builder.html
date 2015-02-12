@@ -1,4 +1,4 @@
-{% extends "user/base.html" %}
+{% extends "user/base-no-bootstrap.html" %}
 
 {% block title %}Query Builder{% endblock %}
 
@@ -11,8 +11,9 @@
 <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
 <script src="//code.jquery.com/jquery-1.10.2.js"></script>
 <script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
-<script>
+<script type="text/javascript">
     $(document).ready(function(){
+        var sendQueryError = $('#send-query-error');
         var signalsRefreshed = {{ signals_refreshed }};
         var signalFormWrapper = $('#signal-form-wrapper');
         if (signalsRefreshed != 0) {
@@ -35,6 +36,10 @@
             },
             text: false
         });
+    });
+
+    $('#id_signals').on('change', function() {
+
     });
 
     function cloneAnother(selector, type) {
@@ -139,12 +144,19 @@
 
 
         <input type="button" value="Add Another" id="add_another">
-        <script>
+        <script type="text/javascript">
             $('#add_another').click(function() {
                 cloneAnother('div.formSet:last', 'form');
             });
         </script>
     </fieldset>
+
+    <div class="fieldWrapper">
+        <p><b>Select Signal Units</b> (Optional)</p>
+        {{ form.signal_units.errors }}
+        <label for="{{ form.signal_units.id_for_label }}">Signal Units:</label>
+        {{ form.signal_units }}
+    </div>
 
     <br>
     <input class="button" type="reset" value="Reset"/>
@@ -152,37 +164,14 @@
 
     {{ signal_form.non_form_errors }}
     <div class="fieldWrapper" id="signal-form-wrapper">
-        <p style="color: red; font-size: 15px; display: none;">This field is required.</p>
+        <br><label for="{{ signal_form.signals.id_for_label }}"><b>List of Signals</b></label>
         {{ signal_form.signals.errors }}
-        <p><label for="{{ signal_form.signals.id_for_label }}"><b>List of Signals</b></label></p>
         {{ signal_form.signals }}
         <br><small>(CTRL + Click or SHIFT + Click to select multiple)</small>
 
-        <p id="send-query-error">Please</p>
         <br><input class="button" type="submit" style="width:100px;" value="Send Query" name="send" id="send-query"/>
-        <script>
-            $('#send-query').click(function() {
-
-            });
-        </script>
     </div>
 </form>
-
-<!--<form action="/query/query-result/" method="post" enctype=multipart/form-data>-->
-    <!--{% csrf_token %}-->
-
-    <!--{{ signal_form.non_form_errors }}-->
-    <!--<div class="fieldWrapper">-->
-        <!--{{ signal_form.signals.errors }}-->
-        <!--<p><label for="{{ signal_form.signals.id_for_label }}"><b>List of Signals</b></label></p>-->
-        <!--{{ signal_form.signals }}-->
-        <!--<br><small>(CTRL + Click or SHIFT + Click to select multiple)</small>-->
-    <!--</div>-->
-
-    <!--<input class="button" type="submit" style="width:100px;" value="Send Query" name="send"/>-->
-<!--</form>-->
-
-{{ received_json_data }}
 
 <a href="/logout">Logout</a>
 {% endblock %}
