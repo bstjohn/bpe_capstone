@@ -25,8 +25,8 @@ class Condition:
 
 class QueryObject:
     def __init__(self, model_id, start_date_time, end_date_time,
-                 conditions, file_name, signals, qr_file,
-                 ar_file, sr_cpu, sr_completed, sr_available, sr_used):
+                 conditions, file_name, signals, qr_file, 
+                 ar_file, status_field, sr_completed):
         self.model_id = model_id
         self.start_date_time = start_date_time
         self.end_date_time = end_date_time
@@ -35,11 +35,16 @@ class QueryObject:
         self.signals = signals
         self.qr_file = qr_file
         self.ar_file = ar_file
-        self.sr_cpu = sr_cpu
         self.sr_completed = sr_completed
+        self.status_field = status_field
+
+
+class SystemStatusObject:
+    def __init__(self,  sr_cpu, sr_available, sr_used):
+        self.sr_cpu = sr_cpu
         self.sr_available = sr_available
         self.sr_used = sr_used
-
+        
 
 @login_required
 def query_index(request):
@@ -50,10 +55,15 @@ def query_index(request):
 def query_result(request):
     return render(request, 'query/query-result.html')
 
+@login_required
+def status_result(request):
+    return render(request, 'status/status-result.html')
 
 form_submitted = False
 query_model = Query()
-query_object = QueryObject(None, None, None, None, None, None, None, None, None, None, None, None)
+ss_model = SystemStatus()
+query_object = QueryObject(None, None, None, None, None, None, None, None, None, None)
+ss_object = SystemStatusObject(None, None, None)
 
 
 # calculate and return a results page render
@@ -65,11 +75,18 @@ def return_result_page(request, query_model):
         'query_id': query_model.id,
         'qr_file': query_model.qr_file,
         'ar_file': query_model.ar_file,
+        'status_field': query_model.status_field,
+        'status_field': query_model.status_field,
+        'sr_completed': query_model.sr_completed}
+    return render(request, 'query/query-result.html', context)
+
+# System Status
+# calculate and return the rendered page
+def return_status_page(request, StatusResponse): 
+    context = {
         'sr_cpu': query_model.sr_cpu,
-        'sr_completed': query_model.sr_completed,
         'sr_available': query_model.sr_available,
         'sr_used': query_model.sr_used}
-
     return render(request, 'query/query-result.html', context)
 
 
@@ -155,7 +172,7 @@ def query_builder(request):
             query_model.file_name = file_name
 
             query_object = QueryObject(None, start_date_time, end_date_time,
-                                       conditions, file_name, None, None, None, None, None, None, None)
+                                       conditions, file_name, None, None, None, None, None)
 
             form_submitted = True
 

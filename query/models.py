@@ -4,6 +4,14 @@ from django.contrib.auth.models import User
 
 import json
 
+# System Status model holding data for the system
+class SystemStatus(models.Model):
+    # not sure you need a owner
+    sr_cpu = models.CommaSeparatedIntegerField(max_length=1024, null=True)
+    sr_used = models.IntegerField(max_length=1024, null=True)
+    sr_available = models.IntegerField(max_length=1024, null=True)
+    
+
 # Query model holding data from built queries
 class Query(models.Model):
     # owner = models.OneToOneField(User)
@@ -16,6 +24,7 @@ class Query(models.Model):
     stations = models.CharField(max_length=1024)
     conditions = models.CharField(max_length=1024)
     file_name = models.CharField(max_length=108, default="n/a")
+    status_field = models.CharField(max_length=1024, null=True)
 
     # QueryResponses
     qr_file = models.CharField(max_length=108, null=True)
@@ -23,11 +32,9 @@ class Query(models.Model):
     # AnalysisResponses
     ar_file = models.CharField(max_length=108, null=True)
 
-    # StatusResponses
-    sr_cpu = models.CommaSeparatedIntegerField(max_length=1024, null=True)
+    # Completed
     sr_completed = models.IntegerField(max_length=1024, null=True)
-    sr_used = models.IntegerField(max_length=1024, null=True)
-    sr_available = models.IntegerField(max_length=1024, null=True)
+
 
     # Set stations to a string from a json object
     def set_stations(self, stations):
@@ -44,3 +51,4 @@ class Query(models.Model):
     # Get conditions as json object
     def get_conditions(self):
         return json.loads(self.conditions)
+
