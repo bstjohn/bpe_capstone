@@ -6,16 +6,14 @@
 {% block header-title %}Query Builder{% endblock %}
 {% endblock %}
 
+{% load staticfiles %}
+
 {% block content %}
 
 <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
+<link rel="stylesheet" type="text/css" href="{% static '/static/general/queryBuilder.css' %}"/>
 <script src="//code.jquery.com/jquery-1.10.2.js"></script>
 <script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
-<script type="text/css">
-    ul {
-        list-style-type: none;
-    }
-</script>
 <script type="text/javascript">
     $(document).ready(function(){
         var sendQueryError = $('#send-query-error');
@@ -29,19 +27,28 @@
         }
 
         $('.fieldSet').each(function(index) {
-            if (index == 0) {
+            if (index == {{ current_step }}) {
                 return true;
             }
             $('#' + this.id).hide();
         });
 
-        $('.next-step').bind('click', function(){
+        $('.nextStep').bind('click', function(){
             var currentId = parseInt(this.id.replace('next-step-', ''));
             var fieldSetId = '#field-set-' + currentId;
             $(fieldSetId).hide();
             var nextId = currentId + 1;
             var nextFieldSetId = '#field-set-' + nextId;
             $(nextFieldSetId).show();
+        });
+
+        $('.previousStep').bind('click', function() {
+            var currentId = parseInt(this.id.replace('previous-step-', ''));
+            var fieldSetId = '#field-set-' + currentId;
+            $(fieldSetId).hide();
+            var previousId = currentId - 1;
+            var previousFieldSetId = '#field-set-' + previousId;
+            $(previousFieldSetId).show();
         });
     });
 
@@ -120,17 +127,13 @@
             {{ form.file }}
             *Optional
         </div>
-        <button id="next-step-1" class="next-step" type="button">Next Step</button>
+        <button id="next-step-1" class="nextStep" type="button">Next Step</button>
     </fieldset>
 
     <fieldset id="field-set-2" class="fieldSet">
         <h3>2. Filter the List of Stations (Optional)</h3>
         <div class="fieldWrapper">
-            <table width="80%">
-                <tr>
-                    <td>{{ station_filter_form.station_voltage.errors }}</td>
-                    <td>{{ station_filter_form.pmu_channel.errors }}</td>
-                </tr>
+            <table width="80%" class="choiceTable">
                 <tr>
                     <td><label for="{{ station_filter_form.station_voltage.id_for_label">Voltage</label></td>
                     <td><label for="{{ station_filter_form.pmu_channel.id_for_label">Channel</label></td>
@@ -142,7 +145,8 @@
             </table>
         </div>
 
-        <button id="next-step-2" class="next-step" type="button">Next Step</button>
+        <button id="previous-step-2" class="previousStep" type="button">Previous Step</button>
+        <button id="next-step-2" class="nextStep" type="button">Next Step</button>
     </fieldset>
 
     <fieldset id="field-set-3" class="fieldSet">
@@ -154,22 +158,17 @@
             <br>
             <small>(CTRL + Click or SHIFT + Click to select multiple)</small>
         </div>
-        <button id="next-step-3" class="next-step" type="button">Next Step</button>
-        <!--<button id="next-step-3" class="next-step" type="submit">Next Step</button>-->
+
+        <button id="previous-step-3" class="previousStep" type="button">Previous Step</button>
+        <button id="next-step-3" class="nextStep" type="button">Next Step</button>
+        <!--<button id="next-step-3" class="nextStep" type="submit">Next Step</button>-->
     </fieldset>
 
     <fieldset id="field-set-4" class="fieldSet">
         <h3>4. Filter the List of Signals (Optional)</h3>
 
         <div class="fieldWrapper">
-            <table>
-                <tr>
-                    <td>{{ signal_filter_form.signal_voltage.errors }}</td>
-                    <td>{{ signal_filter_form.signal_type.errors }}</td>
-                    <td>{{ signal_filter_form.signal_asset.errors }}</td>
-                    <td>{{ signal_filter_form.signal_unit.errors }}</td>
-                    <td>{{ signal_filter_form.signal_phase.errors }}</td>
-                </tr>
+            <table class="choiceTable">
                 <tr>
                     <td><label for="{{ signal_filter_form.signal_voltage.id_for_label">Voltage</label></td>
                     <td><label for="{{ signal_filter_form.signal_type.id_for_label">Type</label></td>
@@ -189,8 +188,9 @@
 
         <input class="button" type="reset" value="Reset"/>
         <!--<input class="button" type="submit" style="width: 120px;" value="Get Signals" id="refresh-signals" name="refresh"/>-->
-            <button id="next-step-4" class="next-step" type="button">Next Step</button>
-            <!--<button id="next-step-3" class="next-step" type="submit">Next Step</button>-->
+        <button id="previous-step-4" class="previousStep" type="button">Previous Step</button>
+        <button id="next-step-4" class="nextStep" type="button">Next Step</button>
+            <!--<button id="next-step-3" class="nextStep" type="submit">Next Step</button>-->
     </fieldset>
 
     <fieldset id="field-set-5" class="fieldSet">
@@ -204,10 +204,12 @@
             <br>
             <small>(CTRL + Click or SHIFT + Click to select multiple)</small>
 
-            <!--<br><input class="button" type="submit" style="width:100px;" value="Send Query" name="send" id="send-query"/>-->
+            <br><input class="button" type="submit" style="width:100px;" value="Send Query" name="send" id="send-query"/>
         </div>
+        <button id="previous-step-5" class="previousStep" type="button">Previous Step</button>
     </fieldset>
 </form>
 
+<br><br>
 <a href="/logout">Logout</a>
 {% endblock %}
