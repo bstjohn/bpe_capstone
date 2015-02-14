@@ -2,8 +2,6 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
-import datetime
-from django.utils.timezone import utc
 
 
 class Migration(migrations.Migration):
@@ -13,10 +11,10 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AddField(
+        migrations.AlterField(
             model_name='person',
-            name='registration_code_text',
-            field=models.CharField(default=datetime.datetime(2015, 1, 18, 22, 38, 53, 606608, tzinfo=utc), max_length=24),
-            preserve_default=False,
+            name='email',
+            field=models.EmailField(unique=True, max_length=100),
+            preserve_default=True,
         ),
     ]
