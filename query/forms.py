@@ -20,13 +20,35 @@ CONDITION_OPERATORS = (('=', '='),
                        ('>', '>'),
                        ('>=', '>='))
 
-SIGNAL_UNITS = (('Frequency', 'Frequency'),
-                ('Voltage', 'Voltage-Pos. Seq'),
-                ('Current', 'Current-Pos. Seq'),
-                ('ROCOF', 'ROCOF'),
-                ('Power-Real', 'Power-Real'),
+PMU_CHANNEL_CHOICES = (('A', 'A'),
+                       ('B', 'B'))
+
+TYPE_CHOICES = (('Phasor', 'Phasor'),
+                ('Analog', 'Analog'),
+                ('Digital', 'Digital'),
+                ('Frequency', 'Frequency'))
+
+ASSET_CHOICES = (('Bus', 'Bus'),
+                 ('Line', 'Line'),
+                 ('Transformer', 'Transformer'),
+                 ('Generator', 'Generator'),
+                 ('Capacator', 'Capacator'),
+                 ('Reactor', 'Reactor'),
+                 ('Digital', 'Digital'),
+                 ('Analog', 'Analog'))
+
+UNIT_CHOICES = (('ROCOF', 'ROCOF'),
+                ('Frequency', 'Frequency'),
                 ('Power-Reactive', 'Power-Reactive'),
-                ('Digital', 'Digital'))
+                ('Power-Real', 'Power-Real'),
+                ('Current', 'Current-Pos. Seq'),
+                ('Voltage', 'Voltage-Pos. Seq'))
+
+PHASE_CHOICES = (('Phase A', 'Phase A'),
+                 ('Phase B', 'Phase B'),
+                 ('Phase C', 'Phace C'),
+                 ('Zero Seq', 'Zero Seq'),
+                 ('Neg. Seq', 'Pos. Seq'))
 
 DATE_FORMAT = '%m/%d/%Y'
 
@@ -34,6 +56,9 @@ TIME_FORMAT = '%H:%M'
 
 SIGNALS = (('0x84e0-P-01', '<0x84e0-P-01> Phasor  Bus #1     N         Voltage-Pos. Seq    B500NORTH____1VP'),
            ('0x84e0-P-02', '<0x84e0-P-02> Phasor  Bus #1     N         Voltage-Pos. Seq    B500NORTH____1VA'))
+
+VOLTAGE_CHOICES = (('230', '230'),
+                   ('500', '500'))
 
 
 def update_stations():
@@ -50,6 +75,7 @@ def update_stations():
 
 
 signal_choices = []
+station_choices = []
 
 
 def add_signal_choices(signal_objects):
@@ -73,23 +99,33 @@ class QueryForm(forms.Form):
     end_time = forms.TimeField(widget=TimeInput(attrs={'placeholder': 'HH:MM:SS (24-hour)'},
                                                 format=TIME_FORMAT))
 
-    stations = forms.CharField(required=False,
-                               widget=forms.SelectMultiple(
-                                   attrs={'size': '3'}, choices=update_stations()))
-
-    condition_type = forms.CharField(required=False, widget=forms.Select(choices=CONDITION_TYPES))
-    condition_operator = forms.CharField(required=False, widget=forms.Select(choices=CONDITION_OPERATORS))
-    condition_value = forms.IntegerField(required=False)
-
-    signal_units = forms.CharField(required=False, widget=forms.CheckboxSelectMultiple(choices=SIGNAL_UNITS))
-
     file = forms.FileField(required=False)
 
 
-class ConditionForm(forms.Form):
-    condition_type = forms.CharField(required=False, widget=forms.Select(choices=CONDITION_TYPES))
-    condition_operator = forms.CharField(required=False, widget=forms.Select(choices=CONDITION_OPERATORS))
-    condition_value = forms.IntegerField(required=False, widget=forms.NumberInput(attrs={'style': 'width: 70px;'}))
+class StationFilterForm(forms.Form):
+    station_voltage = forms.CharField(required=False, widget=forms.CheckboxSelectMultiple(choices=VOLTAGE_CHOICES))
+    pmu_channel = forms.CharField(required=False, widget=forms.CheckboxSelectMultiple(choices=PMU_CHANNEL_CHOICES))
+
+
+class StationForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        super(StationForm, self).__init__(*args, **kwargs)
+        global station_choices
+        if not station_choices:
+            station_choices.insert(0, ('', ''))
+        self.fields['signals'] = forms.CharField(
+            widget=forms.SelectMultiple(
+                attrs={'size': '3'},
+                # choices=station_choices))
+                choices=update_stations()))
+
+
+class SignalFilterForm(forms.Form):
+        signal_voltage = forms.CharField(required=False, widget=forms.CheckboxSelectMultiple(choices=VOLTAGE_CHOICES))
+        signal_type = forms.CharField(required=False, widget=forms.CheckboxSelectMultiple(choices=TYPE_CHOICES))
+        signal_asset = forms.CharField(required=False, widget=forms.CheckboxSelectMultiple(choices=ASSET_CHOICES))
+        signal_unit = forms.CharField(required=False, widget=forms.CheckboxSelectMultiple(choices=UNIT_CHOICES))
+        signal_phase = forms.CharField(required=False, widget=forms.CheckboxSelectMultiple(choices=PHASE_CHOICES))
 
 
 class SignalForm(forms.Form):

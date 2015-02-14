@@ -4,7 +4,7 @@ from django.http import HttpResponseRedirect
 from django.forms import formset_factory
 from django.utils.datastructures import MultiValueDictKeyError
 
-from query.forms import QueryForm, ConditionForm, SignalForm
+from query.forms import QueryForm, StationForm, StationFilterForm, SignalForm, SignalFilterForm
 from query.models import Query, SystemStatus, SystemNode, SystemCpu
 from stations.models import Station
 
@@ -108,7 +108,6 @@ def query_builder(request):
     global form_submitted
     global query_model
     global query_object
-    condition_form_set = formset_factory(ConditionForm, extra=1)
     username = None
     if request.user.is_authenticated():
         username = request.user.username
@@ -119,92 +118,80 @@ def query_builder(request):
     if request.method == 'POST':
         form = QueryForm(request.POST, request.FILES)
         signal_form = SignalForm(request.POST)
-        condition_form = condition_form_set(request.POST)
+        signal_filter_form = SignalFilterForm(request.POST)
+        station_form = StationForm(request.POST)
+        station_filter_form = StationFilterForm(request.POST)
 
-        # global form_submitted
-        if signal_form.is_valid() and form_submitted and 'send' in request.POST:
-            query_model.save()
-            query_object.model_id = query_model.id
-            query_object.signals = signal_form.cleaned_data['signals']
-            print(convert_to_json(query_object))
-            form_submitted = False
+        # # global form_submitted
+        # if signal_form.is_valid() and form_submitted and 'send' in request.POST:
+        #     query_model.save()
+        #     query_object.model_id = query_model.id
+        #     query_object.signals = signal_form.cleaned_data['signals']
+        #     print(convert_to_json(query_object))
+        #     form_submitted = False
+        #
+        #     # return the results page
+        #     return return_result_page(request, query_model)
+        # elif 'send' in request.POST:
+        #     form = QueryForm()
+        #     context = {'username': username, 'form': form, 'signal_form': signal_form,
+        #                'signals_refreshed': int(form_submitted)}
+        #     return render(request, 'query/query-builder.html', context)
 
-            # return the results page	   
-            return return_result_page(request, query_model)
-        elif 'send' in request.POST:
-            form = QueryForm()
-            context = {'username': username, 'form': form, 'signal_form': signal_form,
-                       'formset': condition_form_set, 'signals_refreshed': int(form_submitted)}
-            return render(request, 'query/query-builder.html', context)
+    #     if form.is_valid() and 'refresh' in request.POST:
+    #         query_model.owner = request.user
+    #         query_model.query_name = form.cleaned_data['query_name']
+    #         start_date = form.cleaned_data['start_date']
+    #         start_time = form.cleaned_data['start_time']
+    #         start_date_time = datetime.datetime.combine(start_date, start_time)
+    #         query_model.start_date_time = start_date_time
+    #         end_date = form.cleaned_data['end_date']
+    #         end_time = form.cleaned_data['end_time']
+    #         end_date_time = datetime.datetime.combine(end_date, end_time)
+    #         query_model.end_date_time = end_date_time
+    #         # stations = form.cleaned_data['stations']
+    #         stations = request.POST.getlist('stations')
+    #         query_model.set_stations(stations)
+    #
+    #         # signal_units = form.cleaned_data['signal_units']
+    #         signal_units = request.POST.getlist('signal_units')
+    #         if not signal_units:
+    #             signal_units = ['Voltage', 'Current', 'Frequency', 'ROCOF', 'Power-Real',
+    #                             'Power-Reactive', 'Digital']
+    #
+    #         try:
+    #             file = request.FILES["file"]
+    #             file_name = file.name
+    #         except MultiValueDictKeyError:
+    #             file_name = ""
+    #         query_model.file_name = file_name
+    #
+    #         query_object = QueryObject(None, start_date_time, end_date_time,
+    #                                    None, file_name, None, None, None, None, None)
+    #
+    #         form_submitted = True
+    #
+    #         station_objects = []
+    #         for station in stations:
+    #             station_queryset = Station.objects.filter(PMU_Name_Short=station)
+    #             station_objects = get_query_objects(station_queryset, station_objects)
+    #         if not station_objects:
+    #             station_queryset = Station.objects.all()
+    #             station_objects = get_query_objects(station_queryset, station_objects)
+    #
+    #         # SignalForm.update_signals(station_objects, conditions, signal_units)
+    #
+    #         return HttpResponseRedirect('/query/query-builder/')
+    # else:
+    form = QueryForm()
+    station_form = StationForm()
+    station_filter_form = StationFilterForm
+    signal_form = SignalForm()
+    signal_filter_form = SignalFilterForm()
 
-        if form.is_valid() and condition_form.is_valid() and 'refresh' in request.POST:
-            query_model.owner = request.user
-            query_model.query_name = form.cleaned_data['query_name']
-            start_date = form.cleaned_data['start_date']
-            start_time = form.cleaned_data['start_time']
-            start_date_time = datetime.datetime.combine(start_date, start_time)
-            query_model.start_date_time = start_date_time
-            end_date = form.cleaned_data['end_date']
-            end_time = form.cleaned_data['end_time']
-            end_date_time = datetime.datetime.combine(end_date, end_time)
-            query_model.end_date_time = end_date_time
-            # stations = form.cleaned_data['stations']
-            stations = request.POST.getlist('stations')
-            query_model.set_stations(stations)
-            condition_type = form.cleaned_data['condition_type']
-            condition_operator = form.cleaned_data['condition_operator']
-            condition_value = form.cleaned_data['condition_value']
-            primary_condition = Condition(condition_type, condition_operator, condition_value)
-            conditions = []
-            if condition_value is not None:
-                conditions = [primary_condition]
-
-            for condition_field in condition_form:
-                condition = Condition(condition_field.cleaned_data['condition_type'],
-                                      condition_field.cleaned_data['condition_operator'],
-                                      condition_field.cleaned_data['condition_value'])
-                if condition.condition_value is not None:
-                    conditions.append(condition)
-            condition_strings = []
-            for condition in conditions:
-                condition_strings.append(condition.__str__())
-            query_model.set_conditions(condition_strings)
-
-            # signal_units = form.cleaned_data['signal_units']
-            signal_units = request.POST.getlist('signal_units')
-            if not signal_units:
-                signal_units = ['Voltage', 'Current', 'Frequency', 'ROCOF', 'Power-Real',
-                                'Power-Reactive', 'Digital']
-
-            try:
-                file = request.FILES["file"]
-                file_name = file.name
-            except MultiValueDictKeyError:
-                file_name = ""
-            query_model.file_name = file_name
-
-            query_object = QueryObject(None, start_date_time, end_date_time,
-                                       conditions, file_name, None, None, None, None, None)
-
-            form_submitted = True
-
-            station_objects = []
-            for station in stations:
-                station_queryset = Station.objects.filter(PMU_Name_Short=station)
-                station_objects = get_query_objects(station_queryset, station_objects)
-            if not station_objects:
-                station_queryset = Station.objects.all()
-                station_objects = get_query_objects(station_queryset, station_objects)
-
-            SignalForm.update_signals(station_objects, conditions, signal_units)
-
-            return HttpResponseRedirect('/query/query-builder/')
-    else:
-        form = QueryForm()
-        signal_form = SignalForm()
-
-    context = {'username': username, 'form': form, 'signal_form': signal_form, 'formset': condition_form_set,
-               'signals_refreshed': int(form_submitted)}
+    context = {'username': username, 'form': form, 'station_form': station_form,
+               'station_filter_form': station_filter_form, 'signal_form': signal_form,
+               'signal_filter_form':signal_filter_form, 'signals_refreshed': int(form_submitted)}
     return render(request, 'query/query-builder.html', context)
 
 

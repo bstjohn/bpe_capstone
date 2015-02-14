@@ -11,6 +11,11 @@
 <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
 <script src="//code.jquery.com/jquery-1.10.2.js"></script>
 <script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
+<script type="text/css">
+    ul {
+        list-style-type: none;
+    }
+</script>
 <script type="text/javascript">
     $(document).ready(function(){
         var sendQueryError = $('#send-query-error');
@@ -23,7 +28,7 @@
             signalFormWrapper.hide();
         }
 
-        $('.field-set').each(function(index) {
+        $('.fieldSet').each(function(index) {
             if (index == 0) {
                 return true;
             }
@@ -53,37 +58,14 @@
             text: false
         });
     });
-
-    $('#id_signals').on('change', function() {
-
-    });
-
-    function cloneAnother(selector, type) {
-        var newElement = $(selector).clone(true);
-        var total = $('#id_' + type + '-TOTAL_FORMS').val();
-        newElement.find(':input').each(function() {
-            var name = $(this).attr('name').replace('-' + (total-1) + '-','-' + total + '-');
-            var id = 'id_' + name;
-            $(this).attr({'name': name, 'id': id}).val('').removeAttr('checked');
-        });
-        newElement.find('label').each(function() {
-            var newFor = $(this).attr('for').replace('-' + (total-1) + '-','-' + total + '-');
-            $(this).attr('for', newFor);
-        });
-        total++;
-        $('#id_' + type + '-TOTAL_FORMS').val(total);
-        $(selector).after(newElement);
-    }
-
-
 </script>
 
 <form action="/query/query-builder/" method="post" enctype=multipart/form-data>
     {% csrf_token %}
 
-    <h3>Complete 3 steps to send a query:</h3>
+    <h3>Complete 4 steps to send a query:</h3>
     {{ form.non_field_errors }}
-    <fieldset id="field-set-1" class="field-set">
+    <fieldset id="field-set-1" class="fieldSet">
         <h3>1. Fill Out Query Details</h3>
         <div class="fieldWrapper">
             <p>
@@ -141,8 +123,30 @@
         <button id="next-step-1" class="next-step" type="button">Next Step</button>
     </fieldset>
 
-    <fieldset id="field-set-2" class="field-set">
-        <h3>2. Select Stations to Filter On (Optional)</h3>
+    <fieldset id="field-set-2" class="fieldSet">
+        <h3>3. Filter the List of Stations (Optional)</h3>
+        <div class="fieldWrapper">
+            <table width="80%">
+                <tr>
+                    <td>{{ station_filter_form.station_voltage.errors }}</td>
+                    <td>{{ station_filter_form.pmu_channel.errors }}</td>
+                </tr>
+                <tr>
+                    <td><label for="{{ station_filter_form.station_voltage.id_for_label">Voltage</label></td>
+                    <td><label for="{{ station_filter_form.pmu_channel.id_for_label">Channel</label></td>
+                </tr>
+                <tr>
+                    <td>{{ station_filter_form.station_voltage }}</td>
+                    <td>{{ station_filter_form.pmu_channel }}</td>
+                </tr>
+            </table>
+        </div>
+
+        <button id="next-step-2" class="next-step" type="button">Next Step</button>
+    </fieldset>
+
+    <fieldset id="field-set-3" class="fieldSet">
+        <h3>3. Select Stations to Filter On (Optional)</h3>
         <div class="fieldWrapper">
             {{ form.stations.errors }}
             <p><label for="{{ form.stations.id_for_label }}"><b>Select Stations</b> (Optional)</label></p>
@@ -150,49 +154,47 @@
             <br>
             <small>(CTRL + Click or SHIFT + Click to select multiple)</small>
         </div>
-        <button id="next-step-2" class="next-step" type="button">Next Step</button>
+        <button id="next-step-3" class="next-step" type="button">Next Step</button>
+        <!--<button id="next-step-3" class="next-step" type="submit">Next Step</button>-->
     </fieldset>
 
-    <fieldset id="field-set-3" class="field-set">
-        <h3>3. Select Signals</h3>
-        <div class="fieldWrapper">
-            <p><b>Specify Conditions</b> (Optional)</p>
-            {{ form.condition_value.errors }}
-            <label for="{{ form.condition_type.id_for_label }}">Condition: </label>
-            {{ form.condition_type }} {{ form.condition_operator }} {{ form.condition_value }}
-        </div>
-
-        <fieldset style="border:none;" id="conditions-field-set">
-            {{ formset.management_form }}
-            {{ formset.non_form_errors }}
-            {% for form in formset.forms %}
-            <div class="fieldWrapper formSet">
-                {{ form.condition_value.errors }}
-                <label for="{{ form.id_for_label }}">Additional Condition: </label>
-                {{ form.condition_type }} {{ form.condition_operator }} {{ form.condition_value }}
-            </div>
-            {% endfor %}
-
-
-            <input type="button" value="Add Another" id="add_another">
-            <script type="text/javascript">
-                $('#add_another').click(function() {
-                    cloneAnother('div.formSet:last', 'form');
-                });
-
-
-            </script>
-        </fieldset>
+    <fieldset id="field-set-4" class="fieldSet">
+        <h3>4. Filter the List of Signals (Optional)</h3>
 
         <div class="fieldWrapper">
-            <p><b>Select Signal Units</b> (Optional)</p>
-            {{ form.signal_units.errors }}
-            <label for="{{ form.signal_units.id_for_label }}">Signal Units:</label>
-            {{ form.signal_units }}
+            <table>
+                <tr>
+                    <td>{{ signal_filter_form.signal_voltage.errors }}</td>
+                    <td>{{ signal_filter_form.signal_type.errors }}</td>
+                    <td>{{ signal_filter_form.signal_asset.errors }}</td>
+                    <td>{{ signal_filter_form.signal_unit.errors }}</td>
+                    <td>{{ signal_filter_form.signal_phase.errors }}</td>
+                </tr>
+                <tr>
+                    <td><label for="{{ signal_filter_form.signal_voltage.id_for_label">Voltage</label></td>
+                    <td><label for="{{ signal_filter_form.signal_type.id_for_label">Type</label></td>
+                    <td><label for="{{ signal_filter_form.signal_asset.id_for_label">Asset</label></td>
+                    <td><label for="{{ signal_filter_form.signal_unit.id_for_label">Unit</label></td>
+                    <td><label for="{{ signal_filter_form.signal_phase.id_for_label">Phase</label></td>
+                </tr>
+                <tr>
+                    <td>{{ signal_filter_form.signal_voltage }}</td>
+                    <td>{{ signal_filter_form.signal_type }}</td>
+                    <td>{{ signal_filter_form.signal_asset }}</td>
+                    <td>{{ signal_filter_form.signal_unit }}</td>
+                    <td>{{ signal_filter_form.signal_phase }}</td>
+                </tr>
+            </table>
         </div>
 
         <input class="button" type="reset" value="Reset"/>
-        <input class="button" type="submit" style="width: 120px;" value="Get Signals" id="refresh-signals" name="refresh"/>
+        <!--<input class="button" type="submit" style="width: 120px;" value="Get Signals" id="refresh-signals" name="refresh"/>-->
+            <button id="next-step-4" class="next-step" type="button">Next Step</button>
+            <!--<button id="next-step-3" class="next-step" type="submit">Next Step</button>-->
+    </fieldset>
+
+    <fieldset id="field-set-5" class="fieldSet">
+        <h3>5. Select Signals</h3>
 
         {{ signal_form.non_form_errors }}
         <div class="fieldWrapper" id="signal-form-wrapper">
@@ -202,9 +204,8 @@
             <br>
             <small>(CTRL + Click or SHIFT + Click to select multiple)</small>
 
-            <br><input class="button" type="submit" style="width:100px;" value="Send Query" name="send" id="send-query"/>
+            <!--<br><input class="button" type="submit" style="width:100px;" value="Send Query" name="send" id="send-query"/>-->
         </div>
-        <button id="next-step-3" class="next-step" type="button">Next Step</button>
     </fieldset>
 </form>
 
