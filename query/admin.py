@@ -1,5 +1,5 @@
 from django.contrib import admin
-from models import SystemCpu, SystemNode, SystemStatus, Query
+from query.models import SystemCpu, SystemNode, SystemStatus, Query
 
 # Register your models here.
 admin.site.register(SystemCpu)
