@@ -4,13 +4,29 @@ from django.contrib.auth.models import User
 
 import json
 
+
+# System CPU, which is one of many CPU's that live inside a node.
+class SystemCpu(models.Model):
+    # MANY cpus to ONE node
+    node = models.ForeignKey('SystemNode')
+    cpu_id = models.IntegerField(max_length=1024)
+    cpu_load = models.FloatField(max_length=1024, default=0)
+
+# System node, that contains information about disk space as well as 
+# CPU's
+class SystemNode(models.Model):
+    # MANY nodes to ONE SystemStatus 
+    system = models.ForeignKey('SystemStatus')
+    node_id = models.IntegerField(max_length=100)    
+    used = models.IntegerField(max_length=1024, null=True)
+    available = models.IntegerField(max_length=1024, null=True)
+ 
+
 # System Status model holding data for the system
 class SystemStatus(models.Model):
     # not sure you need a owner
-    sr_cpu = models.CommaSeparatedIntegerField(max_length=1024, null=True)
-    sr_used = models.IntegerField(max_length=1024, null=True)
-    sr_available = models.IntegerField(max_length=1024, null=True)
-    
+    # sr_cpu = models.CommaSeparatedIntegerField(max_length=1024, null=True)
+    system_id = models.IntegerField(max_length=10)
 
 # Query model holding data from built queries
 class Query(models.Model):
@@ -24,6 +40,7 @@ class Query(models.Model):
     stations = models.CharField(max_length=1024)
     conditions = models.CharField(max_length=1024)
     file_name = models.CharField(max_length=108, default="n/a")
+
     status_field = models.CharField(max_length=1024, null=True)
 
     # QueryResponses

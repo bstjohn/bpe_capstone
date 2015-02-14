@@ -5,7 +5,7 @@ from django.forms import formset_factory
 from django.utils.datastructures import MultiValueDictKeyError
 
 from query.forms import QueryForm, ConditionForm, SignalForm
-from query.models import Query
+from query.models import Query, SystemStatus, SystemNode, SystemCpu
 from stations.models import Station
 
 import datetime
@@ -40,11 +40,21 @@ class QueryObject:
 
 
 class SystemStatusObject:
-    def __init__(self,  sr_cpu, sr_available, sr_used):
-        self.sr_cpu = sr_cpu
-        self.sr_available = sr_available
-        self.sr_used = sr_used
-        
+    def __init__(self,  system_id):
+        self.system_id = system_id
+
+
+class SystemNodeObject:
+     def __init__(self, node_id, used, available):
+        self.node_id = node_id       
+        self.used = used        
+        self.available = available        
+
+
+class SystemCpuObject:
+     def __init__(self, cpu_id, cpu_load):
+        self.cpu_id = cpu_id
+        self.cpu_load = cpu_load       
 
 @login_required
 def query_index(request):
@@ -57,13 +67,15 @@ def query_result(request):
 
 @login_required
 def status_result(request):
-    return render(request, 'status/status-result.html')
+    return render(request, 'query/status-result.html')
 
 form_submitted = False
 query_model = Query()
 ss_model = SystemStatus()
 query_object = QueryObject(None, None, None, None, None, None, None, None, None, None)
-ss_object = SystemStatusObject(None, None, None)
+ss_object = SystemStatusObject(None)
+sn_object = SystemNodeObject(None, None, None)
+scpu_object = SystemCpuObject(None, None)
 
 
 # calculate and return a results page render
@@ -76,7 +88,6 @@ def return_result_page(request, query_model):
         'qr_file': query_model.qr_file,
         'ar_file': query_model.ar_file,
         'status_field': query_model.status_field,
-        'status_field': query_model.status_field,
         'sr_completed': query_model.sr_completed}
     return render(request, 'query/query-result.html', context)
 
@@ -84,9 +95,10 @@ def return_result_page(request, query_model):
 # calculate and return the rendered page
 def return_status_page(request, StatusResponse): 
     context = {
-        'sr_cpu': query_model.sr_cpu,
-        'sr_available': query_model.sr_available,
-        'sr_used': query_model.sr_used}
+   #  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+   #     calculate what needs to be passed in
+   #  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              }
     return render(request, 'query/query-result.html', context)
 
 
