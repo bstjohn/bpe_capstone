@@ -22,6 +22,22 @@
         else {
             signalFormWrapper.hide();
         }
+
+        $('.field-set').each(function(index) {
+            if (index == 0) {
+                return true;
+            }
+            $('#' + this.id).hide();
+        });
+
+        $('.next-step').bind('click', function(){
+            var currentId = parseInt(this.id.replace('next-step-', ''));
+            var fieldSetId = '#field-set-' + currentId;
+            $(fieldSetId).hide();
+            var nextId = currentId + 1;
+            var nextFieldSetId = '#field-set-' + nextId;
+            $(nextFieldSetId).show();
+        });
     });
 
     $(function() {
@@ -65,118 +81,131 @@
 <form action="/query/query-builder/" method="post" enctype=multipart/form-data>
     {% csrf_token %}
 
+    <h3>Complete 3 steps to send a query:</h3>
     {{ form.non_field_errors }}
-    <div class="fieldWrapper">
-        <p>
-            {{ form.query_name.errors }}
-            <label for="{{ form.query_name.id_for_label }}">Name of Your Query: </label>
-            {{ form.query_name }}
-        </p>
-    </div>
-
-
-    <div class="fieldWrapper">
-        <table width="80%">
-            <tr>
-                <td>{{ form.start_date.errors }}</td>
-                <td>{{ form.start_time.errors }}</td>
-            </tr>
-            <tr>
-                <td>
-                    <label for="{{ form.start_date.id_for_label }}">Start Date: </label>
-                    {{ form.start_date }}
-                </td>
-                <td>
-                    <label for="{{ form.start_time.id_for_label }}">Start Time: </label>
-                    {{ form.start_time }}
-                </td>
-            </tr>
-        </table>
-    </div>
-
-    <div class="fieldWrapper">
-        <table width="80%">
-            <tr>
-                <td>{{ form.end_date.errors }}</td>
-                <td>{{ form.end_time.errors }}</td>
-            </tr>
-            <tr>
-                <td>
-                    <label for="{{ form.end_date.id_for_label }}">End Date: </label>
-                    {{ form.end_date }}
-                </td>
-                <td>
-                    <label for="{{ form.end_time.id_for_label }}">End Time: </label>
-                    {{ form.end_time }}
-                </td>
-            </tr>
-        </table>
-    </div>
-
-    <div class="fieldWrapper">
-        {{ form.file.errors }}
-        <label for="{{ form.file.id_for_label }}">Analysis File: </label>
-        {{ form.file }}
-    </div>
-
-    <div class="fieldWrapper">
-        {{ form.stations.errors }}
-        <p><label for="{{ form.stations.id_for_label }}"><b>Select Stations</b> (Optional)</label></p>
-        {{ form.stations }}
-        <br>
-        <small>(CTRL + Click or SHIFT + Click to select multiple)</small>
-    </div>
-
-    <div class="fieldWrapper">
-        <p><b>Specify Conditions</b> (Optional)</p>
-        {{ form.condition_value.errors }}
-        <label for="{{ form.condition_type.id_for_label }}">Condition: </label>
-        {{ form.condition_type }} {{ form.condition_operator }} {{ form.condition_value }}
-    </div>
-
-    <fieldset style="border:none;" id="conditions-field-set">
-        {{ formset.management_form }}
-        {{ formset.non_form_errors }}
-        {% for form in formset.forms %}
-        <div class="fieldWrapper formSet">
-            {{ form.condition_value.errors }}
-            <label for="{{ form.id_for_label }}">Additional Condition: </label>
-            {{ form.condition_type }} {{ form.condition_operator }} {{ form.condition_value }}
+    <fieldset id="field-set-1" class="field-set">
+        <h3>1. Fill Out Query Details</h3>
+        <div class="fieldWrapper">
+            <p>
+                {{ form.query_name.errors }}
+                <label for="{{ form.query_name.id_for_label }}">Name of Your Query: </label>
+                {{ form.query_name }}
+            </p>
         </div>
-        {% endfor %}
 
 
-        <input type="button" value="Add Another" id="add_another">
-        <script type="text/javascript">
-            $('#add_another').click(function() {
-                cloneAnother('div.formSet:last', 'form');
-            });
+        <div class="fieldWrapper">
+            <table width="80%">
+                <tr>
+                    <td>{{ form.start_date.errors }}</td>
+                    <td>{{ form.start_time.errors }}</td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="{{ form.start_date.id_for_label }}">Start Date: </label>
+                        {{ form.start_date }}
+                    </td>
+                    <td>
+                        <label for="{{ form.start_time.id_for_label }}">Start Time: </label>
+                        {{ form.start_time }}
+                    </td>
+                </tr>
+            </table>
+        </div>
 
+        <div class="fieldWrapper">
+            <table width="80%">
+                <tr>
+                    <td>{{ form.end_date.errors }}</td>
+                    <td>{{ form.end_time.errors }}</td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="{{ form.end_date.id_for_label }}">End Date: </label>
+                        {{ form.end_date }}
+                    </td>
+                    <td>
+                        <label for="{{ form.end_time.id_for_label }}">End Time: </label>
+                        {{ form.end_time }}
+                    </td>
+                </tr>
+            </table>
+        </div>
 
-        </script>
+        <div class="fieldWrapper">
+            {{ form.file.errors }}
+            <label for="{{ form.file.id_for_label }}">*Analysis File: </label>
+            {{ form.file }}
+            *Optional
+        </div>
+        <button id="next-step-1" class="next-step" type="button">Next Step</button>
     </fieldset>
 
-    <div class="fieldWrapper">
-        <p><b>Select Signal Units</b> (Optional)</p>
-        {{ form.signal_units.errors }}
-        <label for="{{ form.signal_units.id_for_label }}">Signal Units:</label>
-        {{ form.signal_units }}
-    </div>
+    <fieldset id="field-set-2" class="field-set">
+        <h3>2. Select Stations to Filter On (Optional)</h3>
+        <div class="fieldWrapper">
+            {{ form.stations.errors }}
+            <p><label for="{{ form.stations.id_for_label }}"><b>Select Stations</b> (Optional)</label></p>
+            {{ form.stations }}
+            <br>
+            <small>(CTRL + Click or SHIFT + Click to select multiple)</small>
+        </div>
+        <button id="next-step-2" class="next-step" type="button">Next Step</button>
+    </fieldset>
 
-    <br>
-    <input class="button" type="reset" value="Reset"/>
-    <input class="button" type="submit" style="width: 120px;" value="Get Signals" id="refresh-signals" name="refresh"/>
+    <fieldset id="field-set-3" class="field-set">
+        <h3>3. Select Signals</h3>
+        <div class="fieldWrapper">
+            <p><b>Specify Conditions</b> (Optional)</p>
+            {{ form.condition_value.errors }}
+            <label for="{{ form.condition_type.id_for_label }}">Condition: </label>
+            {{ form.condition_type }} {{ form.condition_operator }} {{ form.condition_value }}
+        </div>
 
-    {{ signal_form.non_form_errors }}
-    <div class="fieldWrapper" id="signal-form-wrapper">
-        <br><label for="{{ signal_form.signals.id_for_label }}"><b>List of Signals</b></label>
-        {{ signal_form.signals.errors }}
-        {{ signal_form.signals }}
-        <br>
-        <small>(CTRL + Click or SHIFT + Click to select multiple)</small>
+        <fieldset style="border:none;" id="conditions-field-set">
+            {{ formset.management_form }}
+            {{ formset.non_form_errors }}
+            {% for form in formset.forms %}
+            <div class="fieldWrapper formSet">
+                {{ form.condition_value.errors }}
+                <label for="{{ form.id_for_label }}">Additional Condition: </label>
+                {{ form.condition_type }} {{ form.condition_operator }} {{ form.condition_value }}
+            </div>
+            {% endfor %}
 
-        <br><input class="button" type="submit" style="width:100px;" value="Send Query" name="send" id="send-query"/>
-    </div>
+
+            <input type="button" value="Add Another" id="add_another">
+            <script type="text/javascript">
+                $('#add_another').click(function() {
+                    cloneAnother('div.formSet:last', 'form');
+                });
+
+
+            </script>
+        </fieldset>
+
+        <div class="fieldWrapper">
+            <p><b>Select Signal Units</b> (Optional)</p>
+            {{ form.signal_units.errors }}
+            <label for="{{ form.signal_units.id_for_label }}">Signal Units:</label>
+            {{ form.signal_units }}
+        </div>
+
+        <input class="button" type="reset" value="Reset"/>
+        <input class="button" type="submit" style="width: 120px;" value="Get Signals" id="refresh-signals" name="refresh"/>
+
+        {{ signal_form.non_form_errors }}
+        <div class="fieldWrapper" id="signal-form-wrapper">
+            <br><label for="{{ signal_form.signals.id_for_label }}"><b>List of Signals</b></label>
+            {{ signal_form.signals.errors }}
+            {{ signal_form.signals }}
+            <br>
+            <small>(CTRL + Click or SHIFT + Click to select multiple)</small>
+
+            <br><input class="button" type="submit" style="width:100px;" value="Send Query" name="send" id="send-query"/>
+        </div>
+        <button id="next-step-3" class="next-step" type="button">Next Step</button>
+    </fieldset>
 </form>
 
 <a href="/logout">Logout</a>
