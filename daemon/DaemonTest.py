@@ -1,6 +1,6 @@
 #!/usr/bin/python2.7
 #
-#  File:    DaemonTest.py
+# File:    DaemonTest.py
 #  Author:  Daniel E. Wilson
 #
 #  This is a test program to see if the query daemon is correctly
@@ -12,11 +12,11 @@ import socket
 import select
 
 # Set the server and host name to work with.
-host='localhost'
-port=4242
+host = 'localhost'
+port = 4242
 
 # Create the socket.
-s=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 # Create the JSON object.
 query= {'query': {'query_id': 3728,
@@ -24,7 +24,6 @@ query= {'query': {'query_id': 3728,
                   'start': '2014-10-31 14:00:00',
                   'end': '2014-10-31 14:30:00',
                   'analysisFile': '/this/dir/to/foo.r'}}
-
 
 try:
     # Now connect to the server.
@@ -46,7 +45,6 @@ try:
             response = response + line
 
     # Show the user what was send and recieved.
-    print "Sent: {}".format(repr(query))
     print
     print "Received: '{}'".format(response.strip())
 

@@ -1,6 +1,6 @@
 #!/user/bin/python2.7
 #
-#  File:    QueryClient.py
+# File:    QueryClient.py
 #  Author:  Daniel E. Wilson
 #
 #  File of classes to handle the queries in the backend of
@@ -15,7 +15,8 @@ host = 'localhost'
 port = 1701
 
 # Set the default time limit
-timeLimit = 5*60
+timeLimit = 5 * 60
+
 
 class QueryEngine(threading.Thread):
     "Class that handles all of the queries to the BPA engine"
