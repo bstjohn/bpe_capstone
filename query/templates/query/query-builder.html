@@ -63,7 +63,7 @@
 <form action="/query/query-builder/" method="post" enctype=multipart/form-data>
     {% csrf_token %}
 
-    <h3>Complete 4 steps to send a query:</h3>
+    <h3>Complete 5 steps to send a query:</h3>
     {{ form.non_field_errors }}
     <fieldset id="field-set-1" class="fieldSet">
         <h3>1. Fill Out Query Details</h3>
@@ -124,7 +124,7 @@
     </fieldset>
 
     <fieldset id="field-set-2" class="fieldSet">
-        <h3>3. Filter the List of Stations (Optional)</h3>
+        <h3>2. Filter the List of Stations (Optional)</h3>
         <div class="fieldWrapper">
             <table width="80%">
                 <tr>
