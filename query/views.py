@@ -184,7 +184,7 @@ def query_builder(request):
                 station_queryset = Station.objects.all()
                 station_objects = get_query_objects(station_queryset, station_objects)
 
-            SignalForm.update_signals(signal_form, station_objects, conditions, signal_units)
+            SignalForm.update_signals(station_objects, conditions, signal_units)
 
             return HttpResponseRedirect('/query/query-builder/')
     else:

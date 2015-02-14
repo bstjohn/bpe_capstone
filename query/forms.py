@@ -37,16 +37,24 @@ SIGNALS = (('0x84e0-P-01', '<0x84e0-P-01> Phasor  Bus #1     N         Voltage-P
 
 
 def update_stations():
-    # global station_choices
-    station_choices = ()
+    station_choices = []
     stations = Station.objects.all()
+
     for station in stations:
-        station_choices += (station.PMU_Name_Short.__str__(), station.__str__())
+        station_choices.append((station.PMU_Name_Short.__str__(), station.__str__()))
 
     if not station_choices:
-        station_choices += ('', '')
+        station_choices.insert(0, ('', ''))
 
     return station_choices
+
+
+signal_choices = []
+
+
+def add_signal_choices(signal_objects):
+    for signal in signal_objects:
+        signal_choices.append((signal.Signal_ID, signal.__str__()))
 
 
 # The query form attributes
@@ -67,7 +75,7 @@ class QueryForm(forms.Form):
 
     stations = forms.CharField(required=False,
                                widget=forms.SelectMultiple(
-                                   attrs={'size': '3'}, choices=[update_stations()]))
+                                   attrs={'size': '3'}, choices=update_stations()))
 
     condition_type = forms.CharField(required=False, widget=forms.Select(choices=CONDITION_TYPES))
     condition_operator = forms.CharField(required=False, widget=forms.Select(choices=CONDITION_OPERATORS))
@@ -84,39 +92,31 @@ class ConditionForm(forms.Form):
     condition_value = forms.IntegerField(required=False, widget=forms.NumberInput(attrs={'style': 'width: 70px;'}))
 
 
-signal_choices = ()
-
-
 class SignalForm(forms.Form):
     def __init__(self, *args, **kwargs):
-        global signal_choices
         super(SignalForm, self).__init__(*args, **kwargs)
+        global signal_choices
         if not signal_choices:
-            signal_choices += ('', '')
+            signal_choices.insert(0, ('', ''))
         self.fields['signals'] = forms.CharField(
             widget=forms.SelectMultiple(
                 attrs={'size': '3'},
-                choices=[signal_choices]))
+                choices=signal_choices))
 
-    def update_signals(self, stations, conditions, signal_units):
-        global signal_choices
-        signal_choices = ()
-
-        signals_array = []
-
+    @staticmethod
+    def update_signals(stations, conditions, signal_units):
         station_pmu_ids = []
         for station in stations:
-            # signals_array.append(Signal.objects.filter(Signal_PMU_ID=station.PMU_ID))
             station_pmu_ids.append(station.PMU_ID)
 
-        print(signal_units)
-
+        signal_querysets = []
         if stations and not signal_units and not conditions:
-            signals_array.append(Signal.objects.filter(Signal_PMU_ID__in=station_pmu_ids))
+            signal_querysets.append(Signal.objects.filter(Signal_PMU_ID__in=station_pmu_ids))
         elif signal_units and not stations and not conditions:
-            signals_array.append(Signal.objects.filter(Signal_Unit__in=signal_units))
+            signal_querysets.append(Signal.objects.filter(Signal_Unit__in=signal_units))
         elif stations and signal_units and not conditions:
-            signals_array.append(Signal.objects.filter(Signal_PMU_ID__in=station_pmu_ids,
+
+            signal_querysets.append(Signal.objects.filter(Signal_PMU_ID__in=station_pmu_ids,
                                                        Signal_Unit__in=signal_units))
         elif conditions:
             for condition in conditions:
@@ -125,37 +125,44 @@ class SignalForm(forms.Form):
                 condition_value = condition.condition_value
                 if condition_type == "voltage":
                     if condition_operator == "=":
-                        signals_array.append(Signal.objects.filter(Signal_Voltage=condition_value,
-                                                                   Signal_PMU_ID__in=station_pmu_ids,
-                                                                   Signal_Unit__in=signal_units))
+                        signal_querysets.append(Signal.objects.filter(Signal_Voltage=condition_value,
+                                                                      Signal_PMU_ID__in=station_pmu_ids,
+                                                                      Signal_Unit__in=signal_units))
                     elif condition_operator == "!=":
-                        signals_array.append(Signal.objects.filter(Signal_Voltage__lte=condition_value,
-                                                                   Signal_Voltage__gte=condition_value,
-                                                                   Signal_PMU_ID__in=station_pmu_ids,
-                                                                   Signal_Unit__in=signal_units))
+                        signal_querysets.append(Signal.objects.filter(Signal_Voltage__lte=condition_value,
+                                                                      Signal_Voltage__gte=condition_value,
+                                                                      Signal_PMU_ID__in=station_pmu_ids,
+                                                                      Signal_Unit__in=signal_units))
                     elif condition_operator == "<":
-                        signals_array.append(Signal.objects.filter(Signal_Voltage__lt=condition_value,
-                                                                   Signal_PMU_ID__in=station_pmu_ids,
-                                                                   Signal_Unit__in=signal_units))
+                        signal_querysets.append(Signal.objects.filter(Signal_Voltage__lt=condition_value,
+                                                                      Signal_PMU_ID__in=station_pmu_ids,
+                                                                      Signal_Unit__in=signal_units))
                     elif condition_operator == "<=":
-                        signals_array.append(Signal.objects.filter(Signal_Voltage__lte=condition_value,
-                                                                   Signal_PMU_ID__in=station_pmu_ids,
-                                                                   Signal_Unit__in=signal_units))
+                        signal_querysets.append(Signal.objects.filter(Signal_Voltage__lte=condition_value,
+                                                                      Signal_PMU_ID__in=station_pmu_ids,
+                                                                      Signal_Unit__in=signal_units))
                     elif condition_operator == ">":
-                        signals_array.append(Signal.objects.filter(Signal_Voltage__gt=condition_value,
-                                                                   Signal_PMU_ID__in=station_pmu_ids,
-                                                                   Signal_Unit__in=signal_units))
+                        signal_querysets.append(Signal.objects.filter(Signal_Voltage__gt=condition_value,
+                                                                      Signal_PMU_ID__in=station_pmu_ids,
+                                                                      Signal_Unit__in=signal_units))
                     elif condition_operator == ">=":
-                        signals_array.append(Signal.objects.filter(Signal_Voltage__gte=condition_value,
-                                                                   Signal_PMU_ID__in=station_pmu_ids,
-                                                                   Signal_Unit__in=signal_units))
+                        signal_querysets.append(Signal.objects.filter(Signal_Voltage__gte=condition_value,
+                                                                      Signal_PMU_ID__in=station_pmu_ids,
+                                                                      Signal_Unit__in=signal_units))
 
-        for signal_object in signals_array:
-            for signal in signal_object:
-                signal_choices += (signal.Signal_ID, signal.__str__())
+        global signal_choices
+        signal_choices = []
 
-        # No stations were selected
-        if not signals_array:
+        for signal_queryset in signal_querysets:
+            add_signal_choices(signal_queryset)
+
+        # No specific signals were filtered, list them all
+        if not signal_querysets:
             signal_objects = Signal.objects.all()
-            for signal in signal_objects:
-                signal_choices += (signal.Signal_ID.__str__(), signal.__str__())
+            add_signal_choices(signal_objects)
+
+        # No signals made it through the filter so list nothing
+        if not signal_choices:
+            signal_choices.insert(0, ('', ''))
+
+        print(signal_choices)
