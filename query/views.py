@@ -72,7 +72,8 @@ def status_result(request):
     return render(request, 'query/status-result.html')
 
 
-form_submitted = False
+form_submit_log = {'detail_form': False, 'station_form': False, 'station_filter_form': False,
+                   'signal_form': False, 'signal_filter_form': False}
 current_step = 0
 query_model = Query()
 ss_model = SystemStatus()
@@ -107,12 +108,21 @@ def return_status_page(request, StatusResponse):
     return render(request, 'query/query-result.html', context)
 
 
+def get_context(username, form, station_form, station_filter_form, signal_form,
+                signal_filter_form, step, form_submits):
+    return {'username': username, 'form': form, 'station_form': station_form,
+            'station_filter_form': station_filter_form, 'signal_form': signal_form,
+            'signal_filter_form': signal_filter_form, 'current_step': step,
+            'form_submit_log': form_submits}
+
+
 # Builds a query given user input
 @login_required
 def query_builder(request):
-    global form_submitted
+    global form_submit_log
     global query_model
     global query_object
+    global current_step
     username = None
     if request.user.is_authenticated():
         username = request.user.username
@@ -121,60 +131,74 @@ def query_builder(request):
         query_model.create_date_time = creation_date
 
     if not request.method == 'POST':
-        form = QueryForm()
+        detail_form = QueryForm()
         station_form = StationForm()
         station_filter_form = StationFilterForm
         signal_form = SignalForm()
         signal_filter_form = SignalFilterForm()
 
-        context = {'username': username, 'form': form, 'station_form': station_form,
-                   'station_filter_form': station_filter_form, 'signal_form': signal_form,
-                   'signal_filter_form': signal_filter_form, 'signals_refreshed': int(form_submitted),
-                   'current_step': current_step}
+        context = get_context(username, detail_form, station_form, station_filter_form, signal_form,
+                              station_filter_form, current_step, form_submit_log)
         return render(request, 'query/query-builder.html', context)
 
-    form = QueryForm(request.POST, request.FILES)
+    detail_form = QueryForm(request.POST, request.FILES)
     signal_form = SignalForm(request.POST)
     signal_filter_form = SignalFilterForm(request.POST)
     station_form = StationForm(request.POST)
     station_filter_form = StationFilterForm(request.POST)
-    if form.is_valid():
-        global current_step
-        current_step += 1
-        context = {'username': username, 'form': form, 'station_form': station_form,
-                   'station_filter_form': station_filter_form, 'signal_form': signal_form,
-                   'signal_filter_form': signal_filter_form, 'signals_refreshed': int(form_submitted),
-                   'current_step': current_step}
+    if detail_form.is_valid() and form_submit_log['detail_form'] is False and 'save-details' in request.POST:
+        signal_form = SignalForm()
+        current_step = 1
+        print(current_step)
+        form_submit_log['detail_form'] = True
+        context = get_context(username, detail_form, station_form, station_filter_form, signal_form,
+                              signal_filter_form, current_step, form_submit_log)
         return render(request, 'query/query-builder.html', context)
-    elif station_filter_form.is_valid():
-        current_step += 1
-        context = {'username': username, 'form': form, 'station_form': station_form,
-                   'station_filter_form': station_filter_form, 'signal_form': signal_form,
-                   'signal_filter_form': signal_filter_form, 'signals_refreshed': int(form_submitted),
-                   'current_step': current_step}
-        return render(request, 'query/query-builder.html', context)
-    elif station_form.is_valid():
-        current_step += 1
-        context = {'username': username, 'form': form, 'station_form': station_form,
-                   'station_filter_form': station_filter_form, 'signal_form': signal_form,
-                   'signal_filter_form': signal_filter_form, 'signals_refreshed': int(form_submitted),
-                   'current_step': current_step}
-        return render(request, 'query/query-builder.html', context)
-    elif signal_filter_form.is_valid():
-        current_step += 1
-        context = {'username': username, 'form': form, 'station_form': station_form,
-                   'station_filter_form': station_filter_form, 'signal_form': signal_form,
-                   'signal_filter_form': signal_filter_form, 'signals_refreshed': int(form_submitted),
-                   'current_step': current_step}
-        return render(request, 'query/query-builder.html', context)
-    elif signal_form.is_valid():
+    elif not detail_form.is_valid() and 'save-details' in request.POST:
+        signal_form = SignalForm()
         current_step = 0
-        context = {'username': username, 'form': form, 'station_form': station_form,
-                   'station_filter_form': station_filter_form, 'signal_form': signal_form,
-                   'signal_filter_form': signal_filter_form, 'signals_refreshed': int(form_submitted),
-                   'current_step': current_step}
+        print(current_step)
+        form_submit_log['detail_form'] = False
+        context = get_context(username, detail_form, station_form, station_filter_form, signal_form,
+                              signal_filter_form, current_step, form_submit_log)
         return render(request, 'query/query-builder.html', context)
-
+    elif 'save-details' in request.POST:
+        signal_form = SignalForm()
+        current_step = 1
+        context = get_context(username, detail_form, station_form, station_filter_form, signal_form,
+                              signal_filter_form, current_step, form_submit_log)
+        return render(request, 'query/query-builder.html', context)
+    elif 'station-filter-submit' in request.POST:
+        signal_form = SignalForm()
+        current_step = 2
+        print(current_step)
+        context = get_context(username, detail_form, station_form, station_filter_form, signal_form,
+                              signal_filter_form, current_step, form_submit_log)
+        return render(request, 'query/query-builder.html', context)
+    elif 'station-submit' in request.POST:
+        signal_form = SignalForm()
+        current_step = 3
+        print(current_step)
+        context = get_context(username, detail_form, station_form, station_filter_form, signal_form,
+                              signal_filter_form, current_step, form_submit_log)
+        return render(request, 'query/query-builder.html', context)
+    elif 'signal-filter-submit' in request.POST:
+        signal_form = SignalForm()
+        current_step = 4
+        print(current_step)
+        context = get_context(username, detail_form, station_form, station_filter_form, signal_form,
+                              signal_filter_form, current_step, form_submit_log)
+        return render(request, 'query/query-builder.html', context)
+    elif signal_form.is_valid() and form_submit_log['signal_form'] is False and 'send' in request.POST:
+        form_submit_log['signal_form'] = True
+        return HttpResponseRedirect('/query/query-builder/')
+    elif 'send' in request.POST:
+        detail_form = QueryForm()
+        current_step = 4
+        print(current_step)
+        context = get_context(username, detail_form, station_form, station_filter_form, signal_form,
+                              signal_filter_form, current_step, form_submit_log)
+        return render(request, 'query/query-builder.html', context)
 
 def get_query_objects(query_set, query_object_list):
     for station_object in query_set:

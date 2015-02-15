@@ -17,14 +17,7 @@
 <script type="text/javascript">
     $(document).ready(function(){
         var sendQueryError = $('#send-query-error');
-        var signalsRefreshed = {{ signals_refreshed }};
         var signalFormWrapper = $('#signal-form-wrapper');
-        if (signalsRefreshed != 0) {
-            signalFormWrapper.show();
-        }
-        else {
-            signalFormWrapper.hide();
-        }
 
         $('.fieldSet').each(function(index) {
             if (index == {{ current_step }}) {
@@ -127,7 +120,7 @@
             {{ form.file }}
             *Optional
         </div>
-        <button id="next-step-1" class="nextStep" type="button">Next Step</button>
+        <button id="next-step-1" class="nextStep" type="submit" name="save-details">Next Step</button>
     </fieldset>
 
     <fieldset id="field-set-2" class="fieldSet">
@@ -146,7 +139,7 @@
         </div>
 
         <button id="previous-step-2" class="previousStep" type="button">Previous Step</button>
-        <button id="next-step-2" class="nextStep" type="button">Next Step</button>
+        <button id="next-step-2" class="nextStep" type="submit" name="station-filter-submit">Next Step</button>
     </fieldset>
 
     <fieldset id="field-set-3" class="fieldSet">
@@ -160,7 +153,7 @@
         </div>
 
         <button id="previous-step-3" class="previousStep" type="button">Previous Step</button>
-        <button id="next-step-3" class="nextStep" type="button">Next Step</button>
+        <button id="next-step-3" class="nextStep" type="submit" name="station-submit">Next Step</button>
         <!--<button id="next-step-3" class="nextStep" type="submit">Next Step</button>-->
     </fieldset>
 
@@ -189,7 +182,7 @@
         <input class="button" type="reset" value="Reset"/>
         <!--<input class="button" type="submit" style="width: 120px;" value="Get Signals" id="refresh-signals" name="refresh"/>-->
         <button id="previous-step-4" class="previousStep" type="button">Previous Step</button>
-        <button id="next-step-4" class="nextStep" type="button">Next Step</button>
+        <button id="next-step-4" class="nextStep" type="submit" name="signal-filter-submit">Next Step</button>
             <!--<button id="next-step-3" class="nextStep" type="submit">Next Step</button>-->
     </fieldset>
 
@@ -204,9 +197,9 @@
             <br>
             <small>(CTRL + Click or SHIFT + Click to select multiple)</small>
 
-            <br><input class="button" type="submit" style="width:100px;" value="Send Query" name="send" id="send-query"/>
         </div>
         <button id="previous-step-5" class="previousStep" type="button">Previous Step</button>
+        <br><input class="button" type="submit" style="width:100px;" value="Send Query" name="send" id="send-query"/>
     </fieldset>
 </form>
 
