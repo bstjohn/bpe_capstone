@@ -193,7 +193,7 @@ def query_builder(request):
 
         # station_voltage = station_filter_form.cleaned_data['station_voltage']
         station_voltage = request.POST.getlist('station_voltage')
-        pmu_channel = station_filter_form.cleaned_data['pmu_channel']
+        pmu_channel = request.POST.getlist('pmu_channel')
         StationForm.update_stations(station_form, station_voltage, pmu_channel)
 
         context = get_context(username, detail_form, station_form, station_filter_form, signal_form,
@@ -231,11 +231,11 @@ def query_builder(request):
         signal_form = SignalForm()
         current_step = 4
 
-        signal_voltage = signal_filter_form.cleaned_data['signal_voltage']
-        signal_type = signal_filter_form.cleaned_data['signal_type']
-        signal_asset = signal_filter_form.cleaned_data['signal_asset']
-        signal_unit = signal_filter_form.cleaned_data['signal_unit']
-        signal_phase = signal_filter_form.cleaned_data['signal_phase']
+        signal_voltage = request.POST.getlist('signal_voltage')
+        signal_type = request.POST.getlist('signal_type')
+        signal_asset = request.POST.getlist('signal_asset')
+        signal_unit = request.POST.getlist('signal_unit')
+        signal_phase = request.POST.getlist('signal_phase')
 
         station_objects = []
         for station in stations:
