@@ -1,0 +1,20 @@
+{% extends "user/base.html" %}
+
+{% block title %}System Status{% endblock %}
+
+{% block header %}
+{% block header-title %}<u><b>System Status:</b></u>:{% endblock %}
+{% endblock %}
+
+{% block content %}
+<div>
+    <ul>
+        <UL>
+            <LI>CPU: <u>{{sr_cpu}}</u></LI>
+            <LI>Available Diskspace: <u>{{sr_available}}</u></LI>
+            <LI>Used Diskspace: <u>{{sr_used}}</u></LI>
+        </UL>
+
+    </ul>
+</div>
+{% endblock %}

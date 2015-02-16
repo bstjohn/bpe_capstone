@@ -2,9 +2,11 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.forms import formset_factory
+from django.utils.datastructures import MultiValueDictKeyError
 
 from query.forms import QueryForm, ConditionForm, SignalForm
-from query.models import Query
+from query.models import Query, SystemStatus, SystemNode, SystemCpu
+from stations.models import Station
 
 import datetime
 import time
@@ -22,24 +24,83 @@ class Condition:
 
 
 class QueryObject:
-    def __init__(self, model_id, creation_date, start_date_time,
-                 end_date_time, stations, conditions, file_name):
+    def __init__(self, model_id, start_date_time, end_date_time,
+                 conditions, file_name, signals, qr_file, 
+                 ar_file, status_field, sr_completed):
         self.model_id = model_id
-        self.creation_date = creation_date
         self.start_date_time = start_date_time
         self.end_date_time = end_date_time
-        self.stations = stations
         self.conditions = conditions
         self.file_name = file_name
+        self.signals = signals
+        self.qr_file = qr_file
+        self.ar_file = ar_file
+        self.sr_completed = sr_completed
+        self.status_field = status_field
 
+
+class SystemStatusObject:
+    def __init__(self,  system_id):
+        self.system_id = system_id
+
+
+class SystemNodeObject:
+     def __init__(self, node_id, used, available):
+        self.node_id = node_id       
+        self.used = used        
+        self.available = available        
+
+
+class SystemCpuObject:
+     def __init__(self, cpu_id, cpu_load):
+        self.cpu_id = cpu_id
+        self.cpu_load = cpu_load       
 
 @login_required
 def query_index(request):
     return render(request, 'query/query.html')
 
+
+@login_required
+def query_result(request):
+    return render(request, 'query/query-result.html')
+
+@login_required
+def status_result(request):
+    return render(request, 'query/status-result.html')
+
 form_submitted = False
 query_model = Query()
-query_object = QueryObject(None, None, None, None, None, None, None)
+ss_model = SystemStatus()
+query_object = QueryObject(None, None, None, None, None, None, None, None, None, None)
+ss_object = SystemStatusObject(None)
+sn_object = SystemNodeObject(None, None, None)
+scpu_object = SystemCpuObject(None, None)
+
+
+# calculate and return a results page render
+# - pass in a request and query model,
+# - and return the rendered page 
+@login_required
+def return_result_page(request, query_model):
+    context = {
+        'query_id': query_model.id,
+        'qr_file': query_model.qr_file,
+        'ar_file': query_model.ar_file,
+        'status_field': query_model.status_field,
+        'sr_completed': query_model.sr_completed}
+    return render(request, 'query/query-result.html', context)
+
+# System Status
+# calculate and return the rendered page
+def return_status_page(request, StatusResponse): 
+    context = {
+   #  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+   #     calculate what needs to be passed in
+   #  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              }
+    return render(request, 'query/query-result.html', context)
+
 
 # Builds a query given user input
 @login_required
@@ -49,8 +110,6 @@ def query_builder(request):
     global query_object
     condition_form_set = formset_factory(ConditionForm, extra=1)
     username = None
-    creation_date = None
-    # query_model = Query()
     if request.user.is_authenticated():
         username = request.user.username
         query_model.user_name = username
@@ -66,12 +125,17 @@ def query_builder(request):
         if signal_form.is_valid() and form_submitted and 'send' in request.POST:
             query_model.save()
             query_object.model_id = query_model.id
+            query_object.signals = signal_form.cleaned_data['signals']
             print(convert_to_json(query_object))
             form_submitted = False
 
-            return HttpResponseRedirect('/query/query-result/')
+            # return the results page	   
+            return return_result_page(request, query_model)
         elif 'send' in request.POST:
-            return HttpResponseRedirect('/query/query-builder/')
+            form = QueryForm()
+            context = {'username': username, 'form': form, 'signal_form': signal_form,
+                       'formset': condition_form_set, 'signals_refreshed': int(form_submitted)}
+            return render(request, 'query/query-builder.html', context)
 
         if form.is_valid() and condition_form.is_valid() and 'refresh' in request.POST:
             query_model.owner = request.user
@@ -84,13 +148,16 @@ def query_builder(request):
             end_time = form.cleaned_data['end_time']
             end_date_time = datetime.datetime.combine(end_date, end_time)
             query_model.end_date_time = end_date_time
-            stations = form.cleaned_data['stations']
+            # stations = form.cleaned_data['stations']
+            stations = request.POST.getlist('stations')
             query_model.set_stations(stations)
             condition_type = form.cleaned_data['condition_type']
             condition_operator = form.cleaned_data['condition_operator']
             condition_value = form.cleaned_data['condition_value']
             primary_condition = Condition(condition_type, condition_operator, condition_value)
-            conditions = [primary_condition]
+            conditions = []
+            if condition_value is not None:
+                conditions = [primary_condition]
 
             for condition_field in condition_form:
                 condition = Condition(condition_field.cleaned_data['condition_type'],
@@ -103,35 +170,57 @@ def query_builder(request):
                 condition_strings.append(condition.__str__())
             query_model.set_conditions(condition_strings)
 
-            file = request.FILES["file"]
-            file_name = file.name
+            # signal_units = form.cleaned_data['signal_units']
+            signal_units = request.POST.getlist('signal_units')
+            if not signal_units:
+                signal_units = ['Voltage', 'Current', 'Frequency', 'ROCOF', 'Power-Real',
+                                'Power-Reactive', 'Digital']
+
+            try:
+                file = request.FILES["file"]
+                file_name = file.name
+            except MultiValueDictKeyError:
+                file_name = ""
             query_model.file_name = file_name
 
-            query_object = QueryObject(None, creation_date,
-                                       start_date_time, end_date_time,
-                                       stations, conditions, file_name)
+            query_object = QueryObject(None, start_date_time, end_date_time,
+                                       conditions, file_name, None, None, None, None, None)
 
             form_submitted = True
 
-            SignalForm.update_signals(signal_form, stations, conditions)
+            station_objects = []
+            for station in stations:
+                station_queryset = Station.objects.filter(PMU_Name_Short=station)
+                station_objects = get_query_objects(station_queryset, station_objects)
+            if not station_objects:
+                station_queryset = Station.objects.all()
+                station_objects = get_query_objects(station_queryset, station_objects)
+
+            SignalForm.update_signals(station_objects, conditions, signal_units)
 
             return HttpResponseRedirect('/query/query-builder/')
     else:
         form = QueryForm()
         signal_form = SignalForm()
 
-    context = {'username': username, 'form': form, 'signal_form': signal_form, 'formset': condition_form_set}
+    context = {'username': username, 'form': form, 'signal_form': signal_form, 'formset': condition_form_set,
+               'signals_refreshed': int(form_submitted)}
     return render(request, 'query/query-builder.html', context)
+
+
+def get_query_objects(query_set, query_object_list):
+    for station_object in query_set:
+        query_object_list.append(station_object)
+    return query_object_list
 
 
 def convert_to_json(query_param):
     query_id = query_param.model_id
-    creation_date = query_param.creation_date
     start_date_time = query_param.start_date_time
     end_date_time = query_param.end_date_time
-    stations = query_param.stations
     conditions = query_param.conditions
     file_name = query_param.file_name
+    signals = query_param.signals
 
     voltage_conditions = []
     current_conditions = []
@@ -149,12 +238,10 @@ def convert_to_json(query_param):
     query = json.dumps({
         "query": {
             "query_id": query_id,
-            "created": creation_date.__str__(),
             "start": start_date_time.__str__(),
             "end": end_date_time.__str__(),
-            "stations": stations,
             "analysis_file": file_name,
-            "signal_id": ""
+            "signal_id": signals
         }
     })
 

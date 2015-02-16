@@ -1,0 +1,43 @@
+{% extends "user/base.html" %}
+
+{% block title %}Job Results{% endblock %}
+
+{% block header %}
+{% block header-title %}<u><b>Results for QueryID #{{query_id}}</b></u>:{% endblock %}
+{% endblock %}
+
+{% block content %}
+<div>
+    <ul>
+
+        <H3><u>Job Response:</u></H3>
+        <UL>
+            <LI>File: <u>{{qr_file}}</u></LI>
+        </UL>
+
+        <H3><u>Analysis Response:</u></H3>
+        <UL>
+            <LI>File: <u>{{ar_file}}</u></LI>
+        </Ul>
+
+        <H3><u>Status Response:</u></H3>
+        <UL>
+            <LI>Completed: <u>{{sr_completed}}</u></LI>
+            <LI>Status Report: "{{status_field}}"</LI>
+        </UL>
+
+    </ul>
+</div>
+<div>
+    <ul>
+        <H1>Username: {{username}}</H1>
+
+        <H2>Filename: {{filename}}</H2>
+
+        <H3>Created: {{created}}</H3>
+        <H4>Start: {{start}}</H4>
+        <H5>End: {{end}}</H5>
+    </ul>
+
+</div>
+{% endblock %}

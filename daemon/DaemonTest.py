@@ -45,6 +45,7 @@ try:
             response = response + line
 
     # Show the user what was send and recieved.
+    print "Sent: {}".format(repr(query))
     print
     print "Received: '{}'".format(response.strip())
 
