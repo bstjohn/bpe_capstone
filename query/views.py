@@ -72,9 +72,8 @@ def status_result(request):
     return render(request, 'query/status-result.html')
 
 
-form_submit_log = {'detail_form': False, 'station_form': False, 'station_filter_form': False,
-                   'signal_form': False, 'signal_filter_form': False}
 current_step = 0
+stations = ''
 query_model = Query()
 ss_model = SystemStatus()
 query_object = QueryObject(None, None, None, None, None, None, None, None, None, None)
@@ -109,20 +108,20 @@ def return_status_page(request, StatusResponse):
 
 
 def get_context(username, form, station_form, station_filter_form, signal_form,
-                signal_filter_form, step, form_submits):
+                signal_filter_form, step):
     return {'username': username, 'form': form, 'station_form': station_form,
             'station_filter_form': station_filter_form, 'signal_form': signal_form,
-            'signal_filter_form': signal_filter_form, 'current_step': step,
-            'form_submit_log': form_submits}
+            'signal_filter_form': signal_filter_form, 'current_step': step}
 
 
 # Builds a query given user input
 @login_required
 def query_builder(request):
-    global form_submit_log
     global query_model
     global query_object
     global current_step
+    global stations
+
     username = None
     if request.user.is_authenticated():
         username = request.user.username
@@ -138,7 +137,7 @@ def query_builder(request):
         signal_filter_form = SignalFilterForm()
 
         context = get_context(username, detail_form, station_form, station_filter_form, signal_form,
-                              signal_filter_form, current_step, form_submit_log)
+                              signal_filter_form, current_step)
         return render(request, 'query/query-builder.html', context)
 
     detail_form = QueryForm(request.POST, request.FILES)
@@ -147,11 +146,9 @@ def query_builder(request):
     station_form = StationForm(request.POST)
     station_filter_form = StationFilterForm(request.POST)
     if detail_form.is_valid() and 'save-details' in request.POST:
-    # if detail_form.is_valid() and form_submit_log['detail_form'] is False and 'save-details' in request.POST:
         signal_form = SignalForm()
         current_step = 1
         print(current_step)
-        form_submit_log['detail_form'] = True
 
         query_model.owner = request.user
         query_model.query_name = detail_form.cleaned_data['query_name']
@@ -175,20 +172,19 @@ def query_builder(request):
                                    None, file_name, None, None, None, None, None)
 
         context = get_context(username, detail_form, station_form, station_filter_form, signal_form,
-                              signal_filter_form, current_step, form_submit_log)
+                              signal_filter_form, current_step)
         return render(request, 'query/query-builder.html', context)
     elif not detail_form.is_valid() and 'save-details' in request.POST:
         signal_form = SignalForm()
         current_step = 0
-        form_submit_log['detail_form'] = False
         context = get_context(username, detail_form, station_form, station_filter_form, signal_form,
-                              signal_filter_form, current_step, form_submit_log)
+                              signal_filter_form, current_step)
         return render(request, 'query/query-builder.html', context)
     elif 'save-details' in request.POST:
         signal_form = SignalForm()
         current_step = 1
         context = get_context(username, detail_form, station_form, station_filter_form, signal_form,
-                              signal_filter_form, current_step, form_submit_log)
+                              signal_filter_form, current_step)
         return render(request, 'query/query-builder.html', context)
     elif station_filter_form.is_valid() and 'station-filter-submit' in request.POST:
         detail_form = QueryForm()
@@ -200,7 +196,7 @@ def query_builder(request):
         StationForm.update_stations(station_voltage, pmu_channel)
 
         context = get_context(username, detail_form, station_form, station_filter_form, signal_form,
-                              signal_filter_form, current_step, form_submit_log)
+                              signal_filter_form, current_step)
         return render(request, 'query/query-builder.html', context)
     elif 'station-filter-submit' in request.POST:
         detail_form = QueryForm()
@@ -208,7 +204,7 @@ def query_builder(request):
         current_step = 2
 
         context = get_context(username, detail_form, station_form, station_filter_form, signal_form,
-                              signal_filter_form, current_step, form_submit_log)
+                              signal_filter_form, current_step)
         return render(request, 'query/query-builder.html', context)
     elif station_form.is_valid() and 'station-submit' in request.POST:
         detail_form = QueryForm()
@@ -219,7 +215,7 @@ def query_builder(request):
         query_model.set_stations(stations)
 
         context = get_context(username, detail_form, station_form, station_filter_form, signal_form,
-                              signal_filter_form, current_step, form_submit_log)
+                              signal_filter_form, current_step)
         return render(request, 'query/query-builder.html', context)
     elif 'station-submit' in request.POST:
         detail_form = QueryForm()
@@ -227,7 +223,7 @@ def query_builder(request):
 
         current_step = 3
         context = get_context(username, detail_form, station_form, station_filter_form, signal_form,
-                              signal_filter_form, current_step, form_submit_log)
+                              signal_filter_form, current_step)
         return render(request, 'query/query-builder.html', context)
     elif signal_filter_form.is_valid() and 'signal-filter-submit' in request.POST:
         detail_form = QueryForm()
@@ -240,11 +236,19 @@ def query_builder(request):
         signal_unit = signal_filter_form.cleaned_data['signal_unit']
         signal_phase = signal_filter_form.cleaned_data['signal_phase']
 
-        SignalForm.update_signals(query_model.stations, signal_voltage, signal_type,
+        station_objects = []
+        for station in stations:
+            station_queryset = Station.objects.filter(PMU_Name_Short=station)
+            station_objects = get_query_objects(station_queryset, station_objects)
+        if not station_objects:
+            station_queryset = Station.objects.all()
+            station_objects = get_query_objects(station_queryset, station_objects)
+
+        SignalForm.update_signals(station_objects, signal_voltage, signal_type,
                                   signal_asset, signal_unit, signal_phase)
 
         context = get_context(username, detail_form, station_form, station_filter_form, signal_form,
-                              signal_filter_form, current_step, form_submit_log)
+                              signal_filter_form, current_step)
         return render(request, 'query/query-builder.html', context)
     elif 'signal-filter-form' in request.POST:
         detail_form = QueryForm()
@@ -252,11 +256,9 @@ def query_builder(request):
 
         current_step = 4
         context = get_context(username, detail_form, station_form, station_filter_form, signal_form,
-                              signal_filter_form, current_step, form_submit_log)
+                              signal_filter_form, current_step)
         return render(request, 'query/query-builder.html', context)
-    elif signal_form.is_valid() and form_submit_log['signal_form'] is False and 'send' in request.POST:
-        form_submit_log['signal_form'] = True
-
+    elif signal_form.is_valid() and 'send' in request.POST:
         query_model.save()
         query_object.model_id = query_model.id
         query_object.signals = signal_form.cleaned_data['signals']
@@ -267,7 +269,7 @@ def query_builder(request):
         detail_form = QueryForm()
         current_step = 4
         context = get_context(username, detail_form, station_form, station_filter_form, signal_form,
-                              signal_filter_form, current_step, form_submit_log)
+                              signal_filter_form, current_step)
         return render(request, 'query/query-builder.html', context)
 
 
@@ -281,22 +283,8 @@ def convert_to_json(query_param):
     query_id = query_param.model_id
     start_date_time = query_param.start_date_time
     end_date_time = query_param.end_date_time
-    conditions = query_param.conditions
     file_name = query_param.file_name
     signals = query_param.signals
-
-    voltage_conditions = []
-    current_conditions = []
-    frequency_conditions = []
-
-    for condition in conditions:
-        condition_type = condition.condition_type
-        if condition_type == "voltage":
-            voltage_conditions.append(condition.__str__())
-        elif condition_type == "current":
-            current_conditions.append(condition.__str__())
-        else:
-            frequency_conditions.append(condition.__str__())
 
     query = json.dumps({
         "query": {

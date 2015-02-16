@@ -99,8 +99,9 @@ class StationForm(forms.Form):
         super(StationForm, self).__init__(*args, **kwargs)
         global station_choices
         if not station_choices:
-            station_choices.insert(0, ('', ''))
+            station_choices = self.get_all_stations(station_choices)
         self.fields['stations'] = forms.CharField(
+            required=False,
             widget=forms.SelectMultiple(
                 attrs={'size': '3'},
                 choices=station_choices))
@@ -121,6 +122,13 @@ class StationForm(forms.Form):
 
         return station_choices
 
+    @staticmethod
+    def get_all_stations(station_choices):
+        stations = Station.objects.all()
+        for station in stations:
+            station_choices.append((station.PMU_Name_Short.__str__(), station.__str__()))
+        return station_choices
+
 
 
 class SignalFilterForm(forms.Form):
@@ -136,7 +144,7 @@ class SignalForm(forms.Form):
         super(SignalForm, self).__init__(*args, **kwargs)
         global signal_choices
         if not signal_choices:
-            signal_choices.insert(0, ('', ''))
+            add_signal_choices(Signal.objects.all())
         self.fields['signals'] = forms.CharField(
             widget=forms.SelectMultiple(
                 attrs={'size': '3'},
@@ -165,8 +173,7 @@ class SignalForm(forms.Form):
 
         # No specific signals were filtered, list them all
         if not signal_querysets:
-            signal_objects = Signal.objects.all()
-            add_signal_choices(signal_objects)
+            add_signal_choices(Signal.objects.all())
 
         # No signals made it through the filter so list nothing
         if not signal_choices:
