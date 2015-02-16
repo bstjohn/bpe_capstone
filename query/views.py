@@ -191,9 +191,10 @@ def query_builder(request):
         signal_form = SignalForm()
         current_step = 2
 
-        station_voltage = station_filter_form.cleaned_data['station_voltage']
-        pmu_channel = station_filter_form.cleaned_data['station_voltage']
-        StationForm.update_stations(station_voltage, pmu_channel)
+        # station_voltage = station_filter_form.cleaned_data['station_voltage']
+        station_voltage = request.POST.getlist('station_voltage')
+        pmu_channel = station_filter_form.cleaned_data['pmu_channel']
+        StationForm.update_stations(station_form, station_voltage, pmu_channel)
 
         context = get_context(username, detail_form, station_form, station_filter_form, signal_form,
                               signal_filter_form, current_step)

@@ -106,24 +106,38 @@ class StationForm(forms.Form):
                 attrs={'size': '3'},
                 choices=station_choices))
 
-    @staticmethod
-    def update_stations(station_voltage, pmu_channel):
+    def update_stations(self, station_voltage, pmu_channel):
         global station_choices
         station_choices = []
-        stations = Station.objects.all()
 
-        for station in stations:
+        # Convert voltages to integer
+        for i, voltage in enumerate(station_voltage):
+            station_voltage[i] = int(voltage)
+
+        print(station_voltage)
+
+        station_query_object = []
+        if station_voltage and pmu_channel:
+            station_query_object = Station.objects.filter(PMU_Voltage__in=station_voltage, PMU_Channel__in=pmu_channel)
+        elif station_voltage:
+            station_query_object = Station.objects.filter(PMU_Voltage__in=station_voltage)
+            print(station_query_object)
+        elif pmu_channel:
+            station_query_object = Station.objects.filter(PMU_Channel__in=pmu_channel)
+
+        for station in station_query_object:
             station_choices.append((station.PMU_Name_Short.__str__(), station.__str__()))
 
-        print(station_choices)
-
+        if not station_choices and not station_voltage and not pmu_channel:
+            station_choices = self.get_all_stations(station_choices)
+        
         if not station_choices:
             station_choices.insert(0, ('', ''))
 
         return station_choices
 
     @staticmethod
-    def get_all_stations(station_choices):
+    def get_all_stations(stations_choices):
         stations = Station.objects.all()
         for station in stations:
             station_choices.append((station.PMU_Name_Short.__str__(), station.__str__()))
@@ -178,5 +192,3 @@ class SignalForm(forms.Form):
         # No signals made it through the filter so list nothing
         if not signal_choices:
             signal_choices.insert(0, ('', ''))
-
-        print(signal_choices)
