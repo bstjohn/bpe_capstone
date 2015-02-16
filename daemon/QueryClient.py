@@ -9,6 +9,8 @@
 import Queue
 import threading
 import time
+import socket
+import json
 
 # Set the host name and port number of the database engine.
 host = 'localhost'
@@ -49,9 +51,9 @@ class QueryEngine(threading.Thread):
 
             else:
                 # Submit the query to the BPA server.
-                status, msg, result = self.client.startQuery(query)
-                if status<>0:
-                    print "Query Error #{0}: {1}".format(status, msg)
+                result = self.client.startQuery(query)
+
+                # Process the query result.
 
                 # Mark the current item as complete.
                 self.queue.task_done()
@@ -74,16 +76,53 @@ class BPAClient:
     "Class that will handle communication with the BPA database."
 
     def __init__(self, host, port):
-        pass
+        self.socket = socket((host,port))
+        self.file = makefile('rw', 4096)
+
+    def sendJSON(self, msg):
+        "Send a JSON message to the server."
+        assert type(msg)==type({})
+        json.dump(msg, self.file)
+        self.file.write('\n')
+        self.file.flush()
+
+    def getJSON(self):
+        "Get a JSON message from the server."
+        result = json.load(self.file)
+        while True:
+            if not file.readline().strip():
+                break
+        return result
 
     def getQueryStatus(self):
-        "Get the status of all runncing queries from the BPA server."
-        return None
+        "Get the status of all running queries from the BPA server."
+        self.sendJSON({"StatusRequest": ["Status", "Results", "Analysis"]})
+        result = self.getJSON()
+        return result
 
     def startQuery(self, query):
         "Start a new query on the BPA server."
-        return (0, "Success", {})
+        assert type(query)==type({})
+        assert query.has_key('query')
+
+        # Send the query request to the server.
+        self.sendJSON(query)
+
+        # Read the result from the server.
+        result = self.getJSON()
+        return result
 
     def getSignals(self):
         "Get the signals from the BPA Server."
-        return None
+        # Send the signal request.
+        self.file.write('{ "PMUAndSignalRequest" }\n')
+        self.file.flush()
+
+        # Get the signal list from the server.
+        result = self.getJSON()
+        return result
+
+    def __del__(self):
+        "Clean up the socket and file descriptors."
+        self.file.close()
+        self.socket.close()
