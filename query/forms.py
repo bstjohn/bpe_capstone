@@ -110,16 +110,11 @@ class StationForm(forms.Form):
         global station_choices
         station_choices = []
 
-        # Convert voltages to integer
-        for i, voltage in enumerate(station_voltage):
-            station_voltage[i] = int(voltage)
+        convert_to_int(station_voltage)
 
-        kwargs = {
-            '{0}__{1}'.format('PMU_Voltage', 'in'):
-                station_voltage if station_voltage else Station.objects.all().values_list('PMU_Voltage', flat=True),
-            '{0}__{1}'.format('PMU_Channel', 'in'):
-                pmu_channel if pmu_channel else Station.objects.all().values_list('PMU_Channel', flat=True)
-        }
+        kwargs = {}
+        add_kwarg(kwargs, 'PMU_Voltage', station_voltage, Station)
+        add_kwarg(kwargs, 'PMU_Channel', pmu_channel, Station)
 
         station_query_object = Station.objects.filter(**kwargs)
 
@@ -166,25 +161,40 @@ class SignalForm(forms.Form):
     @staticmethod
     def update_signals(stations, signal_voltage, signal_type,
                        signal_asset, signal_unit, signal_phase):
+        global signal_choices
+        signal_choices = []
         station_pmu_ids = []
         for station in stations:
             station_pmu_ids.append(station.PMU_ID)
 
-        kwargs = {
-            '' if not stations else '{0}__{1}'.format('Signal_PMU_ID', 'in'): stations
-        }
-        signal_query_objects = Signal.objects.filter(**kwargs)
-        print(signal_query_objects)
+        kwargs = {}
+        add_kwarg(kwargs, 'Signal_PMU_ID', station_pmu_ids, Signal)
+        add_kwarg(kwargs, 'Signal_Voltage', convert_to_int(signal_voltage), Signal)
+        add_kwarg(kwargs, 'Signal_Type', signal_type, Signal)
+        add_kwarg(kwargs, 'Signal_Asset', signal_asset, Signal)
+        add_kwarg(kwargs, 'Signal_Unit', signal_unit, Signal)
+        add_kwarg(kwargs, 'Signal_Phase', signal_phase, Signal)
 
-        global signal_choices
-        signal_choices = []
-        for signal_object in signal_query_objects:
-            signal_choices.append(signal_object)
+        signal_query_object = Signal.objects.filter(**kwargs)
 
-        # No specific signals were filtered, list them all
-        if not signal_query_objects and not stations:
+        add_signal_choices(signal_query_object)
+
+        if not signal_query_object \
+                and not stations and not signal_voltage \
+                and not signal_type and not signal_asset\
+                and not signal_unit and not signal_phase:
             add_signal_choices(Signal.objects.all())
 
         # No signals made it through the filter so list nothing
+        # No specific signals were filtered, list them all
         if not signal_choices:
             signal_choices.insert(0, ('', ''))
+
+
+def add_kwarg(kwargs, field, values, model):
+    kwargs['{0}__{1}'.format(field, 'in')] = values if values else model.objects.all().values_list(field, flat=True)
+
+
+def convert_to_int(string_list):
+    for i, string_object in enumerate(string_list):
+        string_list[i] = int(string_object)
