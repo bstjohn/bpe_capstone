@@ -48,7 +48,7 @@ PHASE_CHOICES = (('Phase A', 'Phase A'),
                  ('Phase B', 'Phase B'),
                  ('Phase C', 'Phace C'),
                  ('Zero Seq', 'Zero Seq'),
-                 ('Neg. Seq', 'Pos. Seq'))
+                 ('Pos. Seq', 'Pos. Seq'))
 
 DATE_FORMAT = '%m/%d/%Y'
 
@@ -174,6 +174,7 @@ class SignalForm(forms.Form):
         add_kwarg(kwargs, 'Signal_Asset', signal_asset, Signal)
         add_kwarg(kwargs, 'Signal_Unit', signal_unit, Signal)
         add_kwarg(kwargs, 'Signal_Phase', signal_phase, Signal)
+        print(kwargs)
 
         signal_query_object = Signal.objects.filter(**kwargs)
 

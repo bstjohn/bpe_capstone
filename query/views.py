@@ -215,6 +215,10 @@ def query_builder(request):
         stations = request.POST.getlist('stations')
         query_model.set_stations(stations)
 
+        station_objects = get_stations(stations)
+
+        signal_form.update_signals(station_objects, [], [], [], [], [])
+
         context = get_context(username, detail_form, station_form, station_filter_form, signal_form,
                               signal_filter_form, current_step)
         return render(request, 'query/query-builder.html', context)
@@ -237,13 +241,7 @@ def query_builder(request):
         signal_unit = request.POST.getlist('signal_unit')
         signal_phase = request.POST.getlist('signal_phase')
 
-        station_objects = []
-        for station in stations:
-            station_queryset = Station.objects.filter(PMU_Name_Short=station)
-            station_objects = get_query_objects(station_queryset, station_objects)
-        if not station_objects:
-            station_queryset = Station.objects.all()
-            station_objects = get_query_objects(station_queryset, station_objects)
+        station_objects = get_stations(stations)
 
         SignalForm.update_signals(station_objects, signal_voltage, signal_type,
                                   signal_asset, signal_unit, signal_phase)
@@ -272,6 +270,14 @@ def query_builder(request):
         context = get_context(username, detail_form, station_form, station_filter_form, signal_form,
                               signal_filter_form, current_step)
         return render(request, 'query/query-builder.html', context)
+
+
+def get_stations(station_list):
+    station_objects = []
+    for station in station_list:
+        station_queryset = Station.objects.filter(PMU_Name_Short=station)
+        station_objects = get_query_objects(station_queryset, station_objects)
+    return station_objects
 
 
 def get_query_objects(query_set, query_object_list):
