@@ -103,7 +103,6 @@ class StationForm(forms.Form):
         self.fields['stations'] = forms.CharField(
             widget=forms.SelectMultiple(
                 attrs={'size': '3'},
-                # choices=station_choices))
                 choices=station_choices))
 
     @staticmethod
@@ -114,6 +113,8 @@ class StationForm(forms.Form):
 
         for station in stations:
             station_choices.append((station.PMU_Name_Short.__str__(), station.__str__()))
+
+        print(station_choices)
 
         if not station_choices:
             station_choices.insert(0, ('', ''))

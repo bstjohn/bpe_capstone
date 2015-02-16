@@ -205,8 +205,8 @@ def query_builder(request):
     elif 'station-filter-submit' in request.POST:
         detail_form = QueryForm()
         signal_form = SignalForm()
-
         current_step = 2
+
         context = get_context(username, detail_form, station_form, station_filter_form, signal_form,
                               signal_filter_form, current_step, form_submit_log)
         return render(request, 'query/query-builder.html', context)
@@ -269,6 +269,7 @@ def query_builder(request):
         context = get_context(username, detail_form, station_form, station_filter_form, signal_form,
                               signal_filter_form, current_step, form_submit_log)
         return render(request, 'query/query-builder.html', context)
+
 
 def get_query_objects(query_set, query_object_list):
     for station_object in query_set:

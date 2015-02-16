@@ -145,9 +145,9 @@
     <fieldset id="field-set-3" class="fieldSet">
         <h3>3. Select Stations to Filter On (Optional)</h3>
         <div class="fieldWrapper">
-            {{ form.stations.errors }}
-            <p><label for="{{ form.stations.id_for_label }}"><b>Select Stations</b> (Optional)</label></p>
-            {{ form.stations }}
+            {{ station_form.errors }}
+            <!--<p><label for="{{ form.stations.id_for_label }}"><b>Select Stations</b> (Optional)</label></p>-->
+            {{ station_form }}
             <br>
             <small>(CTRL + Click or SHIFT + Click to select multiple)</small>
         </div>
@@ -191,7 +191,7 @@
 
         {{ signal_form.non_form_errors }}
         <div class="fieldWrapper" id="signal-form-wrapper">
-            <br><label for="{{ signal_form.signals.id_for_label }}"><b>List of Signals</b></label>
+            <!--<br><label for="{{ signal_form.signals.id_for_label }}"><b>List of Signals</b></label>-->
             {{ signal_form.signals.errors }}
             {{ signal_form.signals }}
             <br>
