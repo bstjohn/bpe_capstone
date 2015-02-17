@@ -25,5 +25,6 @@ urlpatterns = patterns('',
                            name='password_reset_confirm'),
                        url(r'^reset/done/$', 'django.contrib.auth.views.password_reset_complete',
                            name='password_reset_complete'),
-                       url(r'^stations/', include('stations.urls', namespace="station"))
+                       url(r'^stations/', include('stations.urls', namespace="station")),
+                       url(r'^profile/', 'registration.views.profile'),
 )
