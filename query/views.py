@@ -132,7 +132,7 @@ def query_builder(request):
     if not request.method == 'POST':
         detail_form = QueryForm()
         station_form = StationForm()
-        station_filter_form = StationFilterForm
+        station_filter_form = StationFilterForm()
         signal_form = SignalForm()
         signal_filter_form = SignalFilterForm()
 
@@ -148,7 +148,6 @@ def query_builder(request):
     if detail_form.is_valid() and 'save-details' in request.POST:
         signal_form = SignalForm()
         current_step = 1
-        print(current_step)
 
         query_model.owner = request.user
         query_model.query_name = detail_form.cleaned_data['query_name']
@@ -195,6 +194,7 @@ def query_builder(request):
         station_voltage = request.POST.getlist('station_voltage')
         pmu_channel = request.POST.getlist('pmu_channel')
         StationForm.update_stations(station_form, station_voltage, pmu_channel)
+        station_form = StationForm()
 
         context = get_context(username, detail_form, station_form, station_filter_form, signal_form,
                               signal_filter_form, current_step)
@@ -209,7 +209,6 @@ def query_builder(request):
         return render(request, 'query/query-builder.html', context)
     elif station_form.is_valid() and 'station-submit' in request.POST:
         detail_form = QueryForm()
-        signal_form = SignalForm()
         current_step = 3
 
         stations = request.POST.getlist('stations')
@@ -218,6 +217,8 @@ def query_builder(request):
         station_objects = get_stations(stations)
 
         signal_form.update_signals(station_objects, [], [], [], [], [])
+        
+        signal_form = SignalForm()
 
         context = get_context(username, detail_form, station_form, station_filter_form, signal_form,
                               signal_filter_form, current_step)
@@ -232,7 +233,6 @@ def query_builder(request):
         return render(request, 'query/query-builder.html', context)
     elif signal_filter_form.is_valid() and 'signal-filter-submit' in request.POST:
         detail_form = QueryForm()
-        signal_form = SignalForm()
         current_step = 4
 
         signal_voltage = request.POST.getlist('signal_voltage')
@@ -243,8 +243,11 @@ def query_builder(request):
 
         station_objects = get_stations(stations)
 
-        SignalForm.update_signals(station_objects, signal_voltage, signal_type,
+        signal_form.update_signals(station_objects, signal_voltage, signal_type,
                                   signal_asset, signal_unit, signal_phase)
+                                  
+        signal_form = SignalForm()
+                                  
 
         context = get_context(username, detail_form, station_form, station_filter_form, signal_form,
                               signal_filter_form, current_step)

@@ -175,7 +175,7 @@ class SignalForm(forms.Form):
         add_kwarg(kwargs, 'Signal_Unit', signal_unit, Signal)
         add_kwarg(kwargs, 'Signal_Phase', signal_phase, Signal)
         print(kwargs)
-
+        
         signal_query_object = Signal.objects.filter(**kwargs)
 
         add_signal_choices(signal_query_object)
