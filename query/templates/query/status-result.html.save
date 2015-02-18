@@ -1,0 +1,48 @@
+{% extends "user/base.html" %}
+
+{% load staticfiles %}
+
+{% block title %}System Status{% endblock %}
+
+{% block header %}
+{% block header-title %}<u><b>System Status</b></u>:{% endblock %}
+{% endblock %}
+
+
+
+{% block content %}
+<!-- 
+       Loop through System nodes
+         Display:
+           Node_ID
+           USED_SPACE
+           AVAILABLE_SPACE 
+         Loop through CPU's
+           Display:
+             CPU_ID   as text
+             CPU_Load as a bargraph
+-->
+
+<!-- Display Nodes -->
+{% for node in sys_node %}
+  <h1> NODE ID: {{node.node_id}}</h1>
+  <h2> Available Space: {{node.available}}</h2>
+  <h2> Used Space: {{node.used}}</h2>
+  <h2> CPU List: </h2>
+
+  {{node.}}
+  <!-- Display CPUs  -->
+  <ul>
+  {% for i in sys_cpu %}
+      <li>
+      <h4> {{i.SystemNode.node_id}}</h4>
+      <h5>CPU ID: {{i.cpu_id}}</h5>
+      <h5>CPU Load: {{i.cpu_load}}</h5>
+      </li>
+
+  
+  {% endfor %}
+  </ul>
+   
+{% endfor %}
+{% endblock %}

@@ -3,13 +3,23 @@
 {% block title %}Job Results{% endblock %}
 
 {% block header %}
-{% block header-title %}<u><b>Results for QueryID #{{query_id}}</b></u>:{% endblock %}
+{% block header-title %}<H1><p align="center"><u><b>Results for {{qname}}, QueryID #{{query_id}}</b></u>:</p></H1>{% endblock %}
 {% endblock %}
 
 {% block content %}
 <div>
     <ul>
 
+
+        <H3><u>Query Information</u>:</H3>
+        <UL>
+          <li>Username: {{username}}</li>
+          <li>Query Name:{{qname}}</li>
+          <li>Filename: {{filename}}</li>
+          <li>Created: {{created}}</li>
+          <li>Start: {{start}}</li>
+          <li>End: {{end}}</li>
+        </UL>
         <H3><u>Job Response:</u></H3>
         <UL>
             <LI>File: <u>{{qr_file}}</u></LI>
@@ -23,20 +33,14 @@
         <H3><u>Status Response:</u></H3>
         <UL>
             <LI>Completed: <u>{{sr_completed}}</u></LI>
+    <div class="progress">
+  <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="{{sr_completed}}" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em; width: {{sr_completed}}%;">
+    {{sr_completed}}%
+  </div>
+</div>
             <LI>Status Report: "{{status_field}}"</LI>
         </UL>
 
-    </ul>
-</div>
-<div>
-    <ul>
-        <H1>Username: {{username}}</H1>
-
-        <H2>Filename: {{filename}}</H2>
-
-        <H3>Created: {{created}}</H3>
-        <H4>Start: {{start}}</H4>
-        <H5>End: {{end}}</H5>
     </ul>
 
 </div>

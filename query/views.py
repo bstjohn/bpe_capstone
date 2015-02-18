@@ -69,7 +69,14 @@ def query_result(request):
 
 @login_required
 def status_result(request):
-    return render(request, 'query/status-result.html')
+    allqueries = Query.objects.all()
+    sys_stat = SystemStatus.objects.all()    
+    sys_cpu = SystemCpu.objects.all()
+    sys_node = SystemNode.objects.all()
+    context = {'sys_stat': sys_stat, 'allqueries': allqueries,
+               'sys_cpu': sys_cpu, 'sys_node': sys_node
+ }
+    return render(request, 'query/status-result.html', context)
 
 
 current_step = 0
@@ -92,18 +99,13 @@ def return_result_page(request, query_model):
         'qr_file': query_model.qr_file,
         'ar_file': query_model.ar_file,
         'status_field': query_model.status_field,
-        'sr_completed': query_model.sr_completed}
-    return render(request, 'query/query-result.html', context)
-
-
-# System Status
-# calculate and return the rendered page
-def return_status_page(request, StatusResponse):
-    context = {
-        # XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-        #     calculate what needs to be passed in
-        #  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-    }
+        'sr_completed': query_model.sr_completed,
+        'username': query_model.user_name,
+        'filename': query_model.file_name,
+        'created': query_model.create_date_time,
+        'start': query_model.start_date_time,
+        'end': query_model.end_date_time,
+        'qname': query_model.query_name}
     return render(request, 'query/query-result.html', context)
 
 
