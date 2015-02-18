@@ -167,9 +167,11 @@ class SignalForm(forms.Form):
         for station in stations:
             station_pmu_ids.append(station.PMU_ID)
 
+        signal_voltage = convert_to_int(signal_voltage)
+
         kwargs = {}
         add_kwarg(kwargs, 'Signal_PMU_ID', station_pmu_ids, Signal)
-        add_kwarg(kwargs, 'Signal_Voltage', convert_to_int(signal_voltage), Signal)
+        add_kwarg(kwargs, 'Signal_Voltage', signal_voltage, Signal)
         add_kwarg(kwargs, 'Signal_Type', signal_type, Signal)
         add_kwarg(kwargs, 'Signal_Asset', signal_asset, Signal)
         add_kwarg(kwargs, 'Signal_Unit', signal_unit, Signal)
@@ -180,6 +182,7 @@ class SignalForm(forms.Form):
 
         add_signal_choices(signal_query_object)
 
+        # Ass all signals to list if no filter parameters
         if not signal_query_object \
                 and not stations and not signal_voltage \
                 and not signal_type and not signal_asset\
@@ -187,7 +190,6 @@ class SignalForm(forms.Form):
             add_signal_choices(Signal.objects.all())
 
         # No signals made it through the filter so list nothing
-        # No specific signals were filtered, list them all
         if not signal_choices:
             signal_choices.insert(0, ('', ''))
 
@@ -198,4 +200,7 @@ def add_kwarg(kwargs, field, values, model):
 
 def convert_to_int(string_list):
     for i, string_object in enumerate(string_list):
+        print(string_object)
         string_list[i] = int(string_object)
+        
+    return string_list
