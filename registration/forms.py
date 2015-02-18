@@ -69,7 +69,7 @@ class PersonForm(forms.ModelForm):
 class UserProfileForm(forms.ModelForm):
     class Meta:
         model = UserProfile
-        fields = ('bio',)
+        fields = ('cellphone','bio',)
 
 
 

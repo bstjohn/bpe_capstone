@@ -28,7 +28,8 @@ class Person(models.Model):
 class UserProfile(models.Model):
     user = models.OneToOneField(User) # one to one relationship to user model
     # Extra attributes here!!
-    bio = models.TextField(null=True) # user's biography, null is accetpable
+    cellphone = models.CharField(max_length=10, null=True) # user's cellphone, null is accetpable
+    bio = models.TextField(null=True)                      # user's biography, null is accetpable
 
     # unicode representation
     def __unicode__(self):
