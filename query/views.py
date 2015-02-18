@@ -263,7 +263,7 @@ def query_builder(request):
     elif signal_form.is_valid() and 'send' in request.POST:
         query_model.save()
         query_object.model_id = query_model.id
-        query_object.signals = signal_form.cleaned_data['signals']
+        query_object.signals = request.POST.getlist('signals')
         print(convert_to_json(query_object))
 
         return return_result_page(request, query_model)
