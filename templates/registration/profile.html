@@ -1,11 +1,20 @@
 {% extends "base.html" %}
 
 {% block content %}
+  
+  <h2>Profile</h2>
 
-        <p>Username: {{ username }}</p>
-        <p>Email: {{ email }}</p>
-        <p>First name: {{ first_name }}</p>
-        <p>Last name: {{ last_name }}</p>
+  {% for field in form %}
+    {{field.error}}
 
+  {% endfor %}
+
+  <form action="/profile/" method="post">{% csrf_token %}
+  {{form.as_ul}}
+
+  <input type="submit" value="Update" />
+
+  </form>
+  
 {% endblock %}
   

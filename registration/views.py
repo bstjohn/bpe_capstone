@@ -17,8 +17,11 @@ from django.contrib.auth.models import User
 from registration.forms import PersonForm
 
 from django.contrib.auth.decorators import login_required
+from forms import UserProfileForm
 
-
+from django.views.generic import ListView, DetailView
+from django.contrib.auth import get_user_model
+from models import UserProfile
 
 def register_user(request):
     # look at request object, look if there is an post using request.method
@@ -68,16 +71,55 @@ def register_success(request):
 def register_fail(request):
     return render_to_response('registration/register_fail.html')
 
-@login_required
-def profile(request):
+
+# @login_required: This function will automatically at background check if user login, if not login
+# it will redirectly the user to login page (force login)
+# Edit user profile
+@login_required 
+def user_profile(request):
     if not request.user.is_authenticated():
         return HrttpResponseRedirect('/login/')
-    username = request.user.username
-    email = request.user.email
-    first_name = request.user.first_name
-    last_name = request.user.last_name
-    context = {'username': username, 'email': email, 'first_name': first_name, 'last_name': last_name}
+    if request.method == 'POST': # check if post
+        form = UserProfileForm(request.POST, instance=request.user.profile) # take exist profile and fill-in to form
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect('/users/'+ request.user.username)
+    else:
+        user = request.user
+        profile = user.profile # trigger django to create a user profile and populate
+        form = UserProfileForm(instance=profile)
 
-    return render_to_response('registration/profile.html', context, context_instance=RequestContext(request))
+    args = {}
+    args.update(csrf(request))
+    
+    args['form'] = form
+    
+    return render_to_response('registration/profile.html', args)
+
+
+# Define a user profile detail view
+class UserProfileDetailView(DetailView):
+    model = get_user_model()
+    slug_field = "username" # paramater "username" as key (aka: pk) for dynamic user url link
+    template_name = "registration/user_detail.html"
+
+    # always create user profile before retriving object
+    def get_object(self, queryset=None):
+        user = super(UserProfileDetailView, self).get_object(queryset)
+        UserProfile.objects.get_or_create(user=user)
+        return user
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

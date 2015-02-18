@@ -1,5 +1,6 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
+from registration.views import UserProfileDetailView
 
 urlpatterns = patterns('',
                        # Examples:
@@ -26,5 +27,23 @@ urlpatterns = patterns('',
                        url(r'^reset/done/$', 'django.contrib.auth.views.password_reset_complete',
                            name='password_reset_complete'),
                        url(r'^stations/', include('stations.urls', namespace="station")),
-                       url(r'^profile/', 'registration.views.profile'),
+                       url(r'^profile/$', 'registration.views.user_profile'),
+
+                       url(r"^users/(?P<slug>\w+)/$", UserProfileDetailView.as_view(), name="profile"),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 )

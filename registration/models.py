@@ -4,7 +4,7 @@ from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
 
-# Create your models here.
+# Person model
 class Person(models.Model):
     register_code = models.CharField(max_length=24)
     username = models.CharField(max_length=24)
@@ -22,3 +22,25 @@ class Person(models.Model):
         return '%s %s %s %s %s %s' % (self.register_code, self.username,
                                       self.email, self.first_name,
                                       self.last_name, self.create_date)
+
+
+# User profile model
+class UserProfile(models.Model):
+    user = models.OneToOneField(User) # one to one relationship to user model
+    # Extra attributes here!!
+    bio = models.TextField(null=True) # user's biography, null is accetpable
+
+    # unicode representation
+    def __unicode__(self):
+        return "%s's profile" % unicode(self.user)
+
+# User have profile property (if user have exist profile object, then get that one, or create a new profile object)
+User.profile = property(lambda u: UserProfile.objects.get_or_create(user=u)[0])
+
+
+
+
+
+
+
+
