@@ -9,17 +9,19 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
+        ('registration', '0004_remove_person_user'),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Results',
+            name='UserProfile',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('owner', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
+                ('bio', models.TextField(null=True)),
+                ('user', models.OneToOneField(to=settings.AUTH_USER_MODEL)),
             ],
-            options={
-            },
-            bases=(models.Model,),
+            options=None,
+            bases=None,
+            managers=None,
         ),
     ]

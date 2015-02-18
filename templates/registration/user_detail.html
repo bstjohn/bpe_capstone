@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>{{ object.username }}'s Profile</h2>
+{% if object.userprofile %}
+<div>
+<p><b>Username:</b> {{ object.username }}</p>
+<p><b>Email:</b> {{ object.email }}</p>
+<p><b>Fist Name:</b> {{ object.first_name }}</p>
+<p><b>Last Name:</b> {{ object.last_name }}</p>
+<p><b>Cellphone:</b> {{ object.userprofile.cellphone }}</p>
+<p><b>Bio:</b> {{ object.userprofile.bio }}</p>
+
+</div>
+{% endif %}
+<p><a href="/profile/" + {{username}} >Update profile</a></p>
+<p><a href="/dashboard/">Go back</a></p>
+{% endblock %}

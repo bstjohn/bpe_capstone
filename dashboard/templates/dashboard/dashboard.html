@@ -5,26 +5,63 @@
 {% block title %}Dashboard{% endblock %}
 
 {% block header %}
-{% block header-title %}Welcome, {{ username }}!{% endblock %}
+{% block header-title %}
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">Welcome, {{ username }}! </a>
+    </div>
+    <div>
+      <form class="navbar-form navbar-left" role="search">
+        <a type="submit" class="btn btn-default" href="/query/query-builder">New Job</a>
+      </form>
+    </div>
+    <div>
+      <form class="navbar-form navbar-left" role="search">
+        <a type="submit" class="btn btn-default" href="/query/status-result">System Status</a>
+      </form>
+    </div>
+  </div>
+</nav>
+{% endblock %}
 {% endblock %}
 
 {% block content %}
-<p>
-    Hello. This is the dashboard page. It is currently under construction.
-</p>
 
-
-<a href="/static/general/dashboard_pic.png">
-    <img alt="A wireframe dashboard pic" src="/static/general/dashboard_pic.png"/>
-</a>
-
-
-<p class="note">
-    This is what the page should look like.
-
-    Right now I just displayed the image.
-</p>
-
-
-<a href="/logout">Logout</a>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-xs-2">
+      <h4> All Jobs </h4>
+        <ul class="list-group">
+          {% for q in allqueries %}
+            <li class="list-group-item">
+              <a class="btn btn-link" href="/query/query-result" role="button">{{q.query_name}}</a>
+                <div class="progress">
+                  <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em; width: 60%;">
+                    60%
+                  </div>
+                </div>
+            </li>
+          {% endfor %}
+        </ul>
+    </div>
+    <div class="col-xs-2">
+      <h4> My Jobs </h4>
+        <ul class="list-group">
+          {% for q in myqueries %}
+            <li class="list-group-item">
+              <a class="btn btn-link" href="/query/query-result" role="button">{{q.query_name}}</a>
+                <div class="progress">
+                  <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em; width: 60%;">
+                    60%
+                  </div>
+                </div>
+            </li>
+          {% endfor %}
+        </ul>
+    </div> 
+  </div>
+</div>
+<a href="{% url 'profile' slug=user.username %}"><b>{{ user.username }} 's Profile</b></a>
 {% endblock %}
+
