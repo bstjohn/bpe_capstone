@@ -10,8 +10,6 @@
 {% endblock %}
 {% endblock %}
 
-
-
 {% block content %}
 <!-- 
        Loop through System nodes
@@ -28,43 +26,30 @@
 
 <!-- Display Nodes -->
 {% for node in sys_node %}
-  <h2><p align = "center"><u> NODE ID: {{node.node_id}}</u></p></h2>
+  <h4><p align = "center"><u> NODE ID: {{node.node_id}}</u></p></h4>
 
-  <h3> Available Space: {{node.available}}%</h3>
+  <h5> Disk usage: {{node.diskSpace}}%</h5>
   <div class="progress">
-    <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="{{node.available}}" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em; width: {{node.available}}%;">
-      Disk available: {{node.available}}%
+    <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="{{node.diskSpace}}" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em; width: {{node.diskSpace}}%;">
     </div>
   </div>
 
 
- 
- <h3> Used Space: {{node.used}}%</h3>
-  <div class="progress">
-    <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="{{node.used}}" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em; width: {{node.used}}%;">
-      Disk unavailable: {{node.used}}%
-    </div>
-  </div>
-
-
-  <h3> CPU List: </h3>
+  <h5> CPU Usage: </h5>
 
   <!-- Display CPUs  -->
   <ul>
-  {% for i in node.systemcpu_set.all %}
-      
+      {% for i in node.systemcpu_set.all %}
+
       <h4> {{i.SystemNode.node_id}}</h4>
-      <li><h5>CPU ID: {{i.cpu_id}}</h5></li>
       <ul>
-      <li><h5>CPU Load: {{i.cpu_load}}%</h5></li>
-<div class="progress">
-  <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="{{i.cpu_load}}" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em; width: {{i.cpu_load}}%;">
-    Load: {{i.cpu_load}}%
-  </div>
-</div>
-      </li>
-  </ul>
-  {% endfor %}
+          <div class="progress">
+              <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="{{i.cpu_load}}" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em; width: {{i.cpu_load}}%;">
+                  Load: {{i.cpu_load}}%
+              </div>
+          </div>
+      </ul>
+      {% endfor %}
   </ul>
    
 {% endfor %}
