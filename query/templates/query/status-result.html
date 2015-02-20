@@ -1,20 +1,56 @@
 {% extends "user/base.html" %}
 
+{% load staticfiles %}
+
 {% block title %}System Status{% endblock %}
 
 {% block header %}
-{% block header-title %}<u><b>System Status:</b></u>:{% endblock %}
+{% block header-title %}
+  <h1><p align= "center"><u><b>SYSTEM STATUS</b></u></p></h1>
+{% endblock %}
 {% endblock %}
 
 {% block content %}
-<div>
-    <ul>
-        <UL>
-            <LI>CPU: <u>{{sr_cpu}}</u></LI>
-            <LI>Available Diskspace: <u>{{sr_available}}</u></LI>
-            <LI>Used Diskspace: <u>{{sr_used}}</u></LI>
-        </UL>
+<!-- 
+       Loop through System nodes
+         Display:
+           Node_ID
+           USED_SPACE
+           AVAILABLE_SPACE 
+         Loop through CPU's
+           Display:
+             CPU_ID   as text
+             CPU_Load as a bargraph
+-->
 
-    </ul>
-</div>
+
+<!-- Display Nodes -->
+{% for node in sys_node %}
+  <h4><p align = "center"><u> NODE ID: {{node.node_id}}</u></p></h4>
+
+  <h5> Disk usage: {{node.diskSpace}}%</h5>
+  <div class="progress">
+    <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="{{node.diskSpace}}" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em; width: {{node.diskSpace}}%;">
+    </div>
+  </div>
+
+
+  <h5> CPU Usage: </h5>
+
+  <!-- Display CPUs  -->
+  <ul>
+      {% for i in node.systemcpu_set.all %}
+
+      <h4> {{i.SystemNode.node_id}}</h4>
+      <ul>
+          <div class="progress">
+              <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="{{i.cpu_load}}" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em; width: {{i.cpu_load}}%;">
+                  Load: {{i.cpu_load}}%
+              </div>
+          </div>
+      </ul>
+      {% endfor %}
+  </ul>
+   
+{% endfor %}
 {% endblock %}

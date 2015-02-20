@@ -8,18 +8,21 @@ import json
 # System CPU, which is one of many CPU's that live inside a node.
 class SystemCpu(models.Model):
     # MANY cpus to ONE node
-    node = models.ForeignKey('SystemNode')
-    cpu_id = models.IntegerField(max_length=1024)
+    node     = models.ForeignKey('SystemNode')
+    cpu_id   = models.IntegerField(max_length=1024)
     cpu_load = models.FloatField(max_length=1024, default=0)
 
 # System node, that contains information about disk space as well as 
 # CPU's
 class SystemNode(models.Model):
     # MANY nodes to ONE SystemStatus 
-    system = models.ForeignKey('SystemStatus')
-    node_id = models.IntegerField(max_length=100)    
-    used = models.IntegerField(max_length=1024, null=True)
-    available = models.IntegerField(max_length=1024, null=True)
+    system      = models.ForeignKey('SystemStatus')
+    node_id     = models.IntegerField(max_length=100)    
+    used        = models.IntegerField(max_length=1024, null=True)
+    available   = models.IntegerField(max_length=1024, null=True)
+
+    def diskSpace(self):
+        return self.used/self.available
  
 
 # System Status model holding data for the system

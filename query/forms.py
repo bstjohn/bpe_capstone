@@ -20,13 +20,35 @@ CONDITION_OPERATORS = (('=', '='),
                        ('>', '>'),
                        ('>=', '>='))
 
-SIGNAL_UNITS = (('Frequency', 'Frequency'),
-                ('Voltage', 'Voltage-Pos. Seq'),
-                ('Current', 'Current-Pos. Seq'),
-                ('ROCOF', 'ROCOF'),
-                ('Power-Real', 'Power-Real'),
+PMU_CHANNEL_CHOICES = (('A', 'A'),
+                       ('B', 'B'))
+
+TYPE_CHOICES = (('Phasor', 'Phasor'),
+                ('Analog', 'Analog'),
+                ('Digital', 'Digital'),
+                ('Frequency', 'Frequency'))
+
+ASSET_CHOICES = (('Bus', 'Bus'),
+                 ('Line', 'Line'),
+                 ('Transformer', 'Transformer'),
+                 ('Generator', 'Generator'),
+                 ('Capacator', 'Capacator'),
+                 ('Reactor', 'Reactor'),
+                 ('Digital', 'Digital'),
+                 ('Analog', 'Analog'))
+
+UNIT_CHOICES = (('ROCOF', 'ROCOF'),
+                ('Frequency', 'Frequency'),
                 ('Power-Reactive', 'Power-Reactive'),
-                ('Digital', 'Digital'))
+                ('Power-Real', 'Power-Real'),
+                ('Current', 'Current-Pos. Seq'),
+                ('Voltage', 'Voltage-Pos. Seq'))
+
+PHASE_CHOICES = (('Phase A', 'Phase A'),
+                 ('Phase B', 'Phase B'),
+                 ('Phase C', 'Phace C'),
+                 ('Zero Seq', 'Zero Seq'),
+                 ('Pos. Seq', 'Pos. Seq'))
 
 DATE_FORMAT = '%m/%d/%Y'
 
@@ -35,21 +57,12 @@ TIME_FORMAT = '%H:%M'
 SIGNALS = (('0x84e0-P-01', '<0x84e0-P-01> Phasor  Bus #1     N         Voltage-Pos. Seq    B500NORTH____1VP'),
            ('0x84e0-P-02', '<0x84e0-P-02> Phasor  Bus #1     N         Voltage-Pos. Seq    B500NORTH____1VA'))
 
-
-def update_stations():
-    station_choices = []
-    stations = Station.objects.all()
-
-    for station in stations:
-        station_choices.append((station.PMU_Name_Short.__str__(), station.__str__()))
-
-    if not station_choices:
-        station_choices.insert(0, ('', ''))
-
-    return station_choices
+VOLTAGE_CHOICES = (('230', '230'),
+                   ('500', '500'))
 
 
 signal_choices = []
+station_choices = []
 
 
 def add_signal_choices(signal_objects):
@@ -73,23 +86,65 @@ class QueryForm(forms.Form):
     end_time = forms.TimeField(widget=TimeInput(attrs={'placeholder': 'HH:MM:SS (24-hour)'},
                                                 format=TIME_FORMAT))
 
-    stations = forms.CharField(required=False,
-                               widget=forms.SelectMultiple(
-                                   attrs={'size': '3'}, choices=update_stations()))
-
-    condition_type = forms.CharField(required=False, widget=forms.Select(choices=CONDITION_TYPES))
-    condition_operator = forms.CharField(required=False, widget=forms.Select(choices=CONDITION_OPERATORS))
-    condition_value = forms.IntegerField(required=False)
-
-    signal_units = forms.CharField(required=False, widget=forms.CheckboxSelectMultiple(choices=SIGNAL_UNITS))
-
     file = forms.FileField(required=False)
 
 
-class ConditionForm(forms.Form):
-    condition_type = forms.CharField(required=False, widget=forms.Select(choices=CONDITION_TYPES))
-    condition_operator = forms.CharField(required=False, widget=forms.Select(choices=CONDITION_OPERATORS))
-    condition_value = forms.IntegerField(required=False, widget=forms.NumberInput(attrs={'style': 'width: 70px;'}))
+class StationFilterForm(forms.Form):
+    station_voltage = forms.CharField(required=False, widget=forms.CheckboxSelectMultiple(choices=VOLTAGE_CHOICES))
+    pmu_channel = forms.CharField(required=False, widget=forms.CheckboxSelectMultiple(choices=PMU_CHANNEL_CHOICES))
+
+
+class StationForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        super(StationForm, self).__init__(*args, **kwargs)
+        global station_choices
+        if not station_choices:
+            station_choices = self.get_all_stations()
+        self.fields['stations'] = forms.CharField(
+            required=False,
+            widget=forms.SelectMultiple(
+                attrs={'size': '3'},
+                choices=station_choices))
+
+    def update_stations(self, station_voltage, pmu_channel):
+        global station_choices
+        station_choices = []
+
+        convert_to_int(station_voltage)
+
+        kwargs = {}
+        add_kwarg(kwargs, 'PMU_Voltage', station_voltage, Station)
+        add_kwarg(kwargs, 'PMU_Channel', pmu_channel, Station)
+
+        station_query_object = Station.objects.filter(**kwargs)
+
+        for station in station_query_object:
+            station_choices.append((station.PMU_Name_Short.__str__(), station.__str__()))
+
+        if not station_choices and not station_voltage and not pmu_channel:
+            station_choices = self.get_all_stations()
+
+        if not station_choices:
+            station_choices.insert(0, ('', ''))
+
+        return station_choices
+
+    @staticmethod
+    def get_all_stations():
+        global station_choices
+        stations = Station.objects.all()
+        for station in stations:
+            station_choices.append((station.PMU_Name_Short.__str__(), station.__str__()))
+        return station_choices
+
+
+
+class SignalFilterForm(forms.Form):
+        signal_voltage = forms.CharField(required=False, widget=forms.CheckboxSelectMultiple(choices=VOLTAGE_CHOICES))
+        signal_type = forms.CharField(required=False, widget=forms.CheckboxSelectMultiple(choices=TYPE_CHOICES))
+        signal_asset = forms.CharField(required=False, widget=forms.CheckboxSelectMultiple(choices=ASSET_CHOICES))
+        signal_unit = forms.CharField(required=False, widget=forms.CheckboxSelectMultiple(choices=UNIT_CHOICES))
+        signal_phase = forms.CharField(required=False, widget=forms.CheckboxSelectMultiple(choices=PHASE_CHOICES))
 
 
 class SignalForm(forms.Form):
@@ -97,72 +152,50 @@ class SignalForm(forms.Form):
         super(SignalForm, self).__init__(*args, **kwargs)
         global signal_choices
         if not signal_choices:
-            signal_choices.insert(0, ('', ''))
+            add_signal_choices(Signal.objects.all())
         self.fields['signals'] = forms.CharField(
             widget=forms.SelectMultiple(
                 attrs={'size': '3'},
                 choices=signal_choices))
 
     @staticmethod
-    def update_signals(stations, conditions, signal_units):
+    def update_signals(stations, signal_voltage, signal_type,
+                       signal_asset, signal_unit, signal_phase):
+        global signal_choices
+        signal_choices = []
         station_pmu_ids = []
         for station in stations:
             station_pmu_ids.append(station.PMU_ID)
 
-        signal_querysets = []
-        if stations and not signal_units and not conditions:
-            signal_querysets.append(Signal.objects.filter(Signal_PMU_ID__in=station_pmu_ids))
-        elif signal_units and not stations and not conditions:
-            signal_querysets.append(Signal.objects.filter(Signal_Unit__in=signal_units))
-        elif stations and signal_units and not conditions:
+        kwargs = {}
+        add_kwarg(kwargs, 'Signal_PMU_ID', station_pmu_ids, Signal)
+        add_kwarg(kwargs, 'Signal_Voltage', convert_to_int(signal_voltage), Signal)
+        add_kwarg(kwargs, 'Signal_Type', signal_type, Signal)
+        add_kwarg(kwargs, 'Signal_Asset', signal_asset, Signal)
+        add_kwarg(kwargs, 'Signal_Unit', signal_unit, Signal)
+        add_kwarg(kwargs, 'Signal_Phase', signal_phase, Signal)
+        print(kwargs)
 
-            signal_querysets.append(Signal.objects.filter(Signal_PMU_ID__in=station_pmu_ids,
-                                                       Signal_Unit__in=signal_units))
-        elif conditions:
-            for condition in conditions:
-                condition_type = condition.condition_type
-                condition_operator = condition.condition_operator
-                condition_value = condition.condition_value
-                if condition_type == "voltage":
-                    if condition_operator == "=":
-                        signal_querysets.append(Signal.objects.filter(Signal_Voltage=condition_value,
-                                                                      Signal_PMU_ID__in=station_pmu_ids,
-                                                                      Signal_Unit__in=signal_units))
-                    elif condition_operator == "!=":
-                        signal_querysets.append(Signal.objects.filter(Signal_Voltage__lte=condition_value,
-                                                                      Signal_Voltage__gte=condition_value,
-                                                                      Signal_PMU_ID__in=station_pmu_ids,
-                                                                      Signal_Unit__in=signal_units))
-                    elif condition_operator == "<":
-                        signal_querysets.append(Signal.objects.filter(Signal_Voltage__lt=condition_value,
-                                                                      Signal_PMU_ID__in=station_pmu_ids,
-                                                                      Signal_Unit__in=signal_units))
-                    elif condition_operator == "<=":
-                        signal_querysets.append(Signal.objects.filter(Signal_Voltage__lte=condition_value,
-                                                                      Signal_PMU_ID__in=station_pmu_ids,
-                                                                      Signal_Unit__in=signal_units))
-                    elif condition_operator == ">":
-                        signal_querysets.append(Signal.objects.filter(Signal_Voltage__gt=condition_value,
-                                                                      Signal_PMU_ID__in=station_pmu_ids,
-                                                                      Signal_Unit__in=signal_units))
-                    elif condition_operator == ">=":
-                        signal_querysets.append(Signal.objects.filter(Signal_Voltage__gte=condition_value,
-                                                                      Signal_PMU_ID__in=station_pmu_ids,
-                                                                      Signal_Unit__in=signal_units))
+        signal_query_object = Signal.objects.filter(**kwargs)
 
-        global signal_choices
-        signal_choices = []
+        add_signal_choices(signal_query_object)
 
-        for signal_queryset in signal_querysets:
-            add_signal_choices(signal_queryset)
-
-        # No specific signals were filtered, list them all
-        if not signal_querysets:
-            signal_objects = Signal.objects.all()
-            add_signal_choices(signal_objects)
+        if not signal_query_object \
+                and not stations and not signal_voltage \
+                and not signal_type and not signal_asset\
+                and not signal_unit and not signal_phase:
+            add_signal_choices(Signal.objects.all())
 
         # No signals made it through the filter so list nothing
+        # No specific signals were filtered, list them all
         if not signal_choices:
             signal_choices.insert(0, ('', ''))
 
-        print(signal_choices)
+
+def add_kwarg(kwargs, field, values, model):
+    kwargs['{0}__{1}'.format(field, 'in')] = values if values else model.objects.all().values_list(field, flat=True)
+
+
+def convert_to_int(string_list):
+    for i, string_object in enumerate(string_list):
+        string_list[i] = int(string_object)
