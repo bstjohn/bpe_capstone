@@ -48,7 +48,7 @@ UNIT_CHOICES = (('Voltage', 'Voltage'),
 PHASE_CHOICES = (('Pos. Seq', 'Pos. Seq'),
                  ('Phase A', 'Phase A'),
                  ('Phase B', 'Phase B'),
-                 ('Phase C', 'Phace C'),
+                 ('Phase C', 'Phase C'),
                  ('Zero Seq', 'Zero Seq'),
                  ('Neg. Seq', 'Neq. Seq'))
 
@@ -70,6 +70,7 @@ station_choices = []
 def add_signal_choices(signal_objects):
     for signal in signal_objects:
         signal_choices.append((signal.Signal_ID, signal.__str__()))
+
 
 
 # The query form attributes
@@ -94,6 +95,10 @@ class QueryForm(forms.Form):
 class StationFilterForm(forms.Form):
     station_voltage = forms.CharField(required=False, widget=forms.CheckboxSelectMultiple(choices=VOLTAGE_CHOICES))
     pmu_channel = forms.CharField(required=False, widget=forms.CheckboxSelectMultiple(choices=PMU_CHANNEL_CHOICES))
+    
+    @staticmethod
+    def get_initial_station_values():
+        return {'station_voltage':['230', '500'], 'pmu_channel':['A']}
 
 
 class StationForm(forms.Form):
@@ -140,13 +145,16 @@ class StationForm(forms.Form):
         return station_choices
 
 
-
 class SignalFilterForm(forms.Form):
         signal_voltage = forms.CharField(required=False, widget=forms.CheckboxSelectMultiple(choices=VOLTAGE_CHOICES))
         signal_type = forms.CharField(required=False, widget=forms.CheckboxSelectMultiple(choices=TYPE_CHOICES))
         signal_asset = forms.CharField(required=False, widget=forms.CheckboxSelectMultiple(choices=ASSET_CHOICES))
         signal_unit = forms.CharField(required=False, widget=forms.CheckboxSelectMultiple(choices=UNIT_CHOICES))
         signal_phase = forms.CharField(required=False, widget=forms.CheckboxSelectMultiple(choices=PHASE_CHOICES))
+
+        @staticmethod
+        def get_initial_signal_values():
+            return {'signal_voltage':['500'], 'signal_type':['Phasor'], 'signal_unit': ['Voltage']}
 
 
 class SignalForm(forms.Form):

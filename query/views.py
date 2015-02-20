@@ -132,9 +132,9 @@ def query_builder(request):
     if not request.method == 'POST':
         detail_form = QueryForm()
         station_form = StationForm()
-        station_filter_form = StationFilterForm()
+        station_filter_form = StationFilterForm(initial=StationFilterForm.get_initial_station_values())
         signal_form = SignalForm()
-        signal_filter_form = SignalFilterForm()
+        signal_filter_form = SignalFilterForm(initial=SignalFilterForm.get_initial_signal_values())
 
         context = get_context(username, detail_form, station_form, station_filter_form, signal_form,
                               signal_filter_form, current_step)
@@ -142,9 +142,13 @@ def query_builder(request):
 
     detail_form = QueryForm(request.POST, request.FILES)
     signal_form = SignalForm(request.POST)
-    signal_filter_form = SignalFilterForm(request.POST)
+    signal_filter_form = SignalFilterForm(
+        request.POST,
+        initial=SignalFilterForm.get_initial_signal_values())
     station_form = StationForm(request.POST)
-    station_filter_form = StationFilterForm(request.POST, initial={'signal_voltage':'230'})
+    station_filter_form = StationFilterForm(
+        request.POST, 
+        initial=StationFilterForm.get_initial_station_values())
     if detail_form.is_valid() and 'save-details' in request.POST:
         signal_form = SignalForm()
         current_step = 1
