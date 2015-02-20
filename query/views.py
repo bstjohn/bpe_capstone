@@ -144,7 +144,7 @@ def query_builder(request):
     signal_form = SignalForm(request.POST)
     signal_filter_form = SignalFilterForm(request.POST)
     station_form = StationForm(request.POST)
-    station_filter_form = StationFilterForm(request.POST)
+    station_filter_form = StationFilterForm(request.POST, initial={'signal_voltage':'230'})
     if detail_form.is_valid() and 'save-details' in request.POST:
         signal_form = SignalForm()
         current_step = 1

@@ -24,31 +24,33 @@ PMU_CHANNEL_CHOICES = (('A', 'A'),
                        ('B', 'B'))
 
 TYPE_CHOICES = (('Phasor', 'Phasor'),
-                ('Analog', 'Analog'),
                 ('Digital', 'Digital'),
+                ('Analog', 'Analog'),
                 ('Frequency', 'Frequency'))
 
 ASSET_CHOICES = (('Bus', 'Bus'),
                  ('Line', 'Line'),
                  ('Transformer', 'Transformer'),
                  ('Generator', 'Generator'),
-                 ('Capacator', 'Capacator'),
+                 ('Capacitor', 'Capacitor'),
                  ('Reactor', 'Reactor'),
                  ('Digital', 'Digital'),
                  ('Analog', 'Analog'))
 
-UNIT_CHOICES = (('ROCOF', 'ROCOF'),
-                ('Frequency', 'Frequency'),
-                ('Power-Reactive', 'Power-Reactive'),
+UNIT_CHOICES = (('Voltage', 'Voltage'),
+                ('Current', 'Current'),
+                ('Digital', 'Digital'),
                 ('Power-Real', 'Power-Real'),
-                ('Current', 'Current-Pos. Seq'),
-                ('Voltage', 'Voltage-Pos. Seq'))
+                ('Power-Reactive', 'Power-Reactive'),
+                ('Frequency', 'Frequency'),
+                ('ROCOF', 'ROCOF'))
 
-PHASE_CHOICES = (('Phase A', 'Phase A'),
+PHASE_CHOICES = (('Pos. Seq', 'Pos. Seq'),
+                 ('Phase A', 'Phase A'),
                  ('Phase B', 'Phase B'),
                  ('Phase C', 'Phace C'),
                  ('Zero Seq', 'Zero Seq'),
-                 ('Pos. Seq', 'Pos. Seq'))
+                 ('Neg. Seq', 'Neq. Seq'))
 
 DATE_FORMAT = '%m/%d/%Y'
 
