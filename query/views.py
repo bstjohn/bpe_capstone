@@ -187,7 +187,7 @@ def query_builder(request):
     elif station_filter_form.is_valid() and 'station-filter-submit' in request.POST:
         detail_form = QueryForm()
         signal_form = SignalForm()
-        current_step = 2
+        current_step = 1
 
         # station_voltage = station_filter_form.cleaned_data['station_voltage']
         station_voltage = request.POST.getlist('station_voltage')
@@ -201,14 +201,14 @@ def query_builder(request):
     elif 'station-filter-submit' in request.POST:
         detail_form = QueryForm()
         signal_form = SignalForm()
-        current_step = 2
+        current_step = 1
 
         context = get_context(username, detail_form, station_form, station_filter_form, signal_form,
                               signal_filter_form, current_step)
         return render(request, 'query/query-builder.html', context)
     elif station_form.is_valid() and 'station-submit' in request.POST:
         detail_form = QueryForm()
-        current_step = 3
+        current_step = 2
 
         stations = request.POST.getlist('stations')
         query_model.set_stations(stations)
@@ -226,13 +226,13 @@ def query_builder(request):
         detail_form = QueryForm()
         signal_form = SignalForm()
 
-        current_step = 3
+        current_step = 1
         context = get_context(username, detail_form, station_form, station_filter_form, signal_form,
                               signal_filter_form, current_step)
         return render(request, 'query/query-builder.html', context)
     elif signal_filter_form.is_valid() and 'signal-filter-submit' in request.POST:
         detail_form = QueryForm()
-        current_step = 4
+        current_step = 2
 
         signal_voltage = request.POST.getlist('signal_voltage')
         signal_type = request.POST.getlist('signal_type')
@@ -255,7 +255,7 @@ def query_builder(request):
         detail_form = QueryForm()
         signal_form = SignalForm()
 
-        current_step = 4
+        current_step = 2
         context = get_context(username, detail_form, station_form, station_filter_form, signal_form,
                               signal_filter_form, current_step)
         return render(request, 'query/query-builder.html', context)
@@ -268,7 +268,7 @@ def query_builder(request):
         return return_result_page(request, query_model)
     elif 'send' in request.POST:
         detail_form = QueryForm()
-        current_step = 4
+        current_step = 2
         context = get_context(username, detail_form, station_form, station_filter_form, signal_form,
                               signal_filter_form, current_step)
         return render(request, 'query/query-builder.html', context)

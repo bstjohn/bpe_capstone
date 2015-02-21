@@ -170,11 +170,8 @@
         
         <p><small>*Leaving all boxes in a field unchecked is the same as selecting them all.</small></p>
 
-        <button id="previous-step-2" class="btn btn-default previousStep" type="button">Previous Step</button>
-        <button id="next-step-2" class="btn btn-primary nextStep" type="submit" name="station-filter-submit">Next Step</button>
-    </fieldset>
+        <button id="refresh-stations" class="btn btn-primary nextStep" type="submit" name="station-filter-submit">Refresh Stations</button>
 
-    <fieldset id="field-set-3" class="fieldSet">
         <h3>3. Select Stations to Filter On (Optional)</h3>
         <div class="fieldWrapper">
             {{ station_form.errors }}
@@ -185,12 +182,12 @@
             <small> (CTRL + Click or SHIFT + Click to select multiple)</small>
         </div>
 
-        <button id="previous-step-3" class="btn btn-default previousStep" type="button">Previous Step</button>
-        <button id="next-step-3" class="btn btn-primary nextStep" type="submit" name="station-submit">Next Step</button>
+        <button id="previous-step-1" class="btn btn-default previousStep" type="button">Previous Step</button>
+        <button id="next-step-2" class="btn btn-primary nextStep" type="submit" name="station-submit">Next Step</button>
         <!--<button id="next-step-3" class="btn btn-primary nextStep" type="submit">Next Step</button>-->
     </fieldset>
 
-    <fieldset id="field-set-4" class="fieldSet">
+    <fieldset id="field-set-3" class="fieldSet">
         <h3>4. Filter the List of Signals (Optional)</h3>
 
         <div class="fieldWrapper">
@@ -216,12 +213,9 @@
 
         <!-- <input class="button" type="reset" value="Reset"/> -->
         <!--<input class="button" type="submit" style="width: 120px;" value="Get Signals" id="refresh-signals" name="refresh"/>-->
-        <button id="previous-step-4" class="btn btn-default previousStep" type="button">Previous Step</button>
-        <button id="next-step-4" class="btn btn-primary nextStep" type="submit" name="signal-filter-submit">Next Step</button>
+        <button id="refresh-signals" class="btn btn-primary nextStep" type="submit" name="signal-filter-submit">Refresh Signals</button>
             <!--<button id="next-step-3" class="btn btn-primary nextStep" type="submit">Next Step</button>-->
-    </fieldset>
 
-    <fieldset id="field-set-5" class="fieldSet">
         <h3>5. Select Signals</h3>
 
         {{ signal_form.non_form_errors }}
@@ -233,7 +227,7 @@
             <small> (CTRL + Click or SHIFT + Click to select multiple)</small>
 
         </div>
-        <button id="previous-step-5" class="btn btn-default previousStep" type="button">Previous Step</button>
+        <button id="previous-step-2" class="btn btn-default previousStep" type="button">Previous Step</button>
         <input  id="send-query" class="btn btn-success" type="submit" value="Send Query" name="send"/>
     </fieldset>
 </form>
