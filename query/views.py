@@ -270,7 +270,7 @@ def query_builder(request):
 
         # Convert the query object to JSON and send the results:
         json_query = convert_to_json(query_object)
-        send_to_server(json_query)
+        # send_to_server(json_query)
 
         # Finally, go to the result page
         return return_result_page(request, query_model)
@@ -345,9 +345,10 @@ def send_to_server(json_query):
     # Create the socket:
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
+    f = s.makefile()
     try:
         # Now connect to the server:
-        s.connect((host,port))
+        s.connect((host, port))
         f = s.makefile('rw', 4096)
 
         # Send the JSON object to the server:
