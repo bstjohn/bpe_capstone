@@ -52,20 +52,38 @@ class Query(models.Model):
     # Completed
     sr_completed = models.IntegerField(max_length=1024, null=True)
 
-
-    # Set stations to a string from a json object
     def set_stations(self, stations):
+        """
+        Convert list of stations to json object for storage in the model.
+
+        Keyword arguments:
+        :param stations:
+        :return:
+        """
         self.stations = json.dumps(stations)
 
-    # Get stations as json object
     def get_stations(self):
+        """
+        Get the list of stations.
+
+        :return: The list of stations in JSON format.
+        """
         return json.loads(self.stations)
 
-    # Set conditions to a string from a json object
     def set_conditions(self, conditions):
+        """
+        Convert a list of conditions to a JSON object for storage in the model.
+
+        :param conditions: The conditions to convert to JSON.
+        :return:
+        """
         self.conditions = json.dumps(conditions)
 
-    # Get conditions as json object
     def get_conditions(self):
+        """
+        Get the list of conditions as a JSON object.
+
+        :return: The list of conditions in JSON format.
+        """
         return json.loads(self.conditions)
 

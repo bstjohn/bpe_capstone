@@ -286,7 +286,7 @@ def get_stations(station_list):
     """Given a list of station strings, return the list of corresponding stations from the database.
 
     Keyword arguments:
-    station_list -- the list of stations
+    :param: station_list: the list of stations
     """
     station_objects = []
     for station in station_list:
@@ -299,8 +299,8 @@ def get_query_objects(query_set, query_object_list):
     """Places the query objects contained in a query set into a list.
 
     Keyword arguments:
-    query_set -- the QuerySet object to pull objects out of
-    query_object_list -- the list to store query objects in
+    :param: query_set: the QuerySet object to pull objects out of
+    :param: query_object_list: the list to store query objects in
     """
     for query_field_object in query_set:
         query_object_list.append(query_field_object)
@@ -311,7 +311,7 @@ def convert_to_json(query_param):
     """Converts the given query object into a JSON object.
 
     Keyword arguments:
-    query_param -- the query object to be converted to JSON
+    :param: query_param: the query object to be converted to JSON
     """
     query_id = query_param.model_id
     start_date_time = query_param.start_date_time
@@ -336,7 +336,7 @@ def send_to_server(json_query):
     """Send the query JSON object to the server.
 
     Keyword arguments:
-    json_query -- the JSON object to send
+    :param: json_query: the JSON object to send
     """
     # Set the server and host name to work with:
     host = 'localhost'
