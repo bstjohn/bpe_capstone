@@ -9,6 +9,7 @@ from stations.models import Station
 import datetime
 import time
 import json
+import socket
 
 
 class QueryObject:
@@ -247,7 +248,6 @@ def query_builder(request):
                                   signal_asset, signal_unit, signal_phase)
                                   
         signal_form = SignalForm()
-                                  
 
         context = get_context(username, detail_form, station_form, station_filter_form, signal_form,
                               signal_filter_form, current_step)
@@ -269,8 +269,10 @@ def query_builder(request):
         query_object.signals = request.POST.getlist('signals')
 
         # Convert the query object to JSON and send the results:
-        print(convert_to_json(query_object))
+        json_query = convert_to_json(query_object)
+        send_to_server(json_query)
 
+        # Finally, go to the result page
         return return_result_page(request, query_model)
     elif 'send' in request.POST:
         detail_form = QueryForm()
@@ -328,3 +330,31 @@ def convert_to_json(query_param):
     })
 
     return query
+
+
+def send_to_server(json_query):
+    """Send the query JSON object to the server.
+
+    Keyword arguments:
+    json_query -- the JSON object to send
+    """
+    # Set the server and host name to work with:
+    host = 'localhost'
+    port = 4242
+
+    # Create the socket:
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+    try:
+        # Now connect to the server:
+        s.connect((host,port))
+        f = s.makefile('rw', 4096)
+
+        # Send the JSON object to the server:
+        f.write(json_query)
+        f.write('\n\n')
+        f.flush()
+
+    finally:
+        f.close()
+        s.close()
