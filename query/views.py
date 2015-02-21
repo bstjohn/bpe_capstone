@@ -1,7 +1,5 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect
-from django.forms import formset_factory
 from django.utils.datastructures import MultiValueDictKeyError
 
 from query.forms import QueryForm, StationForm, StationFilterForm, SignalForm, SignalFilterForm
@@ -25,18 +23,13 @@ class Condition:
 
 class QueryObject:
     def __init__(self, model_id, start_date_time, end_date_time,
-                 conditions, file_name, signals, qr_file,
-                 ar_file, status_field, sr_completed):
+                 conditions, file_name, signals):
         self.model_id = model_id
         self.start_date_time = start_date_time
         self.end_date_time = end_date_time
         self.conditions = conditions
         self.file_name = file_name
         self.signals = signals
-        self.qr_file = qr_file
-        self.ar_file = ar_file
-        self.sr_completed = sr_completed
-        self.status_field = status_field
 
 
 class SystemStatusObject:
@@ -76,7 +69,7 @@ current_step = 0
 stations = ''
 query_model = Query()
 ss_model = SystemStatus()
-query_object = QueryObject(None, None, None, None, None, None, None, None, None, None)
+query_object = QueryObject(None, None, None, None, None, None)
 ss_object = SystemStatusObject(None)
 sn_object = SystemNodeObject(None, None, None)
 scpu_object = SystemCpuObject(None, None)
@@ -117,11 +110,12 @@ def get_context(username, form, station_form, station_filter_form, signal_form,
 # Builds a query given user input
 @login_required
 def query_builder(request):
-    global query_model
-    global query_object
-    global current_step
-    global stations
+    global query_model      # The model persisted in the database
+    global query_object     # The query that is sent to be processed
+    global current_step     # Current step in the builder
+    global stations         # The stations selected by the user
 
+    # Ensure the user has rights to the page and save their information
     username = None
     if request.user.is_authenticated():
         username = request.user.username
@@ -129,7 +123,8 @@ def query_builder(request):
         creation_date = time.strftime("%Y-%m-%d %H:%M:%S")
         query_model.create_date_time = creation_date
 
-    if not request.method == 'POST':
+    # Instantiate blank form objects
+    if request.method == 'GET':
         detail_form = QueryForm()
         station_form = StationForm()
         station_filter_form = StationFilterForm(initial=StationFilterForm.get_initial_station_values())
@@ -140,15 +135,15 @@ def query_builder(request):
                               signal_filter_form, current_step)
         return render(request, 'query/query-builder.html', context)
 
+    # Request method is POST: Create and handle the forms with the given user input
     detail_form = QueryForm(request.POST, request.FILES)
     signal_form = SignalForm(request.POST)
-    signal_filter_form = SignalFilterForm(
-        request.POST,
-        initial=SignalFilterForm.get_initial_signal_values())
+    signal_filter_form = SignalFilterForm(request.POST,
+                                          initial=SignalFilterForm.get_initial_signal_values())
     station_form = StationForm(request.POST)
-    station_filter_form = StationFilterForm(
-        request.POST, 
-        initial=StationFilterForm.get_initial_station_values())
+    station_filter_form = StationFilterForm(request.POST,
+                                            initial=StationFilterForm.get_initial_station_values())
+    # Save the first form data if the first form is valid and the user clicked 'next'
     if detail_form.is_valid() and 'save-details' in request.POST:
         signal_form = SignalForm()
         current_step = 1
@@ -172,7 +167,7 @@ def query_builder(request):
         query_model.file_name = file_name
 
         query_object = QueryObject(None, start_date_time, end_date_time,
-                                   None, file_name, None, None, None, None, None)
+                                   None, file_name, None)
 
         context = get_context(username, detail_form, station_form, station_filter_form, signal_form,
                               signal_filter_form, current_step)
