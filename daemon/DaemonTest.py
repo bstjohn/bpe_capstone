@@ -23,7 +23,7 @@ query= {'query': {'query_id': 3728,
                   'Signal_id': ['0x86d1-P-01'],
                   'start': '2014-10-31 14:00:00',
                   'end': '2014-10-31 14:30:00',
-                  'analysisFile': '/this/dir/to/foo.r'}}
+                  'analysisFile': ''}}
 
 try:
     # Now connect to the server.

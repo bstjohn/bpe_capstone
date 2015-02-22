@@ -1,6 +1,6 @@
-#!/user/bin/python2.7
+#!/usr/bin/python2.7
 #
-# File:    QueryClient.py
+#  File:    QueryClient.py
 #  Author:  Daniel E. Wilson
 #
 #  File of classes to handle the queries in the backend of
@@ -23,8 +23,9 @@ timeLimit = 5 * 60
 class QueryEngine(threading.Thread):
     "Class that handles all of the queries to the BPA engine"
 
-    def __init__(self):
+    def __init__(self, dataEngine):
         threading.Thread.__init__(self, None, self.run)
+        self.dataEngine = dataEngine
         self.daemon = True
         self.queue = Queue.Queue(25)
         self.client = BPAClient(host, port)
@@ -37,7 +38,7 @@ class QueryEngine(threading.Thread):
     def run(self):
         "Start the server task."
         while True:
-            # Get list of signals after midnight.
+            # Get list of signals after midnight and store in database.
             if self.afterMidnight():
                 signals = self.client.getSignals()
 
@@ -76,8 +77,9 @@ class BPAClient:
     "Class that will handle communication with the BPA database."
 
     def __init__(self, host, port):
-        self.socket = socket((host,port))
-        self.file = makefile('rw', 4096)
+        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.socket.connect((host, port))
+        self.file = socket.makefile('rw', 4096)
 
     def sendJSON(self, msg):
         "Send a JSON message to the server."
@@ -89,9 +91,7 @@ class BPAClient:
     def getJSON(self):
         "Get a JSON message from the server."
         result = json.load(self.file)
-        while True:
-            if not file.readline().strip():
-                break
+        ignore = file.readline()
         return result
 
     def getQueryStatus(self):
@@ -124,5 +124,14 @@ class BPAClient:
 
     def __del__(self):
         "Clean up the socket and file descriptors."
-        self.file.close()
-        self.socket.close()
+        # Clean up the file if it exists.
+        try:
+            self.file.close()
+        except AttributeError:
+            pass
+
+        # Clean up the socket if it exists.
+        try:
+            self.socket.close()
+        except AttributeError:
+            pass

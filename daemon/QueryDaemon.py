@@ -13,6 +13,7 @@ import json
 import select
 import SocketServer
 import QueryClient
+import DataEngine
 
 def allKeysPresent(dictionary, keyList):
     "Check that all keys are present in the dictionary."
@@ -72,8 +73,12 @@ if __name__ == '__main__':
     host = 'localhost'
     port = 4242
 
+    # Create the DataEngine to hande database Accesses.
+    dataEngine = DataEngine.DataEngine()
+    dataEngine.start()
+
     # Create the query engine object and start it.
-    queryEngine = QueryClient.QueryEngine()
+    queryEngine = QueryClient.QueryEngine(dataEngine)
     queryEngine.start()
 
     # Create and run the server.
