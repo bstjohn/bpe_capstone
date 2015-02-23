@@ -18,7 +18,6 @@ def validate_email_unique(value):
 # "help_text": description for the field
 # "validators": check the field if is valid
 class MyRegistrationForm(UserCreationForm):
-    register_code = forms.CharField(required=True, help_text = "Code received from BPA administrator")
     email = forms.EmailField(required=True, validators=[validate_email_unique])
     first_name = forms.CharField(required=True)
     last_name = forms.CharField(required=True)
@@ -27,8 +26,7 @@ class MyRegistrationForm(UserCreationForm):
     # form field, also can put any attribute in this class
     class Meta:
         model = User  # whose the form is
-        fields = ('register_code',
-                  'username',
+        fields = ('username',
                   'password1',
                   'password2',
                   'email',
@@ -42,7 +40,6 @@ class MyRegistrationForm(UserCreationForm):
         # always resulting in consistent output
         def save(self, commit=True):                          
             user = super(UserCreationForm, self).save(commit=False) # not to commit the data since haven't finished the rest of data yet!!
-            user.register_code = self.cleaned_data['register_code']
             user.username = self.cleaned_data['username']
             user.password1 = self.cleaned_data['password1']
             user.password2 = self.cleaned_data['password2']
