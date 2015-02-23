@@ -1,6 +1,5 @@
 # encoding=utf8
 from django import forms
-from registration.models import Person
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm # base auth user form from library
 from django.core.exceptions import ValidationError     # validate library
@@ -57,16 +56,12 @@ class MyRegistrationForm(UserCreationForm):
 
             return user
 
-
-
-class PersonForm(forms.ModelForm):
-    class Meta:
-        model = Person  # this model is bounded to that Person
-        fields = ('register_code', 'username', 'email', 'first_name', 'last_name') 
-
-
 # new add
 class UserProfileForm(forms.ModelForm):
     class Meta:
         model = UserProfile
-        fields = ('cellphone','bio',)
+        fields = ('cellphone','company',)
+
+
+
+
