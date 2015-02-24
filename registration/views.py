@@ -1,3 +1,5 @@
+# views.py is the set of functions that you implement it to describe how to 
+# display the information of your website when we visit the url
 from django.conf import settings
 from django.core.mail import send_mail
 from django.contrib import messages
@@ -13,7 +15,6 @@ from django.template.loader import get_template  # get_template fun
 from django.views.generic.base import TemplateView  # how display template
 from registration.forms import MyRegistrationForm  # import from /forms.py
 from django.contrib.auth.models import User
-from registration.forms import PersonForm
 
 from django.contrib.auth.decorators import login_required
 from forms import UserProfileForm
@@ -28,9 +29,6 @@ def register_user(request):
         form = MyRegistrationForm(request.POST)
 
         if form.is_valid():
-            save_it = form.save(commit=False)
-            save_it.save()
-            form = PersonForm(request.POST)
             save_it = form.save(commit=False)
             save_it.save()
             # here we can add email to verfiy!!!!

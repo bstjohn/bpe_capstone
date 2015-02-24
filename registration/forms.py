@@ -1,6 +1,4 @@
-# encoding=utf8
 from django import forms
-from registration.models import Person
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm # base auth user form from library
 from django.core.exceptions import ValidationError     # validate library
@@ -37,10 +35,6 @@ class MyRegistrationForm(UserCreationForm):
                   'last_name')
             
         # This is how the user save the form
-        # "Form.cleaned_data": 
-        # Each field in a Form class is responsible not only for validating data, but also for “cleaning” it - normalizing it to a
-        # consistent format. This is a nice feature, because it allows data for a particular field to be input in a variety of ways, 
-        # always resulting in consistent output
         def save(self, commit=True):                          
             user = super(UserCreationForm, self).save(commit=False) # not to commit the data since haven't finished the rest of data yet!!
             user.register_code = self.cleaned_data['register_code']
@@ -58,15 +52,8 @@ class MyRegistrationForm(UserCreationForm):
             return user
 
 
-
-class PersonForm(forms.ModelForm):
-    class Meta:
-        model = Person  # this model is bounded to that Person
-        fields = ('register_code', 'username', 'email', 'first_name', 'last_name') 
-
-
 # new add
 class UserProfileForm(forms.ModelForm):
     class Meta:
         model = UserProfile
-        fields = ('cellphone','bio',)
+        fields = ('cellphone','company',)
