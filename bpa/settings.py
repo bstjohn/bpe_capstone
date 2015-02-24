@@ -81,9 +81,9 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-ROOT_URLCONF = 'bpe_capstone.urls'
+ROOT_URLCONF = 'bpa.urls'
 
-WSGI_APPLICATION = 'bpe_capstone.wsgi.application'
+WSGI_APPLICATION = 'bpa.wsgi.application'
 
 
 # Database
