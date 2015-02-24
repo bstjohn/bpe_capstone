@@ -68,7 +68,6 @@ INSTALLED_APPS = (
     'dashboard',
     'query',
     'registration',
-    'results',
     'stations',
 )
 
