@@ -1,5 +1,22 @@
-# Eric Olson (c) 2015
-# This is a testing suit for the Capstone Team C BPA Project
+# Bonneville Power Adminstration Front-End
+# Copyright (C) 2015  Eric Olson
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+#
+#
+#
 # make sure a superuser is created with:
 # username 'test'
 #  email 'test@test.com
@@ -8,11 +25,10 @@
 # 'python manage.py createsuperuser' 
 # or '$python django-admin.py createsuperuser'
 # It might vary depending on your build. 
-
+from django.contrib import admin
 import unittest
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
-
 
 class TestWebsite(unittest.TestCase):
     # connects to the local server
