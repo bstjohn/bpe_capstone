@@ -4,7 +4,7 @@ from django.utils.datastructures import MultiValueDictKeyError
 
 from query.forms import QueryForm, StationForm, StationFilterForm, SignalForm, SignalFilterForm
 from query.models import Query, SystemStatus, SystemNode, SystemCpu
-from stations.models import Station
+from stations.models import Station, Signal
 
 import datetime
 import time
@@ -319,13 +319,26 @@ def convert_to_json(query_param):
     file_name = query_param.file_name
     signals = query_param.signals
 
+    # Get PMU Channel and Pmu Company attributes:
+    pmu_channels = []
+    pmu_companies = []
+    for signal in signals:
+        signal_objects = list(Signal.objects.filter(Signal_ID=int(signal))[:1])
+        if signal_objects:
+            signal_object = signal_objects[0]
+            station = signal_object.Signal_PMU_ID
+            pmu_channels.append(station.PMU_Channel)
+            pmu_companies.append(station.PMU_Company)
+
     query = json.dumps({
         "query": {
             "query_id": query_id,
             "start": start_date_time.__str__(),
             "end": end_date_time.__str__(),
             "analysis_file": file_name,
-            "signal_id": signals
+            "signal_id": signals,
+            "pmu_channel": pmu_channels,
+            "pmu_company": pmu_companies
         }
     })
 
