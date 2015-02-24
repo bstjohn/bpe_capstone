@@ -3,7 +3,7 @@
 from settings import *
 
 DEBUG = TEMPLATE_DEBUG = True
-DATABASE_NAME = 'bpa_production'
+DATABASE_NAME = 'bpa'
 DATABASE_USER = 'bpa'
 DATABASE_PASSWORD = 'bpa'
 
