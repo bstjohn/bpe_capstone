@@ -24,15 +24,14 @@ from django.contrib.auth.models import User
 import json
 
 
-# System CPU, which is one of many CPU's that live inside a node.
+# System CPU
 class SystemCpu(models.Model):
     # MANY cpus to ONE node
     node     = models.ForeignKey('SystemNode')
     cpu_id   = models.IntegerField(max_length=1024)
     cpu_load = models.FloatField(max_length=1024, default=0)
 
-# System node, that contains information about disk space as well as 
-# CPU's
+# System node, that contains information about disk space
 class SystemNode(models.Model):
     # MANY nodes to ONE SystemStatus 
     system      = models.ForeignKey('SystemStatus')
@@ -40,14 +39,41 @@ class SystemNode(models.Model):
     used        = models.IntegerField(max_length=1024, null=True)
     available   = models.IntegerField(max_length=1024, null=True)
 
+    # calculate and return avg cpu
+    def cpuAvg(self):
+        total = 0
+        num = 0
+        for i in self.systemcpu_set.all():
+          total += i.cpu_load
+          num +=1
+        if (num >0):
+          return (int(total/num))
+        else:
+          return 0
+
+    # calculate the color of the CPU box for the HTML page
+    def boxColor(self):
+        num = self.cpuAvg()
+        # 0-25 = success / green color
+        if num <25:
+          return "success"
+        # 26-50 = info  / blue color
+        elif num >25 and num <=50:
+          return "info"
+        # 51-75 = warning / yellow color
+        elif num >50 and num <=75:
+          return "warning"
+        # 75 < = danger/red color
+        else:
+          return "danger"
+
+    # calculate the diskspace
     def diskSpace(self):
         return self.used/self.available
  
 
-# System Status model holding data for the system
+# System Status model holding data for the system, allows for multiple systems
 class SystemStatus(models.Model):
-    # not sure you need a owner
-    # sr_cpu = models.CommaSeparatedIntegerField(max_length=1024, null=True)
     system_id = models.IntegerField(max_length=10)
 
 # Query model holding data from built queries
@@ -62,7 +88,6 @@ class Query(models.Model):
     stations = models.CharField(max_length=1024)
     conditions = models.CharField(max_length=1024)
     file_name = models.CharField(max_length=108, default="n/a")
-
     status_field = models.CharField(max_length=1024, null=True)
 
     # QueryResponses

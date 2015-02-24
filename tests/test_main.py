@@ -16,9 +16,8 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
 #
-#
 # make sure a superuser is created with:
-# username 'test'
+#  username 'test'
 #  email 'test@test.com
 #  password 'password123'
 # The command should look something similiar to 
@@ -36,12 +35,20 @@ class TestWebsite(unittest.TestCase):
         self.driver = webdriver.Firefox()
         self.driver.get("http://127.0.0.1:8000/")
 
-    # check to see if user can successfully login
-    def test_login_page(self):
+  # check to see if user can successfully load a query results
+    def test_query_result(self):
         self.driver.find_element_by_id("id_username").send_keys("test")
         self.driver.find_element_by_id("id_password").send_keys("password123")
         # This works, but may need to be fixed later on. Basically clicks on the
         # login button, as it's the first button to be found.
+        self.driver.find_element_by_class_name("button").click()
+        # find a query, and click on it
+        ###########XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+    # check to see if user can successfully login
+    def test_login_page(self):
+        self.driver.find_element_by_id("id_username").send_keys("test")
+        self.driver.find_element_by_id("id_password").send_keys("password123")
         self.driver.find_element_by_class_name("button").click()
         assert "Dashboard" in self.driver.title
 
@@ -49,8 +56,6 @@ class TestWebsite(unittest.TestCase):
     def test_logout(self):
         self.driver.find_element_by_id("id_username").send_keys("test")
         self.driver.find_element_by_id("id_password").send_keys("password123")
-        # This works, but may need to be fixed later on. Basically clicks on the
-        # login button, as it's the first button to be found.
         self.driver.find_element_by_class_name("button").click()
         self.driver.find_element_by_link_text("Logout").click()
         assert "Logged out | Django site admin" in self.driver.title

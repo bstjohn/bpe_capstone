@@ -84,12 +84,14 @@ def query_result(request):
     return render(request, 'query/query-result.html')
 
 
+# Display the System Status
 @login_required
 def status_result(request):
     allqueries = Query.objects.all()
     sys_stat = SystemStatus.objects.all()    
     sys_cpu = SystemCpu.objects.all()
     sys_node = SystemNode.objects.all()
+    # Calculate the information for the HTML page
     context = {'sys_stat': sys_stat, 'allqueries': allqueries,
                'sys_cpu': sys_cpu, 'sys_node': sys_node
  }

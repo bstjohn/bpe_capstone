@@ -6,8 +6,15 @@
 
 {% block header %}
 {% block header-title %}
-  <h1><p align= "center"><u><b>SYSTEM STATUS</b></u></p></h1>
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">System Status </a>
+    </div>
+  </div>
+</nav>
 {% endblock %}
+<meta http-equiv="refresh" content="3" >
 {% endblock %}
 
 {% block content %}
@@ -22,35 +29,24 @@
              CPU_ID   as text
              CPU_Load as a bargraph
 -->
+<div class="container-fluid">
+  <div class = "row-fluid">
+  <!-- Display Nodes -->
+  {% for node in sys_node %}
+  <div class="col-xs-2">
 
-
-<!-- Display Nodes -->
-{% for node in sys_node %}
-  <h4><p align = "center"><u> NODE ID: {{node.node_id}}</u></p></h4>
-
-  <h5> Disk usage: {{node.diskSpace}}%</h5>
-  <div class="progress">
-    <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="{{node.diskSpace}}" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em; width: {{node.diskSpace}}%;">
+    <div class = "span11">
+         <li class="list-group-item list-group-item-{{node.boxColor}}">
+           <h4>{{node.cpuAvg}}%</h4>
+           <h6>Free: {{node.available}}</h6>
+         </li>
+    </div>
+    <div class = "span1">
     </div>
   </div>
+  {% endfor %}
+  </div>
+</div>
 
 
-  <h5> CPU Usage: </h5>
-
-  <!-- Display CPUs  -->
-  <ul>
-      {% for i in node.systemcpu_set.all %}
-
-      <h4> {{i.SystemNode.node_id}}</h4>
-      <ul>
-          <div class="progress">
-              <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="{{i.cpu_load}}" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em; width: {{i.cpu_load}}%;">
-                  Load: {{i.cpu_load}}%
-              </div>
-          </div>
-      </ul>
-      {% endfor %}
-  </ul>
-   
-{% endfor %}
 {% endblock %}
