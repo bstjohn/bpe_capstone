@@ -31,7 +31,6 @@ def dashboard(request):
     context = {'username': username, 'allqueries':allqueries, 'myqueries':myqueries}
     return render(request, 'dashboard/dashboard.html', context)
 
-# confirmation to delete view here? and add a confirmation.html to templates...yes and no buttons etc...
 
 @login_required
 def delete_query(request, pk):
