@@ -103,18 +103,7 @@ scpu_object = SystemCpuObject(None, None)
 # - and return the rendered page 
 @login_required
 def return_result_page(request, query_model):
-    context = {
-        'query_id': query_model.id,
-        'qr_file': query_model.qr_file,
-        'ar_file': query_model.ar_file,
-        'status_field': query_model.status_field,
-        'sr_completed': query_model.sr_completed,
-        'username': query_model.user_name,
-        'filename': query_model.file_name,
-        'created': query_model.create_date_time,
-        'start': query_model.start_date_time,
-        'end': query_model.end_date_time,
-        'qname': query_model.query_name}
+    context = {'query':query_model}
     return render(request, 'query/query-result.html', context)
 
 
