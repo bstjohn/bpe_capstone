@@ -53,7 +53,7 @@
   <div class="row">
       
     <!-- display all queries -->  
-    <div class="col-xs-2">
+    <div class="col-xs-3">
       <h4> All Jobs </h4>
         <ul class="list-group">
           {% for q in allqueries %}
@@ -69,12 +69,11 @@
         </ul>
     </div>
 
-    <!-- display my queries -->  
-    {% for q in myqueries %}
-    <div class="col-xs-2">
+    <!-- display my queries, with delete option-->  
+    <div class="col-xs-3">
       <h4> My Jobs </h4>
         <ul class="list-group">
-          <!-- {% for q in myqueries %} -->
+          {% for q in myqueries %}
             <li class="list-group-item">
               <a class="btn btn-link" href="{% url 'query:query-result' pk=q.pk %}">{{ q.query_name }}</a>
                 <div class="progress">
@@ -82,23 +81,11 @@
                         {{q.sr_completed}}%
                   </div>
                 </div>
+                <a class="btn btn-link" href="{% url 'dashboard:delete_query' pk=q.pk %}" role="button">delete job</a>
             </li>
-          <!-- {% endfor %}-->
+          {% endfor %}
         </ul>
     </div> 
-      
-    <!-- options to delete my queries -->  
-    <div class="col-xs-2">
-      <h4> Edit </h4>
-        <ul class="list-group">
-          <!-- {% for q in myqueries %} -->
-            <li class="list-group-item">
-              <a class="btn btn-link" href="{% url 'dashboard:delete_query' pk=q.pk %}" role="button">delete</a>
-            </li>
-          <!-- {% endfor %} -->
-        </ul>
-    </div>
-    {% endfor %}
       
   </div>
 </div>
