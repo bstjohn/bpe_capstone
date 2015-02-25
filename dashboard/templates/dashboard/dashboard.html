@@ -26,6 +26,7 @@
 
 {% block header %}
 {% block header-title %}
+<!-- display 'Welcome' and 'New Job', 'Status' buttons -->
 <nav class="navbar navbar-default">
   <div class="container-fluid">
     <div class="navbar-header">
@@ -91,7 +92,7 @@
         <ul class="list-group">
           {% for q in myqueries %}
             <li class="list-group-item">
-              <a class="btn btn-link" href="/query/query-result" role="button">Delete</a>
+              <a class="btn btn-link" href="{% url 'dashboard:delete_query' pk=q.pk %}" role="button">delete</a>
             </li>
           {% endfor %}
         </ul>
@@ -100,5 +101,6 @@
       
   </div>
 </div>
+<!-- display link to profile information -->
 <a href="{% url 'profile' slug=user.username %}"><b>{{ user.username }} 's Profile</b></a>
 {% endblock %}

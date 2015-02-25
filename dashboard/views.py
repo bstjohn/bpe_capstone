@@ -30,3 +30,14 @@ def dashboard(request):
     myqueries = Query.objects.filter(user_name = username)
     context = {'username': username, 'allqueries':allqueries, 'myqueries':myqueries}
     return render(request, 'dashboard/dashboard.html', context)
+
+@login_required
+def delete_query(request, pk):
+    Query.objects.filter(pk=pk).delete()
+    username = None
+    if request.user.is_authenticated():
+        username = request.user.username
+    allqueries = Query.objects.all()
+    myqueries = Query.objects.filter(user_name = username)
+    context = {'username': username, 'allqueries':allqueries, 'myqueries':myqueries}
+    return render(request, 'dashboard/dashboard.html', context)
