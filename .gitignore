@@ -63,3 +63,6 @@ target/
 *~
 [#]*[#]
 .[#]*
+
+# Ignore Dolphin files
+.directory

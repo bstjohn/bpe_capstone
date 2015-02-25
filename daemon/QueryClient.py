@@ -79,19 +79,20 @@ class BPAClient:
     def __init__(self, host, port):
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.connect((host, port))
-        self.file = socket.makefile('rw', 4096)
+        self.file = self.socket.makefile('rw', 4096)
 
     def sendJSON(self, msg):
         "Send a JSON message to the server."
         assert type(msg)==type({})
         json.dump(msg, self.file)
-        self.file.write('\n')
+        self.file.write('\n\n')
         self.file.flush()
 
-    def getJSON(self):
+    def getJSON(self, dropFirstLine = False):
         "Get a JSON message from the server."
         result = json.load(self.file)
-        ignore = file.readline()
+        ignore = self.file.readline()
+        ignore = self.file.readline()
         return result
 
     def getQueryStatus(self):

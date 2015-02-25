@@ -16,6 +16,7 @@ projectHome = os.getcwd() + "/.."
 sys.path.append(projectHome)
 os.environ["DJANGO_SETTINGS_MODULE"] = "bpe_capstone.settings"
 from stations.models import Station, Signal
+from query.models import Query
 
 class DataEngine(threading.Thread):
     "This class handles the database access for the daemon."
@@ -31,6 +32,7 @@ class DataEngine(threading.Thread):
         while True:
             model = self.queue.get(True)
             model.save()
+            self.queue.task_done()
 
         def addSignals(self, PMUs, signals):
             "Add the PMUs and Signals to the queue."
@@ -45,7 +47,7 @@ class DataEngine(threading.Thread):
                                 PMU_Channel = p['PMU_Channel'],
                                 PMU_Type = p['PMU_Type'],
                                 PMU_Voltage = p['PMU_Voltage'])
-                put(model)
+                self.queue.put(model)
 
             # Place the Signal objects in the queue.
             for s in signals:
@@ -61,4 +63,16 @@ class DataEngine(threading.Thread):
                                Signal_Circuit = s['Signal_Circuit'],
                                Signal_Unit = s['Signal_Unit'],
                                Signal_Phase = s['Signal_Phase'])
-                put(model)
+                self.queue.put(model)
+
+        def updateStatus(self, queryList, AnalysisList, StatusList):
+            "Add all of the status reponses."
+            # Loop through the query list.
+            for qr in queryList:
+                model = Query(query_name = str(qr['query_id']),
+                              file_name = qr['file'])
+                self.queue.put(model)
+
+            # Loop through the analysis list.
+            for ar in AnalysisList:
+                model =
