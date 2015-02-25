@@ -103,7 +103,8 @@ scpu_object = SystemCpuObject(None, None)
 # - and return the rendered page 
 @login_required
 def return_result_page(request, query_model):
-    context = {'query':query_model}
+    query = Query.objects.filter(pk=query_model.pk)
+    context = {'query':query}
     return render(request, 'query/query-result.html', context)
 
 
