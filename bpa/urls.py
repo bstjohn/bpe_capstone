@@ -27,7 +27,6 @@ urlpatterns = patterns('',
                            name='password_reset_complete'),
                        url(r'^stations/', include('stations.urls', namespace="station")),
                        url(r'^profile/$', 'registration.views.user_profile'),
-
                        url(r"^users/(?P<slug>\w+)/$", UserProfileDetailView.as_view(), name="profile"),
 
 )

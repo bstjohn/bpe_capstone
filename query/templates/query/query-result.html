@@ -1,47 +1,72 @@
+<!--
+# Bonneville Power Adminstration Front-End
+# Copyright (C) 2015  Eric Olson, Matei Mitaru
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, US$
+#
+-->
+
 {% extends "user/base.html" %}
 
 {% block title %}Job Results{% endblock %}
 
 {% block header %}
-{% block header-title %}<H1><p align="center"><u><b>Results for {{qname}}, QueryID #{{query_id}}</b></u>:</p></H1>{% endblock %}
+{% for q in query %}
+{% block header-title %}<H1><p align="center"><u><b>Results for {{q.query_name}}, QueryID #{{q.pk}}</b></u>:</p></H1>{% endblock %}
+{% endfor %}
 {% endblock %}
 
+
 {% block content %}
+{% for q in query %}
 <div>
     <ul>
 
 
         <H3><u>Query Information</u>:</H3>
         <UL>
-          <li>Username: {{username}}</li>
-          <li>Query Name:{{qname}}</li>
-          <li>Filename: {{filename}}</li>
-          <li>Created: {{created}}</li>
-          <li>Start: {{start}}</li>
-          <li>End: {{end}}</li>
+          <li>Username: {{q.user_name}}</li>
+          <li>Query Name:{{q.query_name}}</li>
+          <li>Filename: {{q.file_name}}</li>
+          <li>Created: {{q.create_date_time}}</li>
+          <li>Start: {{q.start_date_time}}</li>
+          <li>End: {{q.end_date_time}}</li>
         </UL>
         <H3><u>Job Response:</u></H3>
         <UL>
-            <LI>File: <u>{{qr_file}}</u></LI>
+            <LI>File: <u>{{q.qr_file}}</u></LI>
         </UL>
 
         <H3><u>Analysis Response:</u></H3>
         <UL>
-            <LI>File: <u>{{ar_file}}</u></LI>
+            <LI>File: <u>{{q.ar_file}}</u></LI>
         </Ul>
 
         <H3><u>Status Response:</u></H3>
         <UL>
-            <LI>Completed: <u>{{sr_completed}}</u></LI>
+            <LI>Completed: <u>{{q.sr_completed}}</u></LI>
     <div class="progress">
-  <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="{{sr_completed}}" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em; width: {{sr_completed}}%;">
-    {{sr_completed}}%
+  <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="{{sr_completed}}" aria-valuemin="0" aria-valuemax="100" style="min-width: 0em; width: {{sr_completed}}%;">
+    {{q.sr_completed}}%
   </div>
 </div>
-            <LI>Status Report: "{{status_field}}"</LI>
+            <LI>Status Report: "{{q.status_field}}"</LI>
         </UL>
 
     </ul>
 
 </div>
+{% endfor %}
 {% endblock %}

@@ -133,4 +133,3 @@ class Query(models.Model):
         :return: The list of conditions in JSON format.
         """
         return json.loads(self.conditions)
-

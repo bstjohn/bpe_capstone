@@ -1,5 +1,5 @@
 # Bonneville Power Adminstration Front-End
-# Copyright (C) 2015  Eric Olson, Brady St. John
+# Copyright (C) 2015  Eric Olson, Brady St. John, Matei Mitaru
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -24,7 +24,7 @@ from query import views
 urlpatterns = patterns('',
                        url(r'^$', views.query_index, name='query-index'),
                        url(r'^query-builder/', views.query_builder, name='query-builder'),
-                       url(r'^query-result/', views.query_result, name='query-result'),
+                       url(r'^query-result/(?P<pk>\d+)/$', views.query_result, name='query-result'),
                        url(r'^status-result/', views.status_result, name='status-result')
 
 )

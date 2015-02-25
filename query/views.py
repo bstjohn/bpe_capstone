@@ -1,5 +1,5 @@
 # Bonneville Power Adminstration Front-End
-# Copyright (C) 2015  Eric Olson, Brady St. John
+# Copyright (C) 2015  Eric Olson, Brady St. John, Matei Mitaru
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -58,7 +58,7 @@ class SystemCpuObject:
         self.cpu_id = cpu_id
         self.cpu_load = cpu_load
 
-
+        
 @login_required
 def query_index(request):
     """Implementation of the /query/ endpoint."""
@@ -66,9 +66,11 @@ def query_index(request):
 
 
 @login_required
-def query_result(request):
+def query_result(request, pk):
     """Implementation of the /query-result/ endpoint."""
-    return render(request, 'query/query-result.html')
+    query = Query.objects.filter(pk=pk)
+    context = {'query':query}
+    return render(request, 'query/query-result.html', context)
 
 
 # Display the System Status
