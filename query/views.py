@@ -1,5 +1,5 @@
 # Bonneville Power Adminstration Front-End
-# Copyright (C) 2015  Eric Olson, Brady St. John
+# Copyright (C) 2015  Eric Olson, Brady St. John, Matei Mitaru
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -58,7 +58,7 @@ class SystemCpuObject:
         self.cpu_id = cpu_id
         self.cpu_load = cpu_load
 
-
+        
 @login_required
 def query_index(request):
     """Implementation of the /query/ endpoint."""
@@ -66,9 +66,11 @@ def query_index(request):
 
 
 @login_required
-def query_result(request):
+def query_result(request, pk):
     """Implementation of the /query-result/ endpoint."""
-    return render(request, 'query/query-result.html')
+    query = Query.objects.filter(pk=pk)
+    context = {'query':query}
+    return render(request, 'query/query-result.html', context)
 
 
 # Display the System Status
@@ -101,18 +103,8 @@ scpu_object = SystemCpuObject(None, None)
 # - and return the rendered page 
 @login_required
 def return_result_page(request, query_model):
-    context = {
-        'query_id': query_model.id,
-        'qr_file': query_model.qr_file,
-        'ar_file': query_model.ar_file,
-        'status_field': query_model.status_field,
-        'sr_completed': query_model.sr_completed,
-        'username': query_model.user_name,
-        'filename': query_model.file_name,
-        'created': query_model.create_date_time,
-        'start': query_model.start_date_time,
-        'end': query_model.end_date_time,
-        'qname': query_model.query_name}
+    query = Query.objects.filter(pk=query_model.pk)
+    context = {'query':query}
     return render(request, 'query/query-result.html', context)
 
 

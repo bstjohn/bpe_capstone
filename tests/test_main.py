@@ -24,7 +24,7 @@
 # 'python manage.py createsuperuser' 
 # or '$python django-admin.py createsuperuser'
 # It might vary depending on your build. 
-from django.contrib import admin
+#from django.contrib import admin
 import unittest
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -35,15 +35,73 @@ class TestWebsite(unittest.TestCase):
         self.driver = webdriver.Firefox()
         self.driver.get("http://127.0.0.1:8000/")
 
+
+  # check to see if user can successfully load thier profile
+    def test_user_profile(self):
+        self.driver.find_element_by_id("id_username").send_keys("test")
+        self.driver.find_element_by_id("id_password").send_keys("password123")
+        self.driver.find_element_by_class_name("button").click()
+        # check to see if user can load thier profile
+        self.driver.find_element_by_link_text("test 's Profile").click()
+        assert "User Profile" in self.driver.title        
+
+
+  # check to see if user can reset password
+    def test_user_password_reset(self):
+        self.driver.find_element_by_link_text("Reset it!").click()
+        assert "Reset Password" in self.driver.title        
+
+
+  # check to see if user can successfully edit thier profile
+    def test_user_profile_edit(self):
+        self.driver.find_element_by_id("id_username").send_keys("test")
+        self.driver.find_element_by_id("id_password").send_keys("password123")
+        self.driver.find_element_by_class_name("button").click()
+        # check to see if user can edit thier profile
+        self.driver.find_element_by_link_text("test 's Profile").click()
+        self.driver.find_element_by_link_text("Update Profile").click()
+        assert "Edit Information" in self.driver.title        
+
+
+  # check to see if user can successfully load thier profile, then go back to dashboard
+    def test_user_profile_back(self):
+        self.driver.find_element_by_id("id_username").send_keys("test")
+        self.driver.find_element_by_id("id_password").send_keys("password123")
+        self.driver.find_element_by_class_name("button").click()
+        # load user profile, then go back to dashboard
+        self.driver.find_element_by_link_text("test 's Profile").click()
+        self.driver.find_element_by_link_text("Go Back").click()
+        assert "Dashboard" in self.driver.title        
+
+
+  # check to see if user can successfully load a query results
+    def test_system_status(self):
+        self.driver.find_element_by_id("id_username").send_keys("test")
+        self.driver.find_element_by_id("id_password").send_keys("password123")
+        self.driver.find_element_by_class_name("button").click()
+        # find and go to 'System Status'
+        self.driver.find_element_by_link_text("System Status").click()
+        assert "System Status" in self.driver.title        
+
+
+  # check to see if user can successfully load a query results
+    def test_query_builder(self):
+        self.driver.find_element_by_id("id_username").send_keys("test")
+        self.driver.find_element_by_id("id_password").send_keys("password123")
+        self.driver.find_element_by_class_name("button").click()
+        # find 'New Job', and click on it
+        self.driver.find_element_by_link_text("New Job").click()
+        assert "Query Builder" in self.driver.title        
+
+
   # check to see if user can successfully load a query results
     def test_query_result(self):
         self.driver.find_element_by_id("id_username").send_keys("test")
         self.driver.find_element_by_id("id_password").send_keys("password123")
-        # This works, but may need to be fixed later on. Basically clicks on the
-        # login button, as it's the first button to be found.
         self.driver.find_element_by_class_name("button").click()
         # find a query, and click on it
-        ###########XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+        self.driver.find_element_by_css_selector("a.btn.btn-link").click()
+        assert "Job Results" in self.driver.title        
 
     # check to see if user can successfully login
     def test_login_page(self):
@@ -51,6 +109,7 @@ class TestWebsite(unittest.TestCase):
         self.driver.find_element_by_id("id_password").send_keys("password123")
         self.driver.find_element_by_class_name("button").click()
         assert "Dashboard" in self.driver.title
+
 
     # tests to see if the user can log in, then log out
     def test_logout(self):
@@ -60,24 +119,29 @@ class TestWebsite(unittest.TestCase):
         self.driver.find_element_by_link_text("Logout").click()
         assert "Logged out | Django site admin" in self.driver.title
 
+
     # check if the contact us  page is there
     def test_contact_us_exists(self):
         self.driver.find_element_by_link_text("Contact Us").click()
         assert "Contact" in self.driver.title
+
 
     # check if the faq  page is there
     def test_faq_exists(self):
         self.driver.find_element_by_link_text("FAQs").click()
         assert "FAQ" in self.driver.title
 
+
     # check if the about page is there
     def test_about_exists(self):
         self.driver.find_element_by_link_text("About").click()
         assert "About" in self.driver.title
 
+
     # check to see the title is correct
     def test_title(self):
         assert "BPA Project" in self.driver.title
+
 
     # destroys the driver
     def tearDown(self):
