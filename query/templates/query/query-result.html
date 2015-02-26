@@ -23,50 +23,82 @@
 {% block title %}Job Results{% endblock %}
 
 {% block header %}
-{% for q in query %}
-{% block header-title %}<H1><p align="center"><u><b>Results for {{q.query_name}}, QueryID #{{q.pk}}</b></u>:</p></H1>{% endblock %}
-{% endfor %}
+  {% for q in query %}
+    {% block header-title %}
+    <nav class="navbar navbar-default">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="#">Results for {{q.query_name}}, QueryID #{{q.pk}} </a>
+        </div>
+      </div>
+    </nav>
+    {% endblock %}
+  {% endfor %}
 {% endblock %}
 
 
 {% block content %}
 {% for q in query %}
-<div>
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Query Information</h3>
+  </div>
+  <div class="panel-body">
     <ul>
-
-
-        <H3><u>Query Information</u>:</H3>
-        <UL>
-          <li>Username: {{q.user_name}}</li>
-          <li>Query Name:{{q.query_name}}</li>
-          <li>Filename: {{q.file_name}}</li>
-          <li>Created: {{q.create_date_time}}</li>
-          <li>Start: {{q.start_date_time}}</li>
-          <li>End: {{q.end_date_time}}</li>
-        </UL>
-        <H3><u>Job Response:</u></H3>
-        <UL>
-            <LI>File: <u>{{q.qr_file}}</u></LI>
-        </UL>
-
-        <H3><u>Analysis Response:</u></H3>
-        <UL>
-            <LI>File: <u>{{q.ar_file}}</u></LI>
-        </Ul>
-
-        <H3><u>Status Response:</u></H3>
-        <UL>
-            <LI>Completed: <u>{{q.sr_completed}}</u></LI>
-    <div class="progress">
-  <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="{{sr_completed}}" aria-valuemin="0" aria-valuemax="100" style="min-width: 0em; width: {{sr_completed}}%;">
-    {{q.sr_completed}}%
+      <li>Username: {{q.user_name}}</li>
+      <li>Query Name:{{q.query_name}}</li>
+      <li>Filename: {{q.file_name}}</li>
+      <li>Created: {{q.create_date_time}}</li>
+      <li>Start: {{q.start_date_time}}</li>
+      <li>End: {{q.end_date_time}}</li>          
+    </ul>
   </div>
 </div>
-            <LI>Status Report: "{{q.status_field}}"</LI>
-        </UL>
 
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Job Response</h3>
+  </div>
+  <div class="panel-body">
+    <ul>
+      <LI>File: <u>{{q.qr_file}}</u></LI>
     </ul>
-
+  </div>      
 </div>
+
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Analysis Response</h3>
+  </div>
+  <div class="panel-body">
+    <ul>
+      <LI>File: <u>{{q.ar_file}}</u></LI>
+    </ul>
+  </div>      
+</div>
+
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Status Response</h3>
+  </div>
+  <div class="panel-body">
+    <ul>
+      <LI>Completed: <u>{{q.sr_completed}}</u></LI>
+      <div class="progress">
+        <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="{{sr_completed}}" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em; width: {{q.sr_completed}}%;">
+          {{q.sr_completed}}%
+        </div>
+      </div>
+      <LI>Status Report: "{{q.status_field}}"</LI>
+    </ul>
+  </div>      
+</div>
+
+
+
 {% endfor %}
 {% endblock %}
