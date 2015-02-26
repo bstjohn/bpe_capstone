@@ -83,3 +83,15 @@ div.ui-datepicker{
     font-size: 12px;
     background: lightblue;
 }
+
+.messages {
+	background-color: #c0c0c0;
+	color: #fff;
+	padding: 1em;
+}
+
+.success {
+	background-color: #008800;
+	border-color: #005500;
+	padding-left: 1em;
+}
