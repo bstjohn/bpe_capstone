@@ -38,7 +38,10 @@ from forms import UserProfileForm
 from django.views.generic import ListView, DetailView
 from django.contrib.auth import get_user_model
 from models import UserProfile
+from django.contrib.admin.views.decorators import staff_member_required
 
+# User registration feature required only admin login
+@staff_member_required
 def register_user(request):
     if request.method == 'POST':
         form = MyRegistrationForm(request.POST)
@@ -113,3 +116,7 @@ class UserProfileDetailView(DetailView):
         UserProfile.objects.get_or_create(user=user)
         return user
 
+# logout user
+def logout(request):
+    auth.logout(request)
+    return render_to_response('registration/logout.html')
