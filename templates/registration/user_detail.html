@@ -1,18 +1,56 @@
+<!--
+# Bonneville Power Adminstration Front-End
+# Copyright (C) 2015  Eric Olson, Shu-Ping Chu
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, US$
+#
+-->
 {% extends "base.html" %}
+{% block title %} User Profile {% endblock %}
+
+{% block header %}
+   <nav class="navbar navbar-default">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="#">{{ object.username }}'s Profile</a>
+        </div>
+      </div>
+    </nav>
+{% endblock %}
 
 {% block content %}
-<h2>{{ object.username }}'s Profile</h2>
-{% if object.userprofile %}
-<div>
-<p><b>Username:</b> {{ object.username }}</p>
-<p><b>Email:</b> {{ object.email }}</p>
-<p><b>Fist Name:</b> {{ object.first_name }}</p>
-<p><b>Last Name:</b> {{ object.last_name }}</p>
-<p><b>Cellphone:</b> {{ object.userprofile.cellphone }}</p>
-<p><b>Company:</b> {{ object.userprofile.company }}</p>
 
+{% if object.userprofile %}
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Query Information</h3>
+  </div>
+  <div class="panel-body">
+    <div>
+      <p><b>Username:</b> {{ object.username }}</p>
+      <p><b>Email:</b> {{ object.email }}</p>
+      <p><b>Fist Name:</b> {{ object.first_name }}</p>
+      <p><b>Last Name:</b> {{ object.last_name }}</p>
+      <p><b>Cellphone:</b> {{ object.userprofile.cellphone }}</p>
+      <p><b>Company:</b> {{ object.userprofile.company }}</p>
+    </div>
+  </div>
 </div>
+</div>
+
 {% endif %}
-<p><a href="/profile/" + {{username}} >Update profile</a></p>
-<p><a href="/dashboard/">Go back</a></p>
+<p><a href="/profile/" + {{username}} >Update Profile</a></p>
+<p><a href="/dashboard/">Go Back</a></p>
 {% endblock %}
