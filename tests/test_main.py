@@ -84,6 +84,17 @@ class TestWebsite(unittest.TestCase):
         assert "System Status" in self.driver.title        
 
 
+  # check to see if user can successfully use back button
+    def test_back_button(self):
+        self.driver.find_element_by_id("id_username").send_keys("test")
+        self.driver.find_element_by_id("id_password").send_keys("password123")
+        self.driver.find_element_by_class_name("button").click()
+        # find and go to 'System Status', then go back
+        self.driver.find_element_by_link_text("System Status").click()
+        self.driver.find_element_by_link_text("Previous Page").click()
+        assert "Dashboard" in self.driver.title        
+
+
   # check to see if user can successfully load a query results
     def test_query_builder(self):
         self.driver.find_element_by_id("id_username").send_keys("test")
@@ -108,11 +119,10 @@ class TestWebsite(unittest.TestCase):
         self.driver.find_element_by_id("id_username").send_keys("test")
         self.driver.find_element_by_id("id_password").send_keys("password123")
         self.driver.find_element_by_class_name("button").click()
-        
         assert "Dashboard" in self.driver.title
 
 
-    # tests to see if the user can log in, then log out
+    # tests to see if the user can log in, then log out, and then log in again
     def test_logout(self):
         self.driver.find_element_by_id("id_username").send_keys("test")
         self.driver.find_element_by_id("id_password").send_keys("password123")
@@ -120,6 +130,11 @@ class TestWebsite(unittest.TestCase):
         self.driver.find_element_by_link_text("Logout").click()
         self.bodyText = self.driver.find_element_by_tag_name('body').text
         assert "Logout" in self.bodyText
+        self.driver.find_element_by_link_text("Log in").click()
+        self.driver.find_element_by_id("id_username").send_keys("test")
+        self.driver.find_element_by_id("id_password").send_keys("password123")
+        self.driver.find_element_by_class_name("button").click()
+        assert "Dashboard" in self.driver.title
 
 
     # check if the contact us  page is there
