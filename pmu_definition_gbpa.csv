@@ -1,31 +1,31 @@
 "1","[0x84e0]","GBPA","ALBN 500 B1 SA ","ALBN","Albion",1,"B","SA",500
-"2","[0x84e0]","GBPA","ALCN 500 B1 SA ","ALCN","Alicante",1,"B","SA",500
-"3","[0x84e0]","GBPA","ASSS 500 B1 SA ","ASSS","Assisi",1,"B","SA",500
-"4","[0x84e0]","GBPA","BERL 230 B1 SA ","BERL","Berlin",1,"B","SA",230
-"5","[0x84e0]","GBPA","BERL 230 B2 SA ","BERL","Berlin",2,"B","SA",230
-"6","[0x84e0]","GBPA","BGRD 500 B1 SA ","BGRD","Belgrade",1,"B","SA",500
-"7","[0x84e0]","GBPA","BGRD 500 B2 SA ","BGRD","Belgrade",2,"B","SA",500
-"8","[0x84e0]","GBPA","CPGN 500 B1 SA ","CPGN","Copenhagen",1,"B","SA",500
-"9","[0x84e0]","GBPA","CENO 500 B1 SA ","CENO","Cenon",1,"B","SA",500
-"10","[0x84e0]","GBPA","CHIS 230 B1 SA ","CHIS","Chisinau",1,"B","SA",230
-"11","[0x84e0]","GBPA","CHIS 230 B2 SA ","CHIS","Chisinau",2,"B","SA",230
-"12","[0x852a]","GBPA","CHIS 500 B1 SA ","CHIS","Chisinau",1,"B","SA",500
-"13","[0x852a]","GBPA","CUST 500 B1 SA ","CUST","Cusset",1,"B","SA",500
-"14","[0x852a]","GBPA","ECHT 500 B1 SA ","ECHT","Echart",1,"B","SA",500
-"15","[0x852a]","GBPA","GARM 500 B1 SA ","GARM","Garmond",1,"B","SA",500
-"16","[0x852a]","GBPA","GRTI 230 B1 SA ","GRTI","Grand Titon",1,"B","SA",230
-"17","[0x852a]","GBPA","GRTI 230 B2 SA ","GRTI","Grand Titon",2,"B","SA",230
-"18","[0x852a]","GBPA","GRTI 500 B1 SA ","GRTI","Grand Titon",1,"B","SA",500
-"19","[0x852a]","GBPA","GRTI 500 B2 SA ","GRTI","Grand Titon",2,"B","SA",500
-"20","[0x852a]","GBPA","GRIM 500 B1 SA ","GRIM","Grimma",1,"B","SA",500
-"21","[0x852a]","GBPA","GRIM 500 B2 SA ","GRIM","Grimma",2,"B","SA",500
-"22","[0x852a]","GBPA","JDGN 230 B1 SA ","JDGN","Jodoigne",1,"B","SA",230
-"23","[0x852a]","GBPA","JDGN 500 B1 SA ","JDGN","Jodoigne",1,"B","SA",500
-"24","[0x852a]","GBPA","JDGN 500 B2 SA ","JDGN","Jodoigne",2,"B","SA",500
-"25","[0x852a]","GBPA","KEEB 230 B1 SA ","KEEB","Keebler",1,"B","SA",230
-"26","[0x852a]","GBPA","KEEB 230 B2 SA ","KEEB","Keebler",2,"B","SA",230
-"27","[0x852a]","GBPA","KEEB 500 B1 SA ","KEEB","Keebler",1,"B","SA",500
-"28","[0x852a]","GBPA","LOWL 500 B1 SA ","LOWL","Lowell",1,"B","SA",500
+"2","[0x852a]","GBPA","ALCN 500 B1 SA ","ALCN","Alicante",1,"B","SA",500
+"3","[0x852b]","GBPA","ASSS 500 B1 SA ","ASSS","Assisi",1,"B","SA",500
+"4","[0x8509]","GBPA","BERL 230 B1 SA ","BERL","Berlin",1,"B","SA",230
+"5","[0x86d2]","GBPA","BERL 230 B2 SA ","BERL","Berlin",2,"B","SA",230
+"6","[0x84ed]","GBPA","BGRD 500 B1 SA ","BGRD","Belgrade",1,"B","SA",500
+"7","[0x84ef]","GBPA","BGRD 500 B2 SA ","BGRD","Belgrade",2,"B","SA",500
+"8","[0x8507]","GBPA","CPGN 500 B1 SA ","CPGN","Copenhagen",1,"B","SA",500
+"9","[0x8638]","GBPA","CENO 500 B1 SA ","CENO","Cenon",1,"B","SA",500
+"10","[0x853b]","GBPA","CHIS 230 B1 SA ","CHIS","Chisinau",1,"B","SA",230
+"11","[0x86a8]","GBPA","CHIS 230 B2 SA ","CHIS","Chisinau",2,"B","SA",230
+"12","[0x8539]","GBPA","CHIS 500 B1 SA ","CHIS","Chisinau",1,"B","SA",500
+"13","[0x8501]","GBPA","CUST 500 B1 SA ","CUST","Cusset",1,"B","SA",500
+"14","[0x8551]","GBPA","ECHT 500 B1 SA ","ECHT","Echart",1,"B","SA",500
+"15","[0x850b]","GBPA","GARM 500 B1 SA ","GARM","Garmond",1,"B","SA",500
+"16","[0x8541]","GBPA","GRTI 230 B1 SA ","GRTI","Grand Titon",1,"B","SA",230
+"17","[0x86a9]","GBPA","GRTI 230 B2 SA ","GRTI","Grand Titon",2,"B","SA",230
+"18","[0x853d]","GBPA","GRTI 500 B1 SA ","GRTI","Grand Titon",1,"B","SA",500
+"19","[0x853f]","GBPA","GRTI 500 B2 SA ","GRTI","Grand Titon",2,"B","SA",500
+"20","[0x850f]","GBPA","GRIM 500 B1 SA ","GRIM","Grimma",1,"B","SA",500
+"21","[0x8511]","GBPA","GRIM 500 B2 SA ","GRIM","Grimma",2,"B","SA",500
+"22","[0x8521]","GBPA","JDGN 230 B1 SA ","JDGN","Jodoigne",1,"B","SA",230
+"23","[0x851d]","GBPA","JDGN 500 B1 SA ","JDGN","Jodoigne",1,"B","SA",500
+"24","[0x851f]","GBPA","JDGN 500 B2 SA ","JDGN","Jodoigne",2,"B","SA",500
+"25","[0x84eb]","GBPA","KEEB 230 B1 SA ","KEEB","Keebler",1,"B","SA",230
+"26","[0x8636]","GBPA","KEEB 230 B2 SA ","KEEB","Keebler",2,"B","SA",230
+"27","[0x84e9]","GBPA","KEEB 500 B1 SA ","KEEB","Keebler",1,"B","SA",500
+"28","[0x852d]","GBPA","LOWL 500 B1 SA ","LOWL","Lowell",1,"B","SA",500
 "29","[0x852f]","GBPA","LOWL 500 B2 SA ","LOWL","Lowell",2,"B","SA",500
 "30","[0x8503]","GBPA","MAVO 500 B1 SA ","MAVO","Malinovo",1,"B","SA",500
 "31","[0x8505]","GBPA","MAVO 500 B2 SA ","MAVO","Malinovo",2,"B","SA",500
