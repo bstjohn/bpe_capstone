@@ -36,6 +36,10 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, DetailView
 from django.contrib.auth import get_user_model
+from registration.forms import UserProfileForm
+from django.views.generic import ListView, DetailView
+from django.contrib.auth import get_user_model
+from registration.models import UserProfile
 from django.contrib.admin.views.decorators import staff_member_required
 
 # User registration feature required only admin login
