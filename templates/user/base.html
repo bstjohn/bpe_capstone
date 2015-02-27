@@ -13,10 +13,6 @@
 
 <body>
 <div id="header">
-    {% block header %}
-    {% block header-title %}BPA Project{% endblock %}
-    {% endblock %}
-
 
 <!-- display 'Welcome' and 'New Job', 'Status' buttons -->
 <nav class="navbar navbar-default">
@@ -34,7 +30,7 @@
 
     <div>
       <form class="navbar-form navbar-left" role="search">
-        <a type="submit" class="btn btn-default" onclick="history.back();"value="Back">Dashboard</a>
+        <a type="submit" class="btn btn-default" href="/dashboard">Dashboard</a>
       </form>
     </div>
 
@@ -51,9 +47,12 @@
       </form>
     </div>
   </div>
+
 </nav>
 
-
+    {% block header %}
+    {% block header-title %}BPA Project{% endblock %}
+    {% endblock %}
 
 
 </div>
@@ -70,6 +69,7 @@
 	{% endif %}
 
         {% block content %}{% endblock %}
+
     </div>
 </div>
 
