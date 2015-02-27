@@ -38,8 +38,6 @@ class DatabaseImport:
             count = 0
             for line in f:
                 fields = line.split(",")
-                # "Signal_ID","Signal_PMU_ID","Signal_Index","Signal_Name_Raw","Signal_Name_Short","Signal_Name_Group",
-                # "Signal_Name_Long","Signal_Type","Signal_Asset","Signal_Voltage","Signal_Circuit","Signal_Unit","Signal_Phase"
                 signal_pmu_id = fields[2].replace("[", "").replace("]", "").replace("\"", "")  # convert "[0x84e0]" to 0x84e0
                 signal_pmu_id = int(signal_pmu_id, 0)
 
@@ -62,7 +60,7 @@ class DatabaseImport:
                     Signal_Voltage=int(fields[10].replace("\"", "")),
                     Signal_Circuit=int(fields[11].replace("\"", "")),
                     Signal_Unit=fields[12].replace("\"", ""),
-                    Signal_Phase=fields[13]
+                    Signal_Phase=fields[13].replace("\"", "").replace("\n", "")
                 )
                 new_signal.save()
                 print(new_signal)
