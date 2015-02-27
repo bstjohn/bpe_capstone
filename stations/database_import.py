@@ -35,7 +35,6 @@ class DatabaseImport:
         :param file: The file with the signals.
         """
         with open(file) as f:
-            count = 0
             for line in f:
                 fields = line.split(",")
                 signal_pmu_id = fields[2].replace("[", "").replace("]", "").replace("\"", "")  # convert "[0x84e0]" to 0x84e0
@@ -44,8 +43,6 @@ class DatabaseImport:
                 try:
                     signal_pmu_id = Station.objects.filter(PMU_ID=signal_pmu_id)[0]
                 except IndexError:
-                    print("No station associated with this signal: " + str(signal_pmu_id))
-                    count += 1
                     continue
                 new_signal = Signal(
                     Signal_ID=fields[1],
@@ -64,4 +61,3 @@ class DatabaseImport:
                 )
                 new_signal.save()
                 print(new_signal)
-            print(count)
