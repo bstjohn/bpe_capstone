@@ -35,7 +35,7 @@ TEMPLATE_DIRS = [os.path.join(BASE_DIR, 'templates'),
                  os.path.join(BASE_DIR, 'templates/user')]
      
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 # Login settings
 
@@ -68,7 +68,6 @@ INSTALLED_APPS = (
     'dashboard',
     'query',
     'registration',
-    'results',
     'stations',
 )
 
@@ -82,9 +81,9 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-ROOT_URLCONF = 'bpe_capstone.urls'
+ROOT_URLCONF = 'bpa.urls'
 
-WSGI_APPLICATION = 'bpe_capstone.wsgi.application'
+WSGI_APPLICATION = 'bpa.wsgi.application'
 
 
 # Database
