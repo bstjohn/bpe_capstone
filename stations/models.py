@@ -20,7 +20,7 @@ class Station(models.Model):
 
 
 class Signal(models.Model):
-    Signal_ID         = models.IntegerField(default=-1)
+    Signal_ID         = models.CharField(max_length=200)
     Signal_PMU_ID     = models.ForeignKey('Station')
     Signal_Index      = models.IntegerField(default=-1)
     Signal_Name_Raw   = models.CharField(max_length=200)
@@ -35,7 +35,7 @@ class Signal(models.Model):
     Signal_Phase      = models.CharField(max_length=200)
 
     def __str__(self):
-        return '%s %s %s %s %s %s %s %s %s %s %s' % (hex(self.Signal_ID), self.Signal_PMU_ID, self.Signal_Index,
+        return '%s %s %s %s %s %s %s %s %s %s %s' % (self.Signal_ID, self.Signal_PMU_ID, self.Signal_Index,
                                                      self.Signal_Name_Raw, self.Signal_Name_Group,
                                                      self.Signal_Type, self.Signal_Asset, self.Signal_Voltage,
                                                      self.Signal_Circuit, self.Signal_Unit, self.Signal_Phase)

@@ -325,7 +325,7 @@ def convert_to_json(query_param):
     pmu_channels = []
     pmu_companies = []
     for signal in signals:
-        signal_objects = list(Signal.objects.filter(Signal_ID=int(signal))[:1])
+        signal_objects = list(Signal.objects.filter(Signal_ID=signal)[:1])
         if signal_objects:
             signal_object = signal_objects[0]
             station = signal_object.Signal_PMU_ID
