@@ -31,9 +31,9 @@
 
   {% for field in form %}
     {{field.error}}
+  {% endfor %}
 
 
-{% extends "base.html" %}
 {% block title %} Edit Information {% endblock %}
 {% block header-title %}
   <nav class="navbar navbar-default">
@@ -46,7 +46,7 @@
 {% endblock %}
 
 
-{% block content %}
+
   
 <div class="panel panel-default">
   <div class="panel-heading">
