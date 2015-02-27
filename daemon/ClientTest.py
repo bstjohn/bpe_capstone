@@ -5,12 +5,14 @@
 #
 #  Test program to test commumincation with the client.
 #
+import sys
 import QueryClient
 import json
 
 # Set the host and port number.
-host = '131.252.208.4'
+#host = '131.252.208.4'
 #host = 'web.cecs.pdx.edu'
+host = '131.252.42.50'
 port = 1701
 
 # Create the JSON object.
@@ -40,3 +42,6 @@ result = client.getSignals()
 print "Signals Result:"
 print json.dumps(result, indent=2)
 print
+
+# Successfule exit.
+sys.exit(0)

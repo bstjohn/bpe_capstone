@@ -75,4 +75,4 @@ class DataEngine(threading.Thread):
 
             # Loop through the analysis list.
             for ar in AnalysisList:
-                model =
+                model = {}
