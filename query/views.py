@@ -261,6 +261,8 @@ def query_builder(request):
                               signal_filter_form, current_step)
         return render(request, 'query/query-builder.html', context)
     elif signal_form.is_valid() and 'send' in request.POST:
+        current_step = 0
+
         # A query was successfully defined. Save the model:
         query_model.save()
 
