@@ -1,0 +1,12 @@
+#requirements.txt
+
+#postgres
+psycopg2==2.4.5
+#bootstrap
+bootstrap==3.3.2
+#django
+Django==1.7.1
+#python
+python==3.4.2
+#selenium
+selenium
