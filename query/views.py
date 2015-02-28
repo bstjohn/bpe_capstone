@@ -273,6 +273,8 @@ def query_builder(request):
                               signal_filter_form, current_step)
         return render(request, 'query/query-builder.html', context)
     elif signal_form.is_valid() and 'send' in request.POST:
+        current_step = 0
+
         # A query was successfully defined. Save the model:
         query_model.save()
 
@@ -335,7 +337,7 @@ def convert_to_json(query_param):
     pmu_channels = []
     pmu_companies = []
     for signal in signals:
-        signal_objects = list(Signal.objects.filter(Signal_ID=int(signal))[:1])
+        signal_objects = list(Signal.objects.filter(Signal_ID=signal)[:1])
         if signal_objects:
             signal_object = signal_objects[0]
             station = signal_object.Signal_PMU_ID
