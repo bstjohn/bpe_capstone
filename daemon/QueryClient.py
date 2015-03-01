@@ -97,6 +97,7 @@ class BPAClient:
     def getJSON(self):
         "Get a JSON message from the server."
         result = json.load(self.file)
+        print(repr(result))
         ignore = self.file.readline()
         ignore = self.file.readline()
         return result
@@ -121,7 +122,7 @@ class BPAClient:
     def getSignals(self):
         "Get the signals from the BPA Server."
         # Send the signal request.
-        self.file.write('{ "PMUAndSignalRequest" }\n')
+        self.sendJSON({'PMUAndSignalRequest' : 0})
         self.file.flush()
 
         # Get the signal list from the server.

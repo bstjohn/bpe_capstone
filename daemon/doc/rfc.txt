@@ -49,7 +49,7 @@ PMU and Signal Request
   This message will be sent by the client to request a list of PMUs and Signals.
   The client should respond with a PMU and Signal Response.
 
-        { "PMUAndSignalRequest" }
+        { "PMUAndSignalRequest" : 0}
 
 
 PMU and Signal Response
