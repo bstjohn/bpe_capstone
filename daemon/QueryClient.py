@@ -6,7 +6,7 @@
 #  File of classes to handle the queries in the backend of
 #  the BPA database.
 #
-import Queue
+import queue
 import threading
 import time
 import socket

@@ -29,19 +29,19 @@ client = QueryClient.BPAClient(host, port)
 result = client.startQuery(query)
 print("Query result:")
 print(json.dumps(result, indent=2))
-print
+print()
 
 # Check to see if the signals request works.
 result = client.getQueryStatus()
 print("Query Status Result:")
 print(json.dumps(result, indent=2))
-print
+print()
 
 # Check the signals message
 result = client.getSignals()
 print("Signals Result:")
 print(json.dumps(result, indent=2))
-print
+print()
 
 # Successfule exit.
 sys.exit(0)
