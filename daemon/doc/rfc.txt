@@ -100,13 +100,17 @@ Query Request
             "Signal_id":    [string],
             "start":        string,
             "end":          string,
-            "analysisFile": string
+            "analysisFile": string,
+            "pmu_channel": [string],
+            "pmu_company": [string]
         }
 
         query_id:     A unique ID given to every query
         start:        Beginning query period time
         end:          End of query period time
         file:         Path to analysis file
+        pmu_channel:  List of pmu channels,
+        pmu_company:  List of pmu companys
 
   Example:
 
@@ -116,6 +120,8 @@ Query Request
             "start":        "2014-10-31 14:00:00",
             "end":          "2014-10-31 14:00:00",
             "analysisFile": "/this/dir/to/foo.r"
+            "pmu_channel":  ["B"],
+            "pmu_company":  ["GBPA"]
         }
 
 
