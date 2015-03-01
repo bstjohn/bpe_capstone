@@ -1,4 +1,4 @@
-#!/usr/bin/python2.7
+#!/usr/bin/python3.3
 #
 #  File:    DataEngine.py
 #  Author:  Daniel E. Wilson
@@ -65,14 +65,23 @@ class DataEngine(threading.Thread):
                                Signal_Phase = s['Signal_Phase'])
                 self.queue.put(model)
 
-        def updateStatus(self, queryList, AnalysisList, StatusList):
+        def updatStatus(self, queryReponses, analysisResponses, queryStatus,
+                        statusResponses):
             "Add all of the status reponses."
-            # Loop through the query list.
-            for qr in queryList:
-                model = Query(query_name = str(qr['query_id']),
-                              file_name = qr['file'])
+            # Queue all of the query responses.
+            for qr in queryResponses:
+                model = Query(id = qr['query_id']
+                              qr_file = qr['file'])
                 self.queue.put(model)
 
-            # Loop through the analysis list.
-            for ar in AnalysisList:
-                model = {}
+            # Queue all of the analysis responses.
+            for ar in analysisResponses:
+                model = Query(id = ar['query_id'],
+                              ar_file = qr['file'])
+                self.queue.put(model)
+
+            # Queue all of the query status entries
+            for qs in queryStatus:
+                model = Query(id = qs['query_id'],
+                              sr_completed = qs['completed'])
+                self.queue.put(model)

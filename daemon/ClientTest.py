@@ -1,4 +1,4 @@
-#!/usr/bin/python2.7
+#!/usr/bin/python3.3
 #
 #  File:     ClientTest.py
 #  Author:   Daniel E. Wilson
@@ -27,20 +27,20 @@ client = QueryClient.BPAClient(host, port)
 
 # Check to see if the query is correctly handled
 result = client.startQuery(query)
-print "Query result:"
-print json.dumps(result, indent=2)
+print("Query result:")
+print(json.dumps(result, indent=2))
 print
 
 # Check to see if the signals request works.
 result = client.getQueryStatus()
-print "Query Status Result:"
-print json.dumps(result, indent=2)
+print("Query Status Result:")
+print(json.dumps(result, indent=2))
 print
 
 # Check the signals message
 result = client.getSignals()
-print "Signals Result:"
-print json.dumps(result, indent=2)
+print("Signals Result:")
+print(json.dumps(result, indent=2))
 print
 
 # Successfule exit.

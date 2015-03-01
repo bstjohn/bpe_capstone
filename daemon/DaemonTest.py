@@ -1,4 +1,4 @@
-#!/usr/bin/python2.7
+#!/usr/bin/python3.3
 #
 # File:    DaemonTest.py
 #  Author:  Daniel E. Wilson
@@ -45,9 +45,9 @@ try:
             response = response + line
 
     # Show the user what was send and recieved.
-    print "Sent: {}".format(repr(query))
-    print
-    print "Received: '{}'".format(response.strip())
+    print("Sent: {}".format(repr(query)))
+    print()
+    print("Received: '{}'".format(response.strip()))
 
 finally:
     f.close()

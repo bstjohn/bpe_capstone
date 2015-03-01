@@ -1,6 +1,6 @@
-#!/usr/bin/python2.7
+#!/usr/bin/python3.3
 #
-# File:    QueryDaemon.py
+#  File:    QueryDaemon.py
 #  Author:  Daniel E. Wilson
 #
 #  This is the Server daemon that holds performs the actual queries
