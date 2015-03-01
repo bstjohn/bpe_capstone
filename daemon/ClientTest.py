@@ -13,6 +13,7 @@ import json
 #host = '131.252.208.4'
 #host = 'web.cecs.pdx.edu'
 host = '131.252.42.50'
+#host = 'localhost'
 port = 1701
 
 # Create the JSON object.
@@ -20,7 +21,9 @@ query= {'query': {'query_id': 3728,
                   'Signal_id': ['0x86d1-P-01'],
                   'start': '2014-10-31 14:00:00',
                   'end': '2014-10-31 14:30:00',
-                  'analysisFile': ''}}
+                  'analysisFile': '',
+                  'pmu_channel': ['B'],
+                  'pmu_company': ["GBPA"]}}
 
 # Create the client instance.
 client = QueryClient.BPAClient(host, port)

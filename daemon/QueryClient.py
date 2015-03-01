@@ -41,6 +41,7 @@ class QueryEngine(threading.Thread):
             # Get list of signals after midnight and store in database.
             if self.afterMidnight():
                 signals = self.client.getSignals()
+                dataEngine.addSignals(signals['PMUs'], signals['Signals'])
 
             # Get the next query from the queue.
             try:
@@ -54,7 +55,12 @@ class QueryEngine(threading.Thread):
                 # Submit the query to the BPA server.
                 result = self.client.startQuery(query)
 
-                # Process the query result.
+                # Write the query results to the database.
+                responseLists = result['Status']
+                dataEngine.updateStatus(responseLists['QueryResponses'],
+                                        responseLists['AnalysisResponses'],
+                                        responseLists['QueryStatus'],
+                                        responseLists['StatusResponses'])
 
                 # Mark the current item as complete.
                 self.queue.task_done()
@@ -79,7 +85,7 @@ class BPAClient:
     def __init__(self, host, port):
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.connect((host, port))
-        self.file = self.socket.makefile('rw', 4096)
+        self.file = self.socket.makefile('rw', 4096, encoding='ascii')
 
     def sendJSON(self, msg):
         "Send a JSON message to the server."
@@ -88,7 +94,7 @@ class BPAClient:
         self.file.write('\n\n')
         self.file.flush()
 
-    def getJSON(self, dropFirstLine = False):
+    def getJSON(self):
         "Get a JSON message from the server."
         result = json.load(self.file)
         ignore = self.file.readline()
@@ -104,7 +110,6 @@ class BPAClient:
     def startQuery(self, query):
         "Start a new query on the BPA server."
         assert type(query)==type({})
-        assert query.has_key('query')
 
         # Send the query request to the server.
         self.sendJSON(query)
@@ -127,7 +132,7 @@ class BPAClient:
         "Clean up the socket and file descriptors."
         # Clean up the file if it exists.
         try:
-            self.file.close()
+            self.rfile.close()
         except AttributeError:
             pass
 
