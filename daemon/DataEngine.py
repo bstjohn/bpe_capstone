@@ -8,7 +8,7 @@
 import os
 import sys
 import threading
-import Queue
+import queue
 
 # Set up paths to handle DJango models.
 # Assumes daemon lives in project directory.

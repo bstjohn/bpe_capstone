@@ -28,7 +28,7 @@ def isValidQuery(query):
     try:
         return allKeysPresent(query['query'],
                               ['query_id', 'Signal_id', 'start', 'end',
-                               'analysisFile'])
+                               'analysisFile', 'pmu_channel', 'pmu_company'])
     except KeyError:
         return False
 
