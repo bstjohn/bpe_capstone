@@ -42,5 +42,5 @@ def sendEmailNotification(userName, userEmail):
 	# server.set_debuglevel(1)
 	server.ehlo()
 	server.starttls()
-	server.login('bpa.psucapstone@gmail.com', 'NicolaTesa') # CHANGE ME
+	server.login('bpa.psucapstone@gmail.com', 'password') # CHANGE ME
 	server.sendmail('bpa.psucapstone@gmail.com', str(userEmail), str(msg))
