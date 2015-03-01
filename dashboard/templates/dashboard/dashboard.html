@@ -26,31 +26,17 @@
 
 {% block header %}
 {% block header-title %}
-<!-- display 'Welcome' and 'New Job', 'Status' buttons -->
 <nav class="navbar navbar-default">
   <div class="container-fluid">
     <div class="navbar-header">
-      <a class="navbar-brand" href="#">Welcome, {{ username }}! </a>
-    </div>
-    <div>
-      <form class="navbar-form navbar-left" role="search">
-        <a type="submit" class="btn btn-default" href="/query/query-builder">New Job</a>
-      </form>
-    </div>
-    <div>
-      <form class="navbar-form navbar-left" role="search">
-        <a type="submit" class="btn btn-default" href="/query/status-result">System Status</a>
-      </form>
-    </div>
-    <div>
-      <form class="navbar-form navbar-left" role="search">
-        <a type="submit" class="btn btn-default" href="/logout">Logout</a>
-      </form>
+      <a class="navbar-brand" href="#">Dashboard </a>
     </div>
   </div>
 </nav>
 {% endblock %}
 {% endblock %}
+
+
 
 {% block content %}
 

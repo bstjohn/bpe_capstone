@@ -21,9 +21,21 @@
 
 {% extends "base.html" %}
 
+{% block header %}
+{% block header-title %}
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">Logout successful </a>
+    </div>
+  </div>
+</nav>
+{% endblock %}
+{% endblock %}
+
+
 {% block content %}
 
-Log out successful.
-<p><a href="/login/">Log in again</a></p>
+<p><a href="/login/">Log in</a></p>
 
 {% endblock %}

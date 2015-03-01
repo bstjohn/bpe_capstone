@@ -1,4 +1,33 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="en">
+{% load staticfiles %}
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <link rel="stylesheet" href="{% static '/static/general/bootstrap/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static '/static/general/bootstrap/css/bootstrap-theme.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static '/static/general/style.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static '/static/general/dbstyle.css' %}"/>
+    <title>{% block title %}BPA Project{% endblock %}</title>
+</head>
+
+<body>
+<div id="header">
+
+{% block header %}
+{% block header-title %}
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">BPA Project</a>
+    </div>
+  </div>
+</nav>
+{% endblock %}
+{% endblock %}
+
+
+
 
 {% block content %}
 
@@ -29,3 +58,9 @@
 <p>Forgot your password? <a href="/resetpassword/">Reset it!</a></p>
 
 {% endblock %}
+
+
+
+</body>
+</html>
+
