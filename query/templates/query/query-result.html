@@ -25,13 +25,7 @@
 {% block header %}
   {% for q in query %}
     {% block header-title %}
-    <nav class="navbar navbar-default">
-      <div class="container-fluid">
-        <div class="navbar-header">
-          <a class="navbar-brand" href="#">Results for {{q.query_name}}, QueryID #{{q.pk}} </a>
-        </div>
-      </div>
-    </nav>
+          {{q.query_name}}, #{{q.pk}}
     {% endblock %}
   {% endfor %}
 {% endblock %}

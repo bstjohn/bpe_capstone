@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load staticfiles %}
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <link rel="stylesheet" href="{% static '/static/general/bootstrap/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static '/static/general/bootstrap/css/bootstrap-theme.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static '/static/general/style.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static '/static/general/dbstyle.css' %}"/>   
+    <title>{% block title %}BPA Project{% endblock %}</title>
+</head>
+
+<body>
+<div id="header">
+
+    {% block header %}
+    {% block header-title %}BPA Project{% endblock %}
+    {% endblock %}
+
+</div>
+
+<div id="container">
+    <div id="content">
+
+        {% if messages %}
+	<ul class="messages">
+	    {% for message in messages %}
+	    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+	    {% endfor %}
+	</ul>
+	{% endif %}
+
+        {% block content %}{% endblock %}
+
+    </div>
+</div>
+
+<div class="footer">
+    <ul id="footer-link-bar">
+        <li class="footer-link"><a href="/info/about/">About</a> |</li>
+        <li class="footer-link"><a href="/info/faq/">FAQs</a> |</li>
+        <li class="footer-link"><a href="/info/contact/">Contact Us</a></li>
+    </ul>
+</div>
+</body>
+</html>
