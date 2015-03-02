@@ -65,6 +65,10 @@ class QueryEngine(threading.Thread):
                 # Mark the current item as complete.
                 self.queue.task_done()
 
+                # Create new BPA client object.
+                self.client = BPAClient(host, port)
+
+
     def afterMidnight(self):
         "Check to see if midnight has passed."
         if self.lastHour == None:
@@ -80,7 +84,8 @@ class QueryEngine(threading.Thread):
 
 
 class BPAClient:
-    "Class that will handle communication with the BPA database."
+    """Class that will handle communication with the BPA database.
+NOTE:  This class can only handle one request per instance."""
 
     def __init__(self, host, port):
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
