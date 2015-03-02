@@ -35,12 +35,14 @@ print(json.dumps(result, indent=2))
 print()
 
 # Check to see if the signals request works.
+client = QueryClient.BPAClient(host, port)
 result = client.getQueryStatus()
 print("Query Status Result:")
 print(json.dumps(result, indent=2))
 print()
 
 # Check the signals message
+client = QueryClient.BPAClient(host, port)
 result = client.getSignals()
 print("Signals Result:")
 print(json.dumps(result, indent=2))
