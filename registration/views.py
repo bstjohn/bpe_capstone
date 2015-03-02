@@ -1,5 +1,5 @@
-# User registration view.
-#
+# User registration view site.
+
 # Bonneville Power Adminstration Front-End
 # Copyright (C) 2015  Shu Ping Chu
 # 
