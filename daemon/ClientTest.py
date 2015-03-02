@@ -1,10 +1,9 @@
 #!/usr/bin/python3.3
 #
-#  File:    DaemonTest.py
-#  Author:  Daniel E. Wilson
+#  File:     ClientTest.py
+#  Author:   Daniel E. Wilson
 #
-#  This is a test program to see if the query daemon is correctly
-#  responding to requests.
+#  Test program to test commumincation with the client.
 #
 #  Bonneville Power Adminstration Front-End
 #  Copyright (C) 2015 Daniel E. Wilson.
@@ -24,51 +23,47 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, US$
 #
 import sys
+import QueryClient
 import json
-import socket
-import select
 
-# Set the server and host name to work with.
-host = 'localhost'
-port = 4242
-
-# Create the socket.
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+# Set the host and port number.
+#host = '131.252.208.4'
+#host = 'web.cecs.pdx.edu'
+host = '131.252.42.50'
+#host = 'localhost'
+port = 1701
 
 # Create the JSON object.
 query= {'query': {'query_id': 3728,
                   'Signal_id': ['0x86d1-P-01'],
                   'start': '2014-10-31 14:00:00',
                   'end': '2014-10-31 14:30:00',
-                  'analysisFile': ''}}
+                  'analysisFile': '',
+                  'pmu_channel': ['B'],
+                  'pmu_company': ["GBPA"]}}
 
-try:
-    # Now connect to the server.
-    s.connect((host,port))
-    f = s.makefile('rw', 4096)
+# Create the client instance.
+client = QueryClient.BPAClient(host, port)
 
-    # Send the JSON object to the server.
-    json.dump(query, f)
-    f.write('\n\n')
-    f.flush()
+# Check to see if the query is correctly handled
+result = client.startQuery(query)
+print("Query result:")
+print(json.dumps(result, indent=2))
+print()
 
-    # Get read all of the response.
-    response=''
-    while True:
-        line = f.readline()
-        if not line.strip():
-            break
-        else:
-            response = response + line
+# Check to see if the signals request works.
+client = QueryClient.BPAClient(host, port)
+result = client.getQueryStatus()
+print("Query Status Result:")
+print(json.dumps(result, indent=2))
+print()
 
-    # Show the user what was send and recieved.
-    print("Sent: {}".format(repr(query)))
-    print()
-    print("Received: '{}'".format(response.strip()))
+# Check the signals message
+client = QueryClient.BPAClient(host, port)
+result = client.getSignals()
+print("Signals Result:")
+print(json.dumps(result, indent=2))
+print()
 
-finally:
-    f.close()
-    s.close()
-
-# End the program.
+# Successfule exit.
 sys.exit(0)

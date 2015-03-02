@@ -1,0 +1,32 @@
+This is the daemon program to be used to communicate with the BPA database
+back end.  It handles sending the query to the database and then returns
+the information into the Django database.  This program is intended to be
+used with Python 3.3 and will require modifications to run on version 2.7
+of the Python interpreter.
+
+The daemon consists of three files:
+
+  QueryDaemon.py    Main program that communicates with the Django program.
+  QueryClient.py    Client to the BPA database program.
+  DataEngine.py     Interface to the DJango database.
+
+There are three threads of execution in the daemon to allow all three phases
+of query execution to run concurrently.  The host and port numbers are at
+the top of each source file.
+
+It should be possible to modify this program to run inside the Django process
+and avoid the overhead of unnecessary network communication.  This modification
+would also make the code much simpler.
+
+The daemon is started by the following command:
+
+  python3 QueryDaemon.py
+
+There are two addition files that are included for testing purposes:
+
+  DaemonTest.py    Used for testing the whole daemon.
+  ClientTest.py    Used for testing the BPAClient object which talks
+                   to the BPA database.
+
+These programs are started in the same way as the daemon itself is.  Both
+programs take no arguments.

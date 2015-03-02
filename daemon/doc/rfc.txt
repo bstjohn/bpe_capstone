@@ -1,9 +1,10 @@
-The Bonneville Power Administration web application
+The Bonneville Power Administration Web Application
+Communication Specification
 
 Abstract
-    
+
   This document defines communication between the web front end
-  and the query application for the Bonneville Power Administration 
+  and the query application for the Bonneville Power Administration
   web application.
 
   The term "client" will be used for the web front-end. The
@@ -12,11 +13,11 @@ Abstract
   All messages will be in the JSON format.
 
   There are six types of messages.
-    
-  Query Request, Query Response, Status Request, Status Response, 
+
+  Query Request, Query Response, Status Request, Status Response,
   PMU and Signal Request, PMU and Signal Response
 
-  The Request messages will be sent by the client, while the 
+  The Request messages will be sent by the client, while the
   Response messages will be sent by the server.
 
   The messages are defined below.
@@ -24,31 +25,31 @@ Abstract
 
 Connection
 
-  The server will listen on port 1701 and wait for a TCP 
-  connection from client. Connection should only be accepted from 
-  a specified IP address. IP address should be exchanged during 
+  The server will listen on port 1701 and wait for a TCP
+  connection from client. Connection should only be accepted from
+  a specified IP address. IP address should be exchanged during
   application set up.
 
   If the connection is broken, the client will try to reconnect
-  every 30 seconds. 
+  every 30 seconds.
 
 
 Messages
 
   Message will be sent using the JSON format specified here: http://www.json.org/
-  
-  http://www.json.org/ should be consulted for JSON message details such 
+
+  http://www.json.org/ should be consulted for JSON message details such
   as escape codes, whitespace, etc...
 
   All dates will be in the POSIX format.
 
 
 PMU and Signal Request
-  
+
   This message will be sent by the client to request a list of PMUs and Signals.
   The client should respond with a PMU and Signal Response.
 
-        { "PMUAndSignalRequest" }
+        { "PMUAndSignalRequest" : 0}
 
 
 PMU and Signal Response
@@ -58,7 +59,7 @@ PMU and Signal Response
   this document. However, the client assumes that the variables in this document
   are a subset of the variables sent.
 
-        { 
+        {
           "Version": number
           "PMUs": [ {
                     "PMU_ID": number,
@@ -90,8 +91,8 @@ PMU and Signal Response
 
 Query Request
 
-  This message is used by the client to request the server run a query, 
-  and return the results. For details about this message's variables, consult 
+  This message is used by the client to request the server run a query,
+  and return the results. For details about this message's variables, consult
   "PMU Identification Numbers Technical Notes" pages 3-7.
 
         "query": {
@@ -99,13 +100,17 @@ Query Request
             "Signal_id":    [string],
             "start":        string,
             "end":          string,
-            "analysisFile": string
+            "analysisFile": string,
+            "pmu_channel": [string],
+            "pmu_company": [string]
         }
 
         query_id:     A unique ID given to every query
         start:        Beginning query period time
         end:          End of query period time
         file:         Path to analysis file
+        pmu_channel:  List of pmu channels,
+        pmu_company:  List of pmu companys
 
   Example:
 
@@ -115,15 +120,17 @@ Query Request
             "start":        "2014-10-31 14:00:00",
             "end":          "2014-10-31 14:00:00",
             "analysisFile": "/this/dir/to/foo.r"
+            "pmu_channel":  ["B"],
+            "pmu_company":  ["GBPA"]
         }
 
 
 Query Response
 
-  This message should be returned by the server after receiving a Query request. 
+  This message should be returned by the server after receiving a Query request.
   Status code is a non-negative integer, 0 being success.
 
-        { 
+        {
             "QueryResponse": {
                 "statusCode": number,
                 "message":"String"
@@ -132,7 +139,7 @@ Query Response
 
   Example of success:
 
-        { 
+        {
             "QueryResponse": {
                 "statusCode": 0,
                 "message":""
@@ -141,106 +148,103 @@ Query Response
 
   Error example:
 
-        { 
+        {
             "QueryResponse": {
                 "statusCode": 1,
                 "message":"Malformed query"
             }
         }
-  
+
 
 Status Request
 
   This message is used by the client to request the status of a queries. There
   are three possible types of request: "Status", "Results", and "Analysis".
 
-        { 
-            "StatusRequest": ["String"] 
+        {
+            "StatusRequest": ["String"]
         }
 
   Example:
-      
-        { 
+
+        {
             "StatusRequest": ["Status", "Results"]
         }
 
 
 Status Response
 
-  This message is used by the server to respond to a status request 
+  This message is used by the server to respond to a status request
   message. "QueryResponses" is an array of objects that contains the results
   of a search. "AnalysisResponses" is an array of objects that contains
-  the results of running the analysis program on the query results. 
-  "StatusResponses" is an array of objects that contains the status
-  of a running query. The content of "QueryResponse" is the result of a 
-  completed query. The content of a "AnalysisResponse" is the result of a 
-  completed analysis program.
+  the results of running the analysis program on the query results.
+  "QueryStatus" is an array of objects that contains the status
+  of a running query. "StatusResponses" is the status of they system.
+  The content of "QueryResponse" is the result of a completed query.
+  The content of a "AnalysisResponse" is the result of a completed
+  analysis program.
 
-        { "Status": 
+        { "Status":
             {
-                "QueryResponses": 
+                "QueryResponses":
                     [ {
                         "query_id": number,
                             "file": "string",
                     } ],
 
-                    "AnalysisResponses": 
+                    "AnalysisResponses":
                         [ {
                             "query_id": number,
                             "file": "string",
                         } ],
 
-                    "StatusResponses": 
-                        [ { 
+                    "QueryStatus": [ {
                             "query_id": number,
-                            "CPU": [number],
                             "completed": number
-                            "diskSpace": { "used":number, 
-                                           "available":number 
+                    } ],
+
+                    "StatusResponses": {
+                            "CPU": [[number]],
+                            "diskSpace": { "used":number,
+                                           "available":number
                                          }
-                        } ]
+                    }
             }
         }
 
         query_id:     A unique ID given to every query
         file:         Path to results file
-        CPU:          List of CPU usage percentages
+        CPU:          List of list of CPU usage percentages, where each sublist is a node
         completed:    Estimated percentage completed
         used:         Amount of disk space in use
-        available:    Disk space available 
+        available:    Disk space available
 
   Example:
 
-        { "Status": 
+        { "Status":
             {
-                "QueryResponses": 
+                    "QueryResponses":
                     [ {
                         "query_id": 3,
                         "file": "/path/file/results.csv"
                     } ],
 
-                    "AnalysisResponses": 
+                    "AnalysisResponses":
                         [ {
                             "query_id": 4,
                             "file": "/path/file/results3.csv"
                         } ],
 
-                    "StatusResponses": 
-                        [ 
-                        { "query_id": 6,
-                            "CPU": [0.12,0.34],
-                            "Completed": 0.97,
-                            "diskSpace": { "used":3, 
-                                           "available":6
-                                         }
-                        },
-                        { "query_id": 8,
-                            "CPU": [0.1,0.34, 0.99],
+                    "QueryStatus":
+                        [ {
+                            "query_id": 6,
                             "completed": 0.97,
-                            "diskSpace": { "used":3, 
-                                           "available"5
+                        } ],
+                    "StatusResponses": {
+                            "CPU": [0.12,0.34],
+                            "diskSpace": { "used":3,
+                                           "available":4
                                          }
-                        }
-                        ]
-            }
-        }
+                    }
+   }
+  }

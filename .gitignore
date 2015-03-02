@@ -62,3 +62,7 @@ target/
 # Ignore emacs temporary files.
 *~
 [#]*[#]
+.[#]*
+
+# Ignore Dolphin files
+.directory
